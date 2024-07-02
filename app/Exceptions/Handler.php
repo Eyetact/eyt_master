@@ -38,4 +38,38 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+
+    /**
+     * Report or log an exception.
+     *
+     * @param  \Throwable  $exception
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function report(Throwable $exception)
+    {
+        if ($exception instanceof MenuManagerNotFoundException) {
+            return $exception->report();
+        }
+
+        parent::report($exception);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Throwable  $exception
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof MenuManagerNotFoundException) {
+            return $exception->render($request);
+        }
+
+        return parent::render($request, $exception);
+    }
 }
