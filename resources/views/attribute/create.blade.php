@@ -113,6 +113,7 @@
                                 {{-- <option value="informatic">Informatic Attribute</option> --}}
                                 {{-- <option value="doublefk">Double Lookup Attribute</option> --}}
                                 <option value="doubleattr">Double Attribute</option>
+                                <option value="calc">Calculate Attribute</option>
                                 {{-- <option value="condition">Condition Lookup</option> --}}
 
                                 {{-- <option value="assign">Assign</option> --}}

@@ -32,6 +32,8 @@ class AttributeController extends Controller
     {
 
 
+
+
         if (auth()->user()->hasRole('super')) {
 
             $attributes = Attribute::all();
@@ -286,7 +288,11 @@ class AttributeController extends Controller
             'user_id' => auth()->user()->id,
             'multiple' => isset($request['multiple']) ? 1 : 0,
             'condition_attr' => $condition_attr,
-            'condition_value' => $condition_value
+            'condition_value' => $condition_value,
+            'type_of_calc' => isset($request['type_of_calc']) ? $request['type_of_calc'] : null,
+            'operation' => isset($request['operation']) ? $request['operation'] : null,
+            'first_column' => isset($request['first_column']) ? $request['first_column'] : null,
+            'second_column' => isset($request['second_column']) ? $request['second_column'] : null,
         ];
         // dd($createArr);
         $attribute = Attribute::create($createArr);

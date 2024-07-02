@@ -214,6 +214,265 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
 
 
 
+    $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->get();
+
+            foreach($attrs as $attr)
+            {
+
+
+
+                if($attr->operation == 'sum' )
+                {
+
+
+                    $fFieldNameParts = explode('_', $attr->first_column);
+                    $fLastPart = end($fFieldNameParts);
+
+                    $sFieldNameParts = explode('_', $attr->second_column);
+                    $sLastPart = end($sFieldNameParts);
+
+
+                    if($fLastPart == 'id' && $sLastPart != 'id' ){
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk = $insert->$fcolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                       $insert->$attr_code =        (float)$fkValue   +   (float)$insert->$scolumn ;
+                       $insert->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart == 'id' ){
+
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->second_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk = $insert->$scolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                       $insert->$attr_code =       (float)$fkValue   +  (float)$insert->$fcolumn ;
+                       $insert->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart != 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $insert->$attr_code =   $insert->$fcolumn +   $insert->$scolumn ;
+                        $insert->save();
+
+
+                    }
+
+                    if($fLastPart == 'id' && $sLastPart == 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr1 = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+                         $fkAttr2 = Attribute::where('code', $attr->second_column)
+                         ->where('module',$module_id)
+                          ->first();
+
+                          $valFk1 = $insert->$fcolumn;
+
+                          $valFk2 = $insert->$scolumn;
+
+                          $const1 = GeneratorUtils::setModelName((string)$fkAttr1->constrain, 'default');
+                          $const2 = GeneratorUtils::setModelName((string)$fkAttr2->constrain, 'default');
+
+                          $fkModel1 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const1);
+                          $fkModel2 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const2);
+
+                          $fkValue1 = $fkModel1::where('id', $valFk1)->first()->{str()->snake($fkAttr1->attribute)};
+                          $fkValue2 = $fkModel2::where('id', $valFk2)->first()->{str()->snake($fkAttr2->attribute)};
+
+
+
+
+
+                       $insert->$attr_code =  (float)$fkValue1   +   (float)$fkValue2   ;
+                       $insert->save();
+
+
+                    }
+
+
+
+
+
+
+                }
+
+                if($attr->operation == 'multiple' )
+                {
+
+
+
+                    $fFieldNameParts = explode('_', $attr->first_column);
+                    $fLastPart = end($fFieldNameParts);
+
+                    $sFieldNameParts = explode('_', $attr->second_column);
+                    $sLastPart = end($sFieldNameParts);
+
+
+                    if($fLastPart == 'id' && $sLastPart != 'id' ){
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk = $insert->$fcolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                       $insert->$attr_code =        (float)$fkValue   *   (float)$insert->$scolumn ;
+                       $insert->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart == 'id' ){
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->second_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk = $insert->$scolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                       $insert->$attr_code =       (float)$fkValue   * (float)$insert->$fcolumn ;
+                       $insert->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart != 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $insert->$attr_code =   $insert->$fcolumn *   $insert->$scolumn ;
+                        $insert->save();
+
+
+                    }
+
+                    if($fLastPart == 'id' && $sLastPart == 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr1 = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+                         $fkAttr2 = Attribute::where('code', $attr->second_column)
+                         ->where('module',$module_id)
+                          ->first();
+
+                          $valFk1 = $insert->$fcolumn;
+
+                          $valFk2 = $insert->$scolumn;
+
+                          $const1 = GeneratorUtils::setModelName((string)$fkAttr1->constrain, 'default');
+                          $const2 = GeneratorUtils::setModelName((string)$fkAttr2->constrain, 'default');
+
+                          $fkModel1 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const1);
+                          $fkModel2 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const2);
+
+                          $fkValue1 = $fkModel1::where('id', $valFk1)->first()->{str()->snake($fkAttr1->attribute)};
+                          $fkValue2 = $fkModel2::where('id', $valFk2)->first()->{str()->snake($fkAttr2->attribute)};
+
+
+
+
+
+                       $insert->$attr_code =  (float)$fkValue1   *   (float)$fkValue2   ;
+                       $insert->save();
+
+
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
+
 
 
 
@@ -366,6 +625,267 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
             }
 
             }
+
+
+          $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->get();
+
+            foreach($attrs as $attr)
+            {
+
+
+
+                if($attr->operation == 'sum' )
+                {
+
+
+                    $fFieldNameParts = explode('_', $attr->first_column);
+                    $fLastPart = end($fFieldNameParts);
+
+                    $sFieldNameParts = explode('_', $attr->second_column);
+                    $sLastPart = end($sFieldNameParts);
+
+
+                    if($fLastPart == 'id' && $sLastPart != 'id' ){
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk =  ${{modelNameSingularCamelCase}}->$fcolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                       ${{modelNameSingularCamelCase}}->$attr_code =        (float)$fkValue   +   (float)${{modelNameSingularCamelCase}}->$scolumn ;
+                        ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart == 'id' ){
+
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->second_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk =   ${{modelNameSingularCamelCase}}->$scolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                     ${{modelNameSingularCamelCase}}->$attr_code =       (float)$fkValue   +  (float)  ${{modelNameSingularCamelCase}}->$fcolumn ;
+                    ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart != 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                         ${{modelNameSingularCamelCase}}->$attr_code =    ${{modelNameSingularCamelCase}}->$fcolumn +     ${{modelNameSingularCamelCase}}->$scolumn ;
+                      ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart == 'id' && $sLastPart == 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr1 = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+                         $fkAttr2 = Attribute::where('code', $attr->second_column)
+                         ->where('module',$module_id)
+                          ->first();
+
+                          $valFk1 =   ${{modelNameSingularCamelCase}}->$fcolumn;
+
+                          $valFk2 =   ${{modelNameSingularCamelCase}}->$scolumn;
+
+                          $const1 = GeneratorUtils::setModelName((string)$fkAttr1->constrain, 'default');
+                          $const2 = GeneratorUtils::setModelName((string)$fkAttr2->constrain, 'default');
+
+                          $fkModel1 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const1);
+                          $fkModel2 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const2);
+
+                          $fkValue1 = $fkModel1::where('id', $valFk1)->first()->{str()->snake($fkAttr1->attribute)};
+                          $fkValue2 = $fkModel2::where('id', $valFk2)->first()->{str()->snake($fkAttr2->attribute)};
+
+
+
+
+
+                    ${{modelNameSingularCamelCase}}->$attr_code =  (float)$fkValue1   +   (float)$fkValue2   ;
+                        ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+
+
+
+
+
+                }
+
+                if($attr->operation == 'multiple' )
+                {
+
+
+
+                    $fFieldNameParts = explode('_', $attr->first_column);
+                    $fLastPart = end($fFieldNameParts);
+
+                    $sFieldNameParts = explode('_', $attr->second_column);
+                    $sLastPart = end($sFieldNameParts);
+
+
+                    if($fLastPart == 'id' && $sLastPart != 'id' ){
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk =  ${{modelNameSingularCamelCase}}->$fcolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                      ${{modelNameSingularCamelCase}}->$attr_code =        (float)$fkValue   *   (float)  ${{modelNameSingularCamelCase}}->$scolumn ;
+                         ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart == 'id' ){
+
+
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr = Attribute::where('code', $attr->second_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+
+                         $valFk =  ${{modelNameSingularCamelCase}}->$scolumn;
+
+                         $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+                         $fkModel = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const);
+                         $fkValue = $fkModel::where('id', $valFk)->first()->{str()->snake($fkAttr->attribute)};
+
+
+
+                      ${{modelNameSingularCamelCase}}->$attr_code =       (float)$fkValue   * (float)  ${{modelNameSingularCamelCase}}->$fcolumn ;
+                        ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart != 'id' && $sLastPart != 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        ${{modelNameSingularCamelCase}}->$attr_code =     ${{modelNameSingularCamelCase}}->$fcolumn *    ${{modelNameSingularCamelCase}}->$scolumn ;
+                      ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+                    if($fLastPart == 'id' && $sLastPart == 'id' ){
+
+
+                        $attr_code = GeneratorUtils::singularSnakeCase($attr->code);
+                        $fcolumn = $attr->first_column;
+                        $scolumn = $attr->second_column;
+
+                        $fkAttr1 = Attribute::where('code', $attr->first_column)
+                        ->where('module',$module_id)
+                         ->first();
+
+                         $fkAttr2 = Attribute::where('code', $attr->second_column)
+                         ->where('module',$module_id)
+                          ->first();
+
+                          $valFk1 =   ${{modelNameSingularCamelCase}}->$fcolumn;
+
+                          $valFk2 =   ${{modelNameSingularCamelCase}}->$scolumn;
+
+                          $const1 = GeneratorUtils::setModelName((string)$fkAttr1->constrain, 'default');
+                          $const2 = GeneratorUtils::setModelName((string)$fkAttr2->constrain, 'default');
+
+                          $fkModel1 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const1);
+                          $fkModel2 = 'App\Models\Admin\\' . GeneratorUtils::singularPascalCase($const2);
+
+                          $fkValue1 = $fkModel1::where('id', $valFk1)->first()->{str()->snake($fkAttr1->attribute)};
+                          $fkValue2 = $fkModel2::where('id', $valFk2)->first()->{str()->snake($fkAttr2->attribute)};
+
+
+
+
+
+                        ${{modelNameSingularCamelCase}}->$attr_code =  (float)$fkValue1   *   (float)$fkValue2   ;
+                     ${{modelNameSingularCamelCase}}->save();
+
+
+                    }
+
+
+
+
+                }
+
+
+            }
+
+
+
 
 
 

@@ -363,11 +363,28 @@ class RequestGenerator
 
                         if($field->type != 'boolean' &&  $field->type != 'doublefk'  &&  $field->fk_type != 'based')
                         {
+
+
+                            if($field->type != 'calc'){
+
                         match ($field->required) {
                             'yes' => $validations .= "'required",
                             'on' => $validations .= "'required",
                             default => $validations .= "'nullable"
                         };
+                    }
+
+                        if($field->type == 'calc'){
+
+
+                            match ($field->required) {
+                                'yes' => $validations .= "'nullable",
+                                'on' => $validations .= "'nullable",
+                                default => $validations .= "'nullable"
+                            };
+
+
+                        }
 
 
                     }

@@ -211,8 +211,10 @@ class IndexViewGenerator
         $modelNameSingularUcWords = GeneratorUtils::cleanSingularUcWords($code);
 
         $thColums = '';
+        $tfColums = '';
         $tdColumns = '';
         $trhtml = '';
+        $agg = '';
         $totalFields = count($module->fields()->where('is_enable', 1)->get());
 
         foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
@@ -225,7 +227,55 @@ class IndexViewGenerator
                  * <th>{{ __('Price') }}</th>
                  */
                 if ($field->type != 'foreignId' && $field->type != 'condition'&& $field->type != 'informatic' && $field->type != 'doublefk' && $field->primary != 'lookup' && $field->type != 'fk') {
-                    $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
+                    // $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
+
+
+                    if($field->type_of_calc == 'one')
+                    {
+
+
+
+
+
+                            $fieldNameParts = explode('_', $field->first_column);
+                            $lastPart = end($fieldNameParts);
+
+                            if ($lastPart === 'id') {
+                                $fkAttr = Attribute::where('code', $field->first_column)
+                                                   ->where('module',$id)
+                                                    ->first();
+
+
+
+
+                                $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
+
+
+                                $agg .= "'" . GeneratorUtils::singularSnakeCase($const) . "_" . str()->snake($fkAttr->attribute) . "." . $fkAttr->attribute . "'" . ' => App\\Models\\Admin\\' . GeneratorUtils::singularPascalCase($code) . "::get()->" . $field->operation  . '(function ($' . GeneratorUtils::singularSnakeCase($const) . ') {
+                                    return $' . GeneratorUtils::singularSnakeCase($const) . '->' . GeneratorUtils::singularSnakeCase($const) . "_" . str()->snake($fkAttr->attribute) . "?->" . str()->snake($fkAttr->attribute) . ';
+                                }),';
+
+
+
+
+                            }
+
+
+                       else{
+
+                        $agg .= "
+                         '".$field->first_column ."' => App\\Models\\Admin\\" .GeneratorUtils::singularPascalCase($code) ."::" . $field->operation . "('" . $field->first_column . "'),
+
+                  ";
+                       }
+
+                    }
+
+                    else{
+                        $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
+                        $tfColums .= "<th></th>";
+
+                    }
                 }
 
 
@@ -242,8 +292,8 @@ class IndexViewGenerator
 
 
                     $(document).on('click', '#add_new_tr_" . $field->id . "', function() {
-                        let table = $('#tbl-field-" . $field->id . " tbody')
-                        var list_" . $field->id . " = ''
+                        let table = $('#tbl-field-" . $field->id . " tbody').first();
+                        var list_" . $field->id . " = '';
 
                         let no = table.find('tr').length + 1\n";
 
@@ -875,6 +925,7 @@ class IndexViewGenerator
                     $constrainModel = GeneratorUtils::setModelName($field->constrain, 'default');
 
                     $thColums .= "<th>{{ __('" . GeneratorUtils::cleanSingularUcWords($constrainModel) . "') }}</th>";
+                    $tfColums .= "<th></th>";
 
                     /**
                      * will generate something like:
@@ -887,6 +938,8 @@ class IndexViewGenerator
                     data: \"" . GeneratorUtils::singularSnakeCase($constrainModel). "_" .str()->snake($field->attribute)  . "\",
                     name: \"" . GeneratorUtils::singularSnakeCase($constrainModel). "_" .str()->snake($field->attribute)   . "." . $field->attribute . "\"
                 },";
+
+
                 } else {
                     /**
                      * will generate something like:
@@ -895,10 +948,13 @@ class IndexViewGenerator
                      *    name: 'price'
                      * }
                      */
+
+                     if($field->type_of_calc != 'one'){
                     $tdColumns .= "{
                     data: \"" . str()->snake($field->code) . "\",
                     name: \"" . str()->snake($field->name) . "\",
                 },";
+                     }
                 }
 
                 if ($i + 1 != $totalFields) {
@@ -917,11 +973,13 @@ class IndexViewGenerator
                 '{{modelNameSingularLowercase}}',
                 '{{modelNamePluralLowerCase}}',
                 '{{thColumns}}',
+                '{{tfColumns}}',
                 '{{tdColumns}}',
                 '{{trHtml}}',
                 '{{modelNameSingularUcWords}}',
                 '{{code}}',
-                '{{code2}}'
+                '{{code2}}',
+                '{{agg}}'
 
             ],
             [
@@ -930,11 +988,16 @@ class IndexViewGenerator
                 $modelNameSingularLowercase,
                 $modelNamePluralLowerCase,
                 $thColums,
+                $tfColums,
                 $tdColumns,
                 $trhtml,
                 $modelNameSingularUcWords,
                 $module->code,
-                GeneratorUtils::singularPascalCase($code)
+                GeneratorUtils::singularPascalCase($code),
+                '@php
+                $aggregates = [' .$agg . '];
+                @endphp
+                '
             ],
             GeneratorUtils::getTemplate('views/index')
         );

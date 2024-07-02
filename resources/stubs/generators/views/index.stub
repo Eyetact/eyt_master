@@ -65,6 +65,8 @@
                                     <th width="30px"></th>
                                     {{thColumns}}
 
+                                    {{agg}}
+
                                         @if($model->is_system)
                                     	<th>{{ __('Global') }}</th>
 										<th>{{ __('Status') }}</th>
@@ -75,6 +77,21 @@
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
+                               <tfoot>
+                                <tr>
+                                    <th width="30px"></th>
+                                    {{tfColumns}}
+
+                                        @if($model->is_system)
+                                    	<th></th>
+										<th></th>
+                                        @endif
+
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -421,7 +438,7 @@ output {
     <script src="{{ URL::asset('assets/js/datatables.js') }}"></script>
     <script src="{{ URL::asset('assets/js/popover.js') }}"></script>
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
+    {{--<script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>--}}
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
     <script src="{{ asset('assets/plugins/fileupload/js/dropify.js') }}"></script>
 
@@ -843,6 +860,36 @@ output {
             e.preventDefault();
 
         });
+
+
+
+     $(document).ready(function() {
+  var aggregate = "{{ isset($aggregate) ?  $aggregate : 'undefined' }}";
+
+  if (aggregate != undefined) {
+    var aggregates = @json($aggregates);
+
+    var table = $('#data_table').DataTable({
+      retrieve: true
+    });
+
+    updateTableFooterWithAggregates();
+
+    function updateTableFooterWithAggregates() {
+      console.log('Updating table footer with aggregates');
+
+      $.each(aggregates, function(key, value) {
+
+        var columnIndex = table.column(key + ':name').index();
+
+        console.log(`Updating footer for column: ${key}, index: ${columnIndex}, value: ${value}`);
+
+
+        $(table.column(columnIndex).footer()).html(value);
+      });
+    }
+  }
+});
 
 
 

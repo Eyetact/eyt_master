@@ -932,6 +932,9 @@ class FormViewGenerator
                                 break;
                         }
                         break;
+                        case 'calc':
+
+                            break;
                     case 'foreignId':
 
                         // remove '/' or sub folders

@@ -243,8 +243,15 @@ class MigrationGenerator
             elseif ($field->type == 'doublefk' ) {
                 $setFields .= "\$table->foreignId('" . str()->snake($field->code);
                 $setFields2 .= "\$table->foreignId('" . str()->snake($field->constrain2.'_'.$field->attribute2. '_id');
-            } else {
+            }
+            elseif ($field->type == 'calc') {
+                $setFields .= "\$table->text('" . str()->snake($field->code);
+            }
+             else {
+
+
                 $setFields .= "\$table->" . $field->type . "('" . str()->snake($field->code);
+
             }
 
             if ($field->type == 'enum') {

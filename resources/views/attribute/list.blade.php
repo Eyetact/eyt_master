@@ -1305,7 +1305,7 @@ ${response}
                     let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
                 .html());
 
-                alert(index);
+                // alert(index);
 
 
                 $(this).closest('tr').find('.select_options').append(` <div class="input-box c-f form-constrain mt-2">
@@ -1361,7 +1361,7 @@ ${response}
         })
 
         $(document).on('change', '.form-column-types', function() {
-            // alert($(this).val())
+
             var index = 0;
             let switchRequired = $(`.switch-requireds`)
 
@@ -1766,7 +1766,52 @@ ${response}
             //     <option value="datalist">Datalist</option>
             // `)
 
-            } else if ($(this).val() == 'doublefk') {
+            }
+
+            else if ($(this).val() == 'calc') {
+
+
+
+                $('.source-card').hide();
+                $('.deff-class').hide();
+
+                $(`.form-option`).remove()
+
+                $(`.options`).append(`
+                <input type="hidden" name="select_options" class="form-option">
+            `)
+
+                // var list = `<option>aaaa</option>`;
+
+
+                // alert( list )
+
+                $(`.options`).append(`
+                <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input tcalc-drop"  name="type_of_calc" required>
+                            <option value="" disabled selected>-- Select type of calculate --</option>
+                                  <option value="one">One Column For Calculate</option>
+                                  <option value="two">Two Column For Calculate</option>
+
+                        </select>
+                    </div>
+                    </div>
+
+
+
+            `)
+
+
+
+                //     $(`.form-input-types`).html(`
+            //     <option value="" disabled selected>-- Select input type --</option>
+            //     <option value="select">Select</option>
+            //     <option value="datalist">Datalist</option>
+            // `)
+
+            }
+            else if ($(this).val() == 'doublefk') {
                 // alert('hi');
                 removeAllInputHidden(index)
                 checkMinAndMaxLength(index)
@@ -2013,6 +2058,139 @@ ${response}
             }
         });
 
+
+        $(document).on('change','.tcalc-drop',function()
+    {
+
+
+        if ($(this).val() == 'one') {
+
+            $('.operation-drop').remove()
+            $('.child-drop').remove()
+            $('.child2-drop').remove()
+            $('.fcolumn').remove()
+            $('.scolumn').remove()
+
+
+
+            $(`.options`).append(`
+                <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input operation-drop"  name="operation" required>
+                            <option value="" disabled selected>-- Select operation --</option>
+                                  <option value="sum">sum</option>
+                                  <option value="count">count</option>
+                                  <option value="avg">average</option>
+                                  <option value="max">max</option>
+                                  <option value="min">min</option>
+
+                        </select>
+                    </div>
+                    </div>
+
+
+
+            `)
+
+            var id = $('.module').val();
+
+
+  $.ajax({
+    url: '{{ url('/') }}/attribute-by-module/' + id,
+    success: function(response) {
+        console.log(response);
+
+        $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+         <div class="input-box child-drop form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input " name="first_column" required>
+               ${response}
+            </select>
+        </div></div>
+
+
+
+        `);
+
+
+
+        }
+
+
+        })
+    }
+
+        if ($(this).val() == 'two') {
+
+
+            $('.operation-drop').remove()
+            $('.child-drop').remove()
+            $('.fcolumn').remove()
+
+
+
+            $(`.options`).append(`
+                <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input operation-drop"  name="operation" required>
+                            <option value="" disabled selected>-- Select operation --</option>
+                                  <option value="sum">sum</option>
+                                  <option value="multiple">multiple</option>
+
+
+                        </select>
+                    </div>
+                    </div>
+
+
+
+            `)
+
+            var id = $('.module').val();
+
+  $.ajax({
+    url: '{{ url('/') }}/attribute-by-module/' + id,
+    success: function(response) {
+        console.log(response);
+
+        $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+        <div class="input-box child-drop form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input " name="first_column" required>
+               ${response}
+            </select>
+        </div></div>
+
+
+
+        `);
+
+
+        $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+         <div class="input-box child2-drop form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input " name="second_column" required>
+               ${response}
+            </select>
+        </div></div>
+
+
+
+        `);
+
+
+
+        }
+
+
+        })
+
+
+
+}
+
+
+    })
 
         $(document).on('change', '.fktype-radio', function() {
 
@@ -2301,6 +2479,9 @@ ${response}
                 case 'assign':
                     $('#type').val('assign').trigger('change')
                     break;
+                    case 'calc':
+                    $('#type').val('calc').trigger('change')
+                    break;
 
 
                 default:
@@ -2357,7 +2538,8 @@ ${response}
                 $(this).val() == 'date' ||
                 $(this).val() == 'month' ||
                 $(this).val() == 'password' ||
-                $(this).val() == 'number'
+                $(this).val() == 'number' ||
+                  $(this).val() == 'calc'
             ) {
                 minLength.prop('readonly', true).hide()
                 maxLength.prop('readonly', true).hide()

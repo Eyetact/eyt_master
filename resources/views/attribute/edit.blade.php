@@ -92,6 +92,7 @@
                                 {{-- <option @selected($attribute->input == 'informatic') value="informatic">Informatic Attribute</option> --}}
                                 {{-- <option @selected($attribute->input == 'doublefk') value="doublefk">Double Lookup Attribute</option> --}}
                                 <option @selected($attribute->input == 'doubleattr') value="doubleattr">Double Attribute</option>
+                                <option @selected($attribute->input == 'calc') value="calc">Calculate Attribute</option>
                             </select>
                             <label id="field_type-error" class="error text-red hide" for="field_type"></label>
                             @error('field_type')
