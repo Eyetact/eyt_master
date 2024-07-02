@@ -1,0 +1,13 @@
+
+
+                    <form action="{{ route('{{modelNamePluralKebabCase}}.update', ${{modelNameSingularCamelCase}}->id) }}" method="POST"{{enctype}}>
+                        @csrf
+                        @method('PUT')
+
+                        @include('admin.{{viewPath}}{{modelNamePluralKebabCase}}.include.form')
+                          @include('admin.{{viewPath}}{{modelNamePluralKebabCase}}.include.dropdown')
+
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">{{ __('Back') }}</a>
+
+                        <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
+                    </form>

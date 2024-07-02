@@ -1,0 +1,13 @@
+        <div class="custom-controls-stacked">
+            <label class="custom-control custom-radio" for="{{optionKebabCase}}">
+
+            @if(!isset(${{mnscc}}))
+            <input class="custom-control-input @error('{{fieldSnakeCase}}') is-invalid @enderror" type="radio" name="{{fieldSnakeCase}}" id="{{optionKebabCase}}" value="{{value}}" {{checked}}{{nullable}}>
+            @else
+  <input class="custom-control-input @error('{{fieldSnakeCase}}') is-invalid @enderror" type="radio" name="{{fieldSnakeCase}}" id="{{optionKebabCase}}" value="{{value}}" {{checked2}}{{nullable}}>
+
+            @endif
+            <span class="custom-control-label">{{value}}</span>
+
+            </label>
+        </div>

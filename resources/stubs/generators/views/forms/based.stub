@@ -1,0 +1,59 @@
+
+            <div class="col-md-12"  style="display: none;">
+                <div class="input-box">
+                    <label for="{{fieldKebabCase}}">{{ __('{{fieldUcWords}}') }}</label>
+                    @php
+
+                        $model = \App\Models\Module::where('code', App\Generators\GeneratorUtils::singularSnakeCase('{{fieldKebabCase}}'))
+                            ->orWhere('code', App\Generators\GeneratorUtils::pluralSnakeCase('{{fieldKebabCase}}'))
+                            ?->first();
+                            $constrain_name = App\Generators\GeneratorUtils::singularSnakeCase('{{fieldKebabCase}}');
+                        if($model){
+                            $for_attr = json_encode($model->fields()->select('code','attribute')->where('type', 'foreignId')->get());
+                            $for_attr = str_replace('"','\'',$for_attr);
+                        }
+
+
+                    @endphp
+                    <select data-constrain="{{ $constrain_name }}" data-source="{{source}}" data-attrs={!! isset($for_attr) ? $for_attr : '' !!} class="based-on google-input @error('{{fieldSnakeCase}}') is-invalid @enderror" name="{{fieldSnakeCase}}{{multiple2}}" id="{{fieldKebabCase}}" class="form-control"{{nullable}} {{multiple}}>
+                        <option value="" selected disabled>-- {{ __('Select {{fieldSpaceLowercase}}') }} --</option>
+                        {{options}}
+                    </select>
+                    @error('{{fieldSnakeCase}}')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                </div>
+            </div>
+
+
+
+            <div class="col-md-12">
+                <div class="input-box">
+                    <label for="{{fieldKebabCase2}}">{{ __('{{fieldUcWords2}}') }}</label>
+                    @php
+
+                        $model = \App\Models\Module::where('code', App\Generators\GeneratorUtils::singularSnakeCase('{{fieldKebabCase2}}'))
+                            ->orWhere('code', App\Generators\GeneratorUtils::pluralSnakeCase('{{fieldKebabCase2}}'))
+                            ?->first();
+                            $constrain_name = App\Generators\GeneratorUtils::singularSnakeCase('{{fieldKebabCase2}}');
+                        if($model){
+                            $for_attr = json_encode($model->fields()->select('code','attribute')->where('type', 'foreignId')->get());
+                            $for_attr = str_replace('"','\'',$for_attr);
+                        }
+
+
+                    @endphp
+                    <select data-constrain="{{ $constrain_name }}" data-source="{{source2}}" data-attrs={!! isset($for_attr) ? $for_attr : '' !!} class="based google-input @error('{{fieldSnakeCase2}}') is-invalid @enderror" name="{{fieldSnakeCase2}}{{multiple2}}" id="{{fieldKebabCase2}}" class="form-control"{{nullable2}} {{multiple2}}>
+                        <option value="" selected disabled>-- {{ __('Select {{fieldSpaceLowercase2}}') }} --</option>
+                        {{options2}}
+                    </select>
+                    @error('{{fieldSnakeCase2}}')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                </div>
+            </div>
+

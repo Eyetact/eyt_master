@@ -1,0 +1,4 @@
+ <div class="col-md-12">
+    <label class="form-label" for="{{fieldKebabCase}}">{{ __('{{fieldUcWords}}') }}</label>
+    <input type="file" name="{{fieldSnakeCase}}" class="dropify" id="{{fieldKebabCase}}">
+</div>

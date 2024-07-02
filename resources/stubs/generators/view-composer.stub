@@ -1,0 +1,13 @@
+if(Schema::hasTable('{{constrainsPluralLowecase}}')){
+    if (Schema::hasColumn('{{constrainsPluralLowecase}}', '{{fieldfirst}}')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_{{constrainsPluralCamelCase}}',
+                {{relatedModelPath}}::all()
+            );
+        });
+}
+}
+
+
+

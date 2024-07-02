@@ -1,0 +1,17 @@
+<div class="col-md-12">
+        <label class="input-label" for="{{fieldSnakeCase}}">{{ __('{{fieldUppercase}}') }}</label>
+                 <div class="input-group mb-3">
+        <input type="{{type}}"  name="{{fieldSnakeCase}}" id="{{fieldSnakeCase}}" class="form-control"
+            aria-label="Recipient's username" aria-describedby="basic-addon2"  @error('{{fieldSnakeCase}}') is-invalid @enderror value="{{value}}" {{nullable}}>
+                            @error('{{fieldSnakeCase}}')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+             <span class="input-group-text"
+            id="basic-addon2">{{fixedVal}}</span>
+        </div>
+
+</div>
+
+

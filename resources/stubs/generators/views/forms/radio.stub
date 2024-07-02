@@ -1,0 +1,7 @@
+        <div class="custom-controls-stacked">
+            <label class="custom-control custom-radio" for="{{optionKebabCase}}">
+            <input class="custom-control-input @error('{{fieldSnakeCase}}') is-invalid @enderror" type="radio" name="{{fieldSnakeCase}}" id="{{optionKebabCase}}" value="{{value}}" {{checked}}{{nullable}}>
+            <span class="custom-control-label">{{value}}</span>
+                
+            </label>
+        </div>

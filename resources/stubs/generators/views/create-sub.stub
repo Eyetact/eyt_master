@@ -1,0 +1,8 @@
+<div class="col-sm-12 input-box">
+    <label class="form-label" for="module">Module<span class="text-red">*</span></label>
+    <select name="module" class="google-input select-sub" id="module" required="">
+          {{options}}                  
+    </select>
+</div>
+<div class="col-sm-12 input-box view-sub-form">
+</div>

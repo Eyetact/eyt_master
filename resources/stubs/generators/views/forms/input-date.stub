@@ -1,0 +1,11 @@
+    <div class="col-md-12">
+        <div class="input-box">
+            <label class="form-label" for="{{fieldKebabCase}}">{{ __('{{fieldUcWords}}') }}</label>
+            <input type="{{type}}" name="{{fieldSnakeCase}}" id="{{fieldKebabCase}}" class="google-input @error('{{fieldSnakeCase}}') is-invalid @enderror" value="{{value}}" {{nullable}} />
+            @error('{{fieldSnakeCase}}')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+        </div>
+    </div>

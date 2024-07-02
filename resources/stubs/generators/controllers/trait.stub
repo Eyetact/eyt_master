@@ -1,0 +1,15 @@
+<?php
+
+{{namespace}}
+
+trait {{modelNameSingularPascalCase}}Trait
+{
+    public function customStore($request,$model){
+
+    }
+
+    public function customUpdate($request,$model){
+
+    }
+
+}

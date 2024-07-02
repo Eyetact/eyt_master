@@ -1,0 +1,17 @@
+ 	<div class="col-md-12">
+        <label for="{{fieldKebabCase}}" class="form-label">{{ __('{{fieldUcWords}}') }}</label>
+        <div class="row">
+            <div class="col-md-11">
+                <div class="input-box">
+                    <input onmousemove="{{fieldSnakeCase}}1.value=value" type="range" name="{{fieldSnakeCase}}" class="range @error('{{fieldSnakeCase}}') is-invalid @enderror" min="{{min}}" max="{{max}}" {{step}} id="{{fieldKebabCase}}" value="{{value}}" {{nullable}}>
+                    @error('{{fieldSnakeCase}}')
+                        <span class="text-danger">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-md-1">  <output id="{{fieldSnakeCase}}1"></output></div>
+        </div>
+	</div>
+

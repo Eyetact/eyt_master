@@ -1,0 +1,10 @@
+    <div class="col-md-12">
+        <div class="input-box">
+            <textarea name="{{fieldSnakeCase}}" id="{{fieldKebabCase}}" class="google-input @error('{{fieldSnakeCase}}') is-invalid @enderror" placeholder="{{ __('{{fieldUppercase}}') }}"{{nullable}}>{{ isset(${{modelName}}) ? ${{modelName}}->{{fieldSnakeCase}} : old('{{fieldSnakeCase}}') }}</textarea>
+            @error('{{fieldSnakeCase}}')
+                <span class="text-danger">
+                    {{ $message }}
+                </span>
+            @enderror
+        </div>
+    </div>

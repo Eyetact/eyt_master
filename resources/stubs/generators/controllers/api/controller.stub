@@ -1,0 +1,101 @@
+<?php
+
+{{namespace}}
+use {{modelPath}};
+use {{requestPath}};
+use {{resourcePath}};
+use App\Traits\ApiResponses;
+
+
+class {{modelNameSingularPascalCase}}Controller extends Controller
+{
+    use ApiResponses;
+    
+    public function __construct()
+    {
+        $this->middleware(['permission:{{modelNameSpaceLowercase}} view', 'auth:api'])->only('index', 'show');
+        $this->middleware(['permission:{{modelNameSpaceLowercase}} create', 'auth:api'])->only('create', 'store');
+        $this->middleware(['permission:{{modelNameSpaceLowercase}} edit', 'auth:api'])->only('edit', 'update');
+        $this->middleware(['permission:{{modelNameSpaceLowercase}} delete', 'auth:api'])->only('destroy');
+    }
+
+   /**
+     * Get all {{modelNamePluralCamelCase}}
+     * 
+     * Display a listing of the {{modelNamePluralCamelCase}}.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+      
+        ${{modelNamePluralCamelCase}} = {{query}};
+
+        return $this->successResponse( {{modelNameSingularPascalCase}}Resource::collection(${{modelNamePluralCamelCase}})->response()->getData() );
+
+    }
+
+    /**
+     * Create new {{modelNameSingularCamelCase}}
+     *
+     * Store a newly created {{modelNameSingularCamelCase}} in Database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Store{{modelNameSingularPascalCase}}Request $request)
+    {
+        ${{modelNameSingularCamelCase}} = {{insertDataAction}}
+
+        return $this->createdResponse({{modelNameSingularPascalCase}}Resource::make(${{modelNameSingularCamelCase}}));
+    }
+
+    /**
+     * View {{modelNameSingularPascalCase}}.
+     *
+     * Display the specified resource.
+     *
+     * @param  \App\Models\{{modelNameSingularPascalCase}}  ${{modelNameSingularCamelCase}}
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show({{modelNameSingularPascalCase}} ${{modelNameSingularCamelCase}})
+    {
+        return $this->successResponse( {{modelNameSingularPascalCase}}Resource::make(${{modelNameSingularCamelCase}}) );
+    }
+
+    /**
+     * Update {{modelNameSingularPascalCase}}.
+     *
+     * Update the specified {{modelNameSingularPascalCase}} in Database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\{{modelNameSingularPascalCase}}  ${{modelNameSingularCamelCase}}
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Update{{modelNameSingularPascalCase}}Request $request, {{modelNameSingularPascalCase}} ${{modelNameSingularCamelCase}})
+    {
+        {{updateDataAction}}
+
+        return $this->createdResponse({{modelNameSingularPascalCase}}Resource::make(${{modelNameSingularCamelCase}}));
+    }
+
+    /**
+     * Delete {{modelNameSingularPascalCase}}.
+     *
+     * Remove the specified {{modelNameSingularPascalCase}} from Database.
+     *
+     * @param  \App\Models\{{modelNameSingularPascalCase}}  ${{modelNameSingularCamelCase}}
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy({{modelNameSingularPascalCase}} ${{modelNameSingularCamelCase}})
+    {
+        try {
+            ${{modelNameSingularCamelCase}}->delete();
+            
+            return $this->okResponse("The {{modelNameSingularCamelCase}} was deleted successfully.");
+        } catch (\Throwable $th) {
+            return $this->errorResponse("The {{modelNameSingularCamelCase}} can't be deleted because it's related to another table.");
+        }
+    }
+ 
+}
