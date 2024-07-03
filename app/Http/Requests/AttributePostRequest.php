@@ -23,8 +23,11 @@ class AttributePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            // 'code' => 'unique:attributes,code',
+            'name' => 'required|unique:attributes,name',
+            '_code' => 'required|unique:attributes,code',
+            'module' => 'required',
+            'input_types' => 'required',
+            'source' => 'required'
 
         ];
     }

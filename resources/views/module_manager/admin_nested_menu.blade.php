@@ -7,7 +7,7 @@
 
 <div class="admin_nested_form">
     <div class="dd nestable" id="admin_nestable">
-        <ol class="dd-list" id="admin_menu_list">
+        <ol class="dd-list" id="admin_menu_list" class="menu-list">
             @foreach ($adminMenu as $aMenu)
                 <li class="dd-item @if ($aMenu->is_delete) is_delete @endif @if ($aMenu->children->count() == 0) no-pad @endif"
                     data-path="{{ route('module_manager.edit', $aMenu->module_id) }}"
@@ -22,19 +22,19 @@
                         {{-- - ( {{ $aMenu->children->count() }} ) --}}
                         <div>
                             @if ($aMenu->module->parent_id > 0)
-                                                @php
-                                                    $m = \App\Models\Module::find($aMenu->module->parent_id);
-                                                @endphp
-                                                <span class="badge badge-danger">
-                                                    @if ($aMenu->module->addable)
-                                                        Addable
-                                                    @elseif($aaMenu->module->shared)
-                                                        Shared
-                                                    @endif
-                                                    Sub to {{ $m?->name }}
+                                @php
+                                    $m = \App\Models\Module::find($aMenu->module->parent_id);
+                                @endphp
+                                <span class="badge badge-danger">
+                                    @if ($aMenu->module->addable)
+                                        Addable
+                                    @elseif($aaMenu->module->shared)
+                                        Shared
+                                    @endif
+                                    Sub to {{ $m?->name }}
 
-                                                </span>
-                                            @endif
+                                </span>
+                            @endif
                             @if (empty($aMenu->module->migration))
                                 <span class="badge badge-danger">Label</span>
                             @endif
@@ -117,19 +117,21 @@
                                                         {{ $aaaMenu->name }}
                                                         <div>
                                                             @if ($aaaMenu->module->parent_id > 0)
-                                                @php
-                                                    $m = \App\Models\Module::find($aaaMenu->module->parent_id);
-                                                @endphp
-                                                <span class="badge badge-danger">
-                                                    @if ($aaaMenu->module->addable)
-                                                        Addable
-                                                    @elseif($aaMenu->module->shared)
-                                                        Shared
-                                                    @endif
-                                                    Sub to {{ $m?->name }}
+                                                                @php
+                                                                    $m = \App\Models\Module::find(
+                                                                        $aaaMenu->module->parent_id,
+                                                                    );
+                                                                @endphp
+                                                                <span class="badge badge-danger">
+                                                                    @if ($aaaMenu->module->addable)
+                                                                        Addable
+                                                                    @elseif($aaMenu->module->shared)
+                                                                        Shared
+                                                                    @endif
+                                                                    Sub to {{ $m?->name }}
 
-                                                </span>
-                                            @endif
+                                                                </span>
+                                                            @endif
                                                             @if (empty($aaaMenu->module->migration))
                                                                 <span class="badge badge-danger">Label</span>
                                                             @endif

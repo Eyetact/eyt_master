@@ -30,6 +30,7 @@ class ProfileController extends Controller
         $ugroups = UserGroup::all();
 
 
+        // detect if the coming request is xmlHttpRequest(ajax request), in order to return ajax request also
         if (request()->ajax()) {
             // $subscriptions = Subscription::where('user_id', $user_id)->get();
 
@@ -70,6 +71,7 @@ class ProfileController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
+        User::datatable([]);
 
         return view('profile.index', compact('user', 'groups', 'ugroups', 'last_used'));
     }
@@ -116,7 +118,6 @@ class ProfileController extends Controller
             // }
             array_push($ar, (array) $request->last_used[0]);
             $user->last_used = $ar;
-
         }
 
         // if( $user->group_id != $request->group_id){
@@ -124,9 +125,9 @@ class ProfileController extends Controller
         if (isset($request->ugroup_id)) {
             if (
                 DB::table('model_has_roles')
-                    ->where('model_type', "App\Models\UserGroup")
-                    ->where('model_id', $request->ugroup_id)
-                    ->first()
+                ->where('model_type', "App\Models\UserGroup")
+                ->where('model_id', $request->ugroup_id)
+                ->first()
             ) {
 
                 $role_id = DB::table('model_has_roles')
@@ -141,7 +142,6 @@ class ProfileController extends Controller
                     $user->givePermissionTo($p);
                 }
             }
-
         }
 
 

@@ -12,6 +12,8 @@ use App\Http\Requests\AttributePostRequest;
 use App\Repositories\FlashRepository;
 use Illuminate\Support\Facades\Artisan;
 use App\Generators\GeneratorUtils;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AttributeController extends Controller
 {
@@ -30,8 +32,6 @@ class AttributeController extends Controller
      */
     public function index()
     {
-
-
 
 
         if (auth()->user()->hasRole('super')) {
@@ -211,186 +211,154 @@ class AttributeController extends Controller
      */
     public function store(AttributePostRequest $request)
     {
-
-        $request->validated();
-        $requestData = $request->all();
-        // dd(  $requestData);
-
-        $condition_value = '';
-        $condition_attr = '';
-        if(isset($requestData['condition_attr'])){
-            $condition_attr = $requestData['condition_attr'];
-            foreach ($requestData['condition_value'] as  $value) {
-                $condition_value .= $value . '|';
-            }
-        }
-
-
-
-        // dd($requestData);
-
-        $attr = Attribute::where('name', $request['name'])->where('module', $request['module'])->first();
-        if ($attr) {
-            $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
-            return redirect()->route('attribute.index');
-        }
-        $enumValues = '';
-        if (isset($request['fields_info'])) {
-            $count = count($request['fields_info']);
-            foreach ($request['fields_info'] as $key => $value) {
-                if ($value['default'] == 1) {
-                    $request['default_values'] = $value['value'];
-                }
-                if ($key == $count) {
-
-                    $enumValues .= $value['value'];
-                } else {
-
-                    $enumValues .= $value['value'] . '|';
-                }
-            }
-
-            $request['select_options'] = $enumValues;
-        }
-
         // dd($request);
-
-        $createArr = [
-
-            'module' => $request['module'],
-            'name' => str(str_replace('.', '', $request['name']))->lower(),
-            'type' => $request['column_types'],
-            'min_length' => $request['min_lengths'],
-            'max_length' => $request['max_lengths'],
-            'steps' => $request['steps'],
-            'input' => $request['input_types'],
-            'required' => isset($request['requireds']) ? 'yes' : 'no',
-            'default_value' => $request['default_values'],
-            'select_option' => $request['select_options'],
-            'constrain' => $request['constrains'],
-            'constrain2' => isset($request['constrains2']) ? $request['constrains2'] : null,
-            'on_update_foreign' => $request['on_update_foreign'],
-            'on_delete_foreign' => $request['on_delete_foreign'],
-            'is_enable' => isset($request['is_enable']) ? 1 : 0,
-            'is_system' => isset($request['is_system']) ? 1 : 0,
-            'is_multi' => isset($request['is_multi']) ? 1 : 0, //for multi select
-            'max_size' => $request['files_sizes'],
-            'file_type' => $request['file_types'],
-            'source' => $request['source'],
-            'target' => $request['target'],
-            'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
-            'attribute' => isset($request['attribute']) ? $request['attribute'] : ' ',
-            'attribute2' => isset($request['attribute2']) ? $request['attribute2'] : null,
-            'primary' => isset($request['primary']) ? $request['primary'] : null,
-            'secondary' => isset($request['secondary']) ? $request['secondary'] : null,
-            'fixed_value' => isset($request['fixed_value']) ? $request['fixed_value'] : null,
-            'fk_type' => isset($request['fk_type']) ? $request['fk_type'] : null,
-            'user_id' => auth()->user()->id,
-            'multiple' => isset($request['multiple']) ? 1 : 0,
-            'condition_attr' => $condition_attr,
-            'condition_value' => $condition_value,
-            'type_of_calc' => isset($request['type_of_calc']) ? $request['type_of_calc'] : null,
-            'operation' => isset($request['operation']) ? $request['operation'] : null,
-            'first_column' => isset($request['first_column']) ? $request['first_column'] : null,
-            'second_column' => isset($request['second_column']) ? $request['second_column'] : null,
-        ];
-        // dd($createArr);
-        $attribute = Attribute::create($createArr);
-
-        // dd($attribute);
-
-        if (isset($requestData['fk_type']) && $requestData['fk_type']== 'condition') {
-
-
-            $attribute->attribute = $attribute->condition_attr;
-            $attribute->save();
-
-        }
-
-        if (isset($requestData['fk_type']) && $requestData['fk_type']== 'based') {
-
-
-            $attribute->attribute = $attribute->condition_attr;
-            $attribute->save();
-
-        }
-
-        if (isset($requestData['multi'])) {
-
-
-            foreach ($requestData['multi'] as $key => $value) {
-                $m = new Multi();
-                $m->name =$value['name'];
-                $m->type = $value['type'];
-                $m->source = isset($value['source']) ? $value['source'] : '';
-                $m->select_options = isset($value['select_options']) ? $value['select_options'] : '';
-                $m->attribute_id = $attribute->id;
-                $m->constrain = isset($value['constrain']) ? $value['constrain'] : '';
-                $m->attribute = isset($value['attribute']) ? $value['attribute'] : '';
-                $m->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
-
-                $m->primary = isset($value['primary']) ? $value['primary'] : NULL;
-                $m->secondary = isset($value['secondary']) ? $value['secondary'] : NULL;
-                $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : NULL;
-                $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : NULL;
-
-                $m->save();
-            }
-        }
-
         try {
-            $this->generatorService->reGenerateModel($request['module']);
+            DB::beginTransaction();
+            $request->validated();
+            $requestData = $request->all();
 
-            if(!isset($requestData['multiple']))
-            {
-            $this->generatorService->reGenerateMigration($request['module']);
-            Artisan::call("migrate");
+            $condition_value = '';
+            $condition_attr = '';
+            if (isset($requestData['condition_attr'])) {
+                $condition_attr = $requestData['condition_attr'];
+                foreach ($requestData['condition_value'] as $value) {
+                    $condition_value .= $value . '|';
+                }
             }
 
-            $this->generatorService->reGenerateController($request['module']);
-            $this->generatorService->reGenerateRequest($request['module']);
-            $this->generatorService->reGenerateViews($request['module']);
-            $this->generatorService->generatePermissionForAttr($createArr, $attribute->id);
+            $attr = Attribute::where('name', $request['name'])->where('module', $request['module'])->first();
+            if ($attr) {
+                $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
+                return redirect()->route('attribute.index');
+            }
+
+            $enumValues = '';
+            if (isset($request['fields_info'])) {
+                $count = count($request['fields_info']);
+                foreach ($request['fields_info'] as $key => $value) {
+                    if ($value['default'] == 1) {
+                        $request['default_values'] = $value['value'];
+                    }
+                    if ($key == $count) {
+                        $enumValues .= $value['value'];
+                    } else {
+                        $enumValues .= $value['value'] . '|';
+                    }
+                }
+                $request['select_options'] = $enumValues;
+            }
+
+            $createArr = [
+                'module' => $request['module'],
+                'name' => str(str_replace('.', '', $request['name']))->lower(),
+                'type' => $request['column_types'],
+                'min_length' => $request['min_lengths'],
+                'max_length' => $request['max_lengths'],
+                'steps' => $request['steps'],
+                'input' => $request['input_types'],
+                'required' => isset($request['requireds']) ? 'yes' : 'no',
+                'default_value' => $request['default_values'],
+                'select_option' => $request['select_options'],
+                'constrain' => $request['constrains'],
+                'constrain2' => isset($request['constrains2']) ? $request['constrains2'] : null,
+                'on_update_foreign' => $request['on_update_foreign'],
+                'on_delete_foreign' => $request['on_delete_foreign'],
+                'is_enable' => isset($request['is_enable']) ? 1 : 0,
+                'is_system' => isset($request['is_system']) ? 1 : 0,
+                'is_multi' => isset($request['is_multi']) ? 1 : 0,
+                'max_size' => $request['files_sizes'],
+                'file_type' => $request['file_types'],
+                'source' => $request['source'],
+                'target' => $request['target'],
+                'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
+                'attribute' => isset($request['attribute']) ? $request['attribute'] : ' ',
+                'attribute2' => isset($request['attribute2']) ? $request['attribute2'] : null,
+                'primary' => isset($request['primary']) ? $request['primary'] : null,
+                'secondary' => isset($request['secondary']) ? $request['secondary'] : null,
+                'fixed_value' => isset($request['fixed_value']) ? $request['fixed_value'] : null,
+                'fk_type' => isset($request['fk_type']) ? $request['fk_type'] : null,
+                'user_id' => auth()->user()->id,
+                'multiple' => isset($request['multiple']) ? 1 : 0,
+                'condition_attr' => $condition_attr,
+                'condition_value' => $condition_value
+            ];
+
+            $attribute = Attribute::create($createArr);
+
+            if (isset($requestData['fk_type']) && $requestData['fk_type'] == 'condition') {
+                $attribute->attribute = $attribute->condition_attr;
+                $attribute->save();
+            }
+
+            if (isset($requestData['fk_type']) && $requestData['fk_type'] == 'based') {
+                $attribute->attribute = $attribute->condition_attr;
+                $attribute->save();
+            }
+
+            if (isset($requestData['multi'])) {
+                foreach ($requestData['multi'] as $key => $value) {
+                    $m = new Multi();
+                    $m->name = $value['name'];
+                    $m->type = $value['type'];
+                    $m->source = isset($value['source']) ? $value['source'] : '';
+                    $m->select_options = isset($value['select_options']) ? $value['select_options'] : '';
+                    $m->attribute_id = $attribute->id;
+                    $m->constrain = isset($value['constrain']) ? $value['constrain'] : '';
+                    $m->attribute = isset($value['attribute']) ? $value['attribute'] : '';
+                    $m->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
+                    $m->primary = isset($value['primary']) ? $value['primary'] : null;
+                    $m->secondary = isset($value['secondary']) ? $value['secondary'] : null;
+                    $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : null;
+                    $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : null;
+                    $m->save();
+                }
+            }
+
+            try {
+                $this->generatorService->reGenerateModel($request['module']);
+
+                if (!isset($requestData['multiple'])) {
+                    $this->generatorService->reGenerateMigration($request['module']);
+                    Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin')); // run php artisan mnigrate in background
+
+                }
+
+                $this->generatorService->reGenerateController($request['module']);
+                $this->generatorService->reGenerateRequest($request['module']);
+                $this->generatorService->reGenerateViews($request['module']);
+                $this->generatorService->generatePermissionForAttr($createArr, $attribute->id);
+            } catch (\Throwable $th) {
+                $this->generatorService->reGenerateModel($request['module']);
+                $this->generatorService->reGenerateController($request['module']);
+                $this->generatorService->reGenerateRequest($request['module']);
+                $this->generatorService->reGenerateViews($request['module']);
+            }
+            Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin')); // run php artisan mnigrate in background
 
 
-        } catch (\Throwable $th) {
+            if (isset($requestData['multiple'])) {
+                $model1 = GeneratorUtils::singularSnakeCase(Module::find($requestData['module'])->name);
+                $model2 = GeneratorUtils::singularSnakeCase($requestData['constrains']);
+                $table_name = $model1 . "_" . $model2;
+                $id1 = $model1 . "_id";
+                $id2 = $model2 . "_id";
+                $this->generatorService->generateMultipleMigration($table_name, $id1, $id2);
+            }
 
-            // $this->generatorService->removeMigration($request['module'], $attribute->id);
-            // $attribute->delete();
-            $this->generatorService->reGenerateModel($request['module']);
-            $this->generatorService->reGenerateController($request['module']);
-            $this->generatorService->reGenerateRequest($request['module']);
-            $this->generatorService->reGenerateViews($request['module']);
+            if (!$attribute) {
+                $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
+                return redirect()->route('attribute.index');
+            }
+
+            $this->flashRepository->setFlashSession('alert-success', 'Attribute created successfully.');
+            DB::commit();
+            return response()->json(['status' => true, 'message' => 'New attribute added successfully!', 'data' => $attribute], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => 'Some error happened during creating the attribute!'], 500);
         }
-
-        Artisan::call("optimize:clear");
-
-
-        if (isset($requestData['multiple'])) {
-
-
-            $model1=GeneratorUtils::singularSnakeCase(Module::find($requestData['module'])->name);
-            $model2=GeneratorUtils::singularSnakeCase($requestData['constrains']);
-
-            $table_name= $model1 . "_" . $model2;
-            $id1=$model1 . "_id";
-            $id2=$model2 . "_id";
-
-            $this->generatorService->generateMultipleMigration( $table_name,$id1,$id2);
-
-        }
-
-
-        // dd($requestData['multi']);
-
-        if (!$attribute) {
-            $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
-            return redirect()->route('attribute.index');
-        }
-
-        $this->flashRepository->setFlashSession('alert-success', 'Attribute created successfully.');
-        return redirect()->route('attribute.index');
     }
+
 
     public function test($id)
     {
@@ -421,17 +389,15 @@ class AttributeController extends Controller
         return $options;
     }
 
-    public function getDataByModel($model_id,$attr_condtion)
+    public function getDataByModel($model_id, $attr_condtion)
     {
         $module =  Module::find($model_id);
-        if($model_id == 1 || $model_id == 2 || $model_id == 3 || $model_id == 4 || $model_id == 5)
-        {
-            $modelName = "App\Models\\".GeneratorUtils::setModelName($module->code);
+        if ($model_id == 1 || $model_id == 2 || $model_id == 3 || $model_id == 4 || $model_id == 5) {
+            $modelName = "App\Models\\" . GeneratorUtils::setModelName($module->code);
+        } else {
+            $modelName = "App\Models\Admin\\" . GeneratorUtils::setModelName($module->code);
         }
-        else{
-        $modelName = "App\Models\Admin\\".GeneratorUtils::setModelName($module->code);
-        }
-        $query =  $modelName::all()->pluck($attr_condtion,'id');
+        $query =  $modelName::all()->pluck($attr_condtion, 'id');
         // dd($query);
 
         $options = '<option disabled selected>-- select --</option>';
@@ -467,14 +433,14 @@ class AttributeController extends Controller
 
         $condition_value = '';
 
-        if(isset($request['condition_value'])){
+        if (isset($request['condition_value'])) {
 
             foreach ($request['condition_value'] as  $value) {
                 $condition_value .= $value . '|';
             }
 
 
-        $attribute->condition_value = $condition_value;
+            $attribute->condition_value = $condition_value;
         }
 
         $attribute->name = str(str_replace('.', '', $request['name']))->lower();
@@ -528,23 +494,23 @@ class AttributeController extends Controller
                 $m->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
                 $m->select_options = isset($value['select_options']) ? $value['select_options'] : '';
                 $m->attribute_id = $attribute->id;
-                if(isset($value['constrain'])){
+                if (isset($value['constrain'])) {
                     $m->constrain = isset($value['constrain']) ? $value['constrain'] : '';
                 }
-                if(isset($value['attribute'])){
+                if (isset($value['attribute'])) {
                     $m->attribute = isset($value['attribute']) ? $value['attribute'] : '';
                 }
 
-                if(isset($value['primary'])){
+                if (isset($value['primary'])) {
                     $m->primary = isset($value['primary']) ? $value['primary'] : '';
                 }
-                if(isset($value['secondary'])){
+                if (isset($value['secondary'])) {
                     $m->secondary = isset($value['secondary']) ? $value['secondary'] : '';
                 }
-                if(isset($value['fixed_value'])){
+                if (isset($value['fixed_value'])) {
                     $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : '';
                 }
-                if(isset($value['attribute2'])){
+                if (isset($value['attribute2'])) {
                     $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : '';
                 }
                 $m->save();
