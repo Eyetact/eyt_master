@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\MenuManagerNotFoundException;
 use App\Http\Requests\ModulePostRequest;
 use App\Models\Attribute;
 use App\Models\MenuManager;
@@ -15,9 +14,6 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use App\Generators\GeneratorUtils;
-use Exception;
-use Illuminate\Support\Facades\DB;
-
 
 class ModuleManagerController extends Controller
 {
@@ -28,6 +24,7 @@ class ModuleManagerController extends Controller
     {
         $this->flashRepository = new FlashRepository;
         $this->generatorService = new GeneratorService();
+
     }
 
     /**
@@ -49,6 +46,7 @@ class ModuleManagerController extends Controller
      */
     public function create()
     {
+
     }
 
     /**
@@ -59,188 +57,198 @@ class ModuleManagerController extends Controller
      */
     public function store(ModulePostRequest $request)
     {
-        try {
-            DB::beginTransaction();
-            $module = Module::create([
-                'name' => $request->name,
-                'is_system' => isset($request->is_system) ? 1 : 0,
-                'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
-                'user_id' => auth()->user()->id,
-                'type' => isset($request->mtype) ? $request->mtype : null,
-                'status' => isset($request->status) ? $request->status : null,
+
+        // try {
+        //     DB::beginTransaction();
+        $module = Module::create([
+            'name' => $request->name,
+            'is_system' => isset($request->is_system) ? 1 : 0,
+            'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
+            'user_id' => auth()->user()->id,
+            'type' => isset($request->mtype) ? $request->mtype : null,
+            'status' => isset($request->status) ? $request->status : null,
 
 
-            ]);
+        ]);
 
-            $request['code'] = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
+        $request->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
 
-            $requestData = $request->all();
-            $request->validated();
-            $this->generatorService->generateModel($request->all()); // model
-            $this->generatorService->generateMigration($request->all(), $module->id); // migration
-            Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin'));
-            $this->generatorService->generateController($request->all()); // migration
-            $this->generatorService->generateRequest($request->all()); // req
-            $this->generatorService->generateRoute($request->all()); // route
-            $this->generatorService->generateViews($request->all()); // views
-            $this->generatorService->generatePermission($request->all(), $module->id);
+        $requestData = $request->all();
+        $request->validated();
+        $this->generatorService->generateModel($request->all()); // model
+        $this->generatorService->generateMigration($request->all(), $module->id); // migration
+        Artisan::call('migrate'); // run php artisan mnigrate in background
+        $this->generatorService->generateController($request->all()); // migration
+        $this->generatorService->generateRequest($request->all()); // req
+        $this->generatorService->generateRoute($request->all()); // route
+        $this->generatorService->generateViews($request->all()); // views
+        $this->generatorService->generatePermission($request->all(), $module->id);
 
 
-            if (!empty($request->fields[0])) {
-                foreach ($request->fields as $i => $attr) {
-                    $createArr = [
+        if (!empty($request->fields[0])) {
+            foreach ($request->fields as $i => $attr) {
+                $createArr = [
 
-                        'module' => $module->id,
-                        'name' => $attr,
-                        'type' => $request['column_types'][$i],
-                        'min_length' => $request['min_lengths'][$i],
-                        'max_length' => $request['max_lengths'][$i],
-                        'steps' => $request['steps'][$i],
-                        'input' => $request['input_types'][$i],
-                        'required' => $request['requireds'][$i],
-                        'default_value' => $request['default_values'][$i],
-                        'select_option' => $request['select_options'][$i],
-                        'constrain' => $request['constrains'][$i],
-                        'on_update_foreign' => $request['on_update_foreign'][$i],
-                        'on_delete_foreign' => $request['on_delete_foreign'][$i],
-                        'is_enable' => isset($request['is_enable'][$i]) ? 1 : 0,
-                        'is_system' => isset($request['is_system'][$i]) ? 1 : 0,
-                        'max_size' => $request['files_sizes'][$i],
-                        'file_type' => $request['file_types'][$i],
+                    'module' => $module->id,
+                    'name' => $attr,
+                    'type' => $request['column_types'][$i],
+                    'min_length' => $request['min_lengths'][$i],
+                    'max_length' => $request['max_lengths'][$i],
+                    'steps' => $request['steps'][$i],
+                    'input' => $request['input_types'][$i],
+                    'required' => $request['requireds'][$i],
+                    'default_value' => $request['default_values'][$i],
+                    'select_option' => $request['select_options'][$i],
+                    'constrain' => $request['constrains'][$i],
+                    'on_update_foreign' => $request['on_update_foreign'][$i],
+                    'on_delete_foreign' => $request['on_delete_foreign'][$i],
+                    'is_enable' => isset($request['is_enable'][$i]) ? 1 : 0,
+                    'is_system' => isset($request['is_system'][$i]) ? 1 : 0,
+                    'max_size' => $request['files_sizes'][$i],
+                    'file_type' => $request['file_types'][$i],
 
-                    ];
+                ];
 
-                    $attribute = Attribute::create($createArr);
-                }
+                // dd($createArr);
+                $attribute = Attribute::create($createArr);
             }
-
-            if ($module) {
-                $lastSequenceData = MenuManager::where('parent', '0')->where('menu_type', $requestData['menu_type'])->where('include_in_menu', 1)->orderBy('id', 'desc')->first();
-                $sequence = 0;
-                if ($lastSequenceData) {
-                    $sequence = $lastSequenceData->sequence + 1;
-                }
-
-                $createData = array(
-                    'name' => $requestData['name'],
-                    'module_id' => $module->id,
-                    'include_in_menu' => (isset($requestData['include_in_menu']) ?? 0),
-                    'menu_type' => $requestData['menu_type'],
-                    'path' => str_replace(' ', '', $requestData['path']),
-                    'sequence' => $sequence,
-                    'parent' => 0,
-                    'sidebar_name' => $requestData['sidebar_name'],
-                );
-                $menuManager = MenuManager::create($createData);
-            }
-
-            if (!$menuManager) {
-                // $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
-                throw new MenuManagerNotFoundException();
-                //return redirect()->route('module_manager.index');
-            }
-            $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
-
-            //return redirect()->route('module_manager.index');
-            DB::commit();
-            return response()->json(['status' => true, 'message' => 'new admin module created successfully!', 'data' => $menuManager]);
-        } catch (MenuManagerNotFoundException $ex) {
-            DB::rollback();
-            throw $ex;
-        } catch (Exception $ex) {
-            DB::rollback();
-            return response()->json(['status' => false, 'message' => $ex->getMessage()]);
         }
+
+        if ($module) {
+
+
+
+            $lastSequenceData = MenuManager::where('parent', '0')->where('menu_type', $requestData['menu_type'])->where('include_in_menu', 1)->orderBy('id', 'desc')->first();
+            $sequence = 0;
+            if ($lastSequenceData) {
+                $sequence = $lastSequenceData->sequence + 1;
+            }
+
+            $createData = array(
+                'name' => $requestData['name'],
+                'module_id' => $module->id,
+                'include_in_menu' => (isset($requestData['include_in_menu']) ?? 0),
+                'menu_type' => $requestData['menu_type'],
+                'path' => str_replace(' ', '', $requestData['path']),
+                'sequence' => $sequence,
+                'parent' => 0,
+                'sidebar_name' => $requestData['sidebar_name'],
+            );
+            $menuManager = MenuManager::create($createData);
+        }
+
+        if (!$menuManager) {
+            $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
+            return redirect()->route('module_manager.index');
+        }
+        $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
+        return redirect()->route('module_manager.index');
+
+        //     DB::commit();
+        // } catch (Exception $ex) {
+        //     DB::rollback();
+        //     dd($ex);
+        // }
+
     }
 
 
     public function storeFront(ModulePostRequest $request)
     {
-        try {
-            DB::beginTransaction();
-            $module = Module::create([
-                'name' => $request->name,
-                'is_system' => isset($request->is_system) ? 1 : 0,
-                'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
-                'user_id' => auth()->user()->id,
-                'type' => isset($request->mtype) ? $request->mtype : null,
-                'status' => isset($request->status) ? $request->status : null,
-            ]);
-            $request['code'] = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
-            $requestData = $request->all();
-            $request->validated();
-            $this->generatorService->generateModel($request->all()); // model
-            $this->generatorService->generateMigration($request->all(), $module->id); // migration
-            Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin')); // run php artisan mnigrate in background
-            $this->generatorService->generateController($request->all()); // migration
-            $this->generatorService->generateRequest($request->all()); // req
-            $this->generatorService->generateRoute($request->all()); // route
-            $this->generatorService->generateViews($request->all()); // views
-            $this->generatorService->generatePermission($request->all(), $module->id);
+
+        // try {
+        //     DB::beginTransaction();
+        $module = Module::create([
+            'name' => $request->name,
+            'is_system' => isset($request->is_system) ? 1 : 0,
+            'code' => str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower())),
+            'user_id' => auth()->user()->id,
+            'type' => isset($request->mtype) ? $request->mtype : null,
+            'status' => isset($request->status) ? $request->status : null,
 
 
-            if (!empty($request->fields[0])) {
-                foreach ($request->fields as $i => $attr) {
-                    $createArr = [
+        ]);
 
-                        'module' => $module->id,
-                        'name' => $attr,
-                        'type' => $request['column_types'][$i],
-                        'min_length' => $request['min_lengths'][$i],
-                        'max_length' => $request['max_lengths'][$i],
-                        'steps' => $request['steps'][$i],
-                        'input' => $request['input_types'][$i],
-                        'required' => $request['requireds'][$i],
-                        'default_value' => $request['default_values'][$i],
-                        'select_option' => $request['select_options'][$i],
-                        'constrain' => $request['constrains'][$i],
-                        'on_update_foreign' => $request['on_update_foreign'][$i],
-                        'on_delete_foreign' => $request['on_delete_foreign'][$i],
-                        'is_enable' => isset($request['is_enable'][$i]) ? 1 : 0,
-                        'is_system' => isset($request['is_system'][$i]) ? 1 : 0,
-                        'max_size' => $request['files_sizes'][$i],
-                        'file_type' => $request['file_types'][$i],
+        $request->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
 
-                    ];
+        $requestData = $request->all();
+        $request->validated();
+        $this->generatorService->generateModel($request->all()); // model
+        $this->generatorService->generateMigration($request->all(), $module->id); // migration
+        Artisan::call('migrate'); // run php artisan mnigrate in background
+        $this->generatorService->generateController($request->all()); // migration
+        $this->generatorService->generateRequest($request->all()); // req
+        $this->generatorService->generateRoute($request->all()); // route
+        $this->generatorService->generateViews($request->all()); // views
+        $this->generatorService->generatePermission($request->all(), $module->id);
 
-                    $attribute = Attribute::create($createArr);
-                }
+
+        if (!empty($request->fields[0])) {
+            foreach ($request->fields as $i => $attr) {
+                $createArr = [
+
+                    'module' => $module->id,
+                    'name' => $attr,
+                    'type' => $request['column_types'][$i],
+                    'min_length' => $request['min_lengths'][$i],
+                    'max_length' => $request['max_lengths'][$i],
+                    'steps' => $request['steps'][$i],
+                    'input' => $request['input_types'][$i],
+                    'required' => $request['requireds'][$i],
+                    'default_value' => $request['default_values'][$i],
+                    'select_option' => $request['select_options'][$i],
+                    'constrain' => $request['constrains'][$i],
+                    'on_update_foreign' => $request['on_update_foreign'][$i],
+                    'on_delete_foreign' => $request['on_delete_foreign'][$i],
+                    'is_enable' => isset($request['is_enable'][$i]) ? 1 : 0,
+                    'is_system' => isset($request['is_system'][$i]) ? 1 : 0,
+                    'max_size' => $request['files_sizes'][$i],
+                    'file_type' => $request['file_types'][$i],
+
+                ];
+
+                // dd($createArr);
+                $attribute = Attribute::create($createArr);
             }
-
-            if ($module) {
-                $lastSequenceData = MenuManager::where('parent', '0')->where('menu_type', $requestData['menu_type'])->where('include_in_menu', 1)->orderBy('id', 'desc')->first();
-                $sequence = 0;
-                if ($lastSequenceData) {
-                    $sequence = $lastSequenceData->sequence + 1;
-                }
-
-                $createData = array(
-                    'name' => $requestData['name'],
-                    'module_id' => $module->id,
-                    'include_in_menu' => 1,
-                    'menu_type' => $requestData['menu_type'],
-                    'path' => str_replace(' ', '', $requestData['path']),
-                    'sequence' => $sequence,
-                    'parent' => 0,
-                    'sidebar_name' => $requestData['sidebar_name'],
-                );
-                $menuManager = MenuManager::create($createData);
-            }
-
-            if (!$menuManager) {
-                throw new MenuManagerNotFoundException();
-                //$this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
-            }
-            $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
-            DB::commit();
-            return response()->json(['status' => true, 'message' => 'a new front store created scuccessfully!', 'data' => $createData], 200);
-        } catch (MenuManagerNotFoundException $ex) {
-            DB::rollback();
-            throw $ex;
-        } catch (Exception $ex) {
-            DB::rollback();
-            return response()->json(['status' => false, 'message' => $ex->getMessage()], 500);
         }
+
+        if ($module) {
+
+
+
+            $lastSequenceData = MenuManager::where('parent', '0')->where('menu_type', $requestData['menu_type'])->where('include_in_menu', 1)->orderBy('id', 'desc')->first();
+            $sequence = 0;
+            if ($lastSequenceData) {
+                $sequence = $lastSequenceData->sequence + 1;
+            }
+
+            $createData = array(
+                'name' => $requestData['name'],
+                'module_id' => $module->id,
+                'include_in_menu' => 1,
+                'menu_type' => $requestData['menu_type'],
+                'path' => str_replace(' ', '', $requestData['path']),
+                'sequence' => $sequence,
+                'parent' => 0,
+                'sidebar_name' => $requestData['sidebar_name'],
+            );
+            // dd($createData);
+            $menuManager = MenuManager::create($createData);
+        }
+
+        if (!$menuManager) {
+            $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
+            return redirect()->route('module_manager.index');
+        }
+        $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
+        return redirect()->route('module_manager.index');
+
+        //     DB::commit();
+        // } catch (Exception $ex) {
+        //     DB::rollback();
+        //     dd($ex);
+        // }
+
     }
 
     public function storeLabel(Request $request)
@@ -332,7 +340,7 @@ class ModuleManagerController extends Controller
 
         $module = Module::find($id);
 
-        if (!empty($request->name)) :
+        if (!empty($request->name)):
             $module->update(
                 [
                     'is_system' => isset($request->is_system) ? 1 : 0,
@@ -345,7 +353,7 @@ class ModuleManagerController extends Controller
 
             $menu = MenuManager::where('module_id', $module->id)->first();
 
-            if ($menu->menu_type == 'storfront') {
+            if($menu->menu_type == 'storfront'){
                 $request->include_in_menu = 1;
             }
             $menu->update(
@@ -447,6 +455,7 @@ class ModuleManagerController extends Controller
         } else {
             return response()->json(['msg' => 'Something went wrong, please try again.'], 200);
         }
+
     }
 
     public function updateStatus(Request $request, $moduleId)
@@ -684,7 +693,7 @@ class ModuleManagerController extends Controller
             $createData = array(
                 'name' => $requestData['name'],
                 'module_id' => $module->id,
-                'include_in_menu' => isset($request->shared) ? (isset($request->addable) ? 1 : 0) : 1,
+                'include_in_menu' => isset($request->shared) ? ( isset($request->addable) ? 1 : 0 ) : 1,
                 'menu_type' => $requestData['menu_type'],
                 'path' => $modelNamePluralLowercase,
                 'sequence' => $sequence,
@@ -731,5 +740,7 @@ class ModuleManagerController extends Controller
 
         $this->flashRepository->setFlashSession('alert-success', 'Module Was Deleted successfully.');
         return redirect()->route('module_manager.index');
+
     }
+
 }

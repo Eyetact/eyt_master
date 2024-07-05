@@ -24,17 +24,8 @@ class AuthRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required',
-            'password' => 'required',
-        ];
-    }
-
-
-    public function messages()
-    {
-        return [
-            'email.required' => 'please enter your username or email',
-            'password.required' => 'please enter your username or email'
+            // 'email' => 'required|string',
+            'password' => 'required|string',
         ];
     }
 }
