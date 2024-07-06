@@ -211,9 +211,11 @@ class AttributeController extends Controller
      */
     public function store(AttributePostRequest $request)
     {
-        // dd($request);
+        /**
+         * we are enforced to omit the transactions begin and commit due to the migration call
+         * which terminates the transaction and hence gives there is no active transaction
+         */
         try {
-            DB::beginTransaction();
             $request->validated();
             $requestData = $request->all();
 
@@ -333,7 +335,7 @@ class AttributeController extends Controller
                 $this->generatorService->reGenerateRequest($request['module']);
                 $this->generatorService->reGenerateViews($request['module']);
             }
-            Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin')); // run php artisan mnigrate in background
+            Artisan::call('migrate', array('--path' => 'database/migrations/Admin', '--force' => true));
 
 
             if (isset($requestData['multiple'])) {
@@ -351,10 +353,8 @@ class AttributeController extends Controller
             }
 
             $this->flashRepository->setFlashSession('alert-success', 'Attribute created successfully.');
-            DB::commit();
             return response()->json(['status' => true, 'message' => 'New attribute added successfully!', 'data' => $attribute], 200);
         } catch (Exception $e) {
-            DB::rollBack();
             return response()->json(['status' => false, 'message' => 'Some error happened during creating the attribute!'], 500);
         }
     }

@@ -40,16 +40,16 @@
                         </div>
 
                         <div class="col-sm-12 input-box">
-                            <label class="form-label" for="_code">Code<span class="text-red">*</span></label>
-                            <input type="text" name="_code"
-                                class="google-input input-code @error('_code') is-invalid @enderror"
-                                value="{{ old('_code', $attribute->code) }}">
+                            <label class="form-label" for="code">Code<span class="text-red">*</span></label>
+                            <input type="text" name="code"
+                                class="google-input input-code @error('code') is-invalid @enderror"
+                                value="{{ old('code', $attribute->code) }}">
                             {{-- <small class="text-secondary">
                                 <ul class="my-1 mx-2 p-0">
                                     <li>is not allowed to use numbers or ( ID word ) or symbols</li>
                                 </ul>
                             </small> --}}
-                            <span id="_code-attribute-create-error"
+                            <span id="code-attribute-create-error"
                                 class="error text-danger d-none error-message"></span>
                         </div>
                     </div>

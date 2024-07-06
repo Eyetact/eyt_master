@@ -60,7 +60,10 @@ class ModuleManagerController extends Controller
     public function store(ModulePostRequest $request)
     {
         try {
-            DB::beginTransaction();
+            /**
+             * we are enforced to omit the transactions begin and commit due to the migration call
+             * which terminates the transaction and hence gives there is no active transaction
+             */
             $module = Module::create([
                 'name' => $request->name,
                 'is_system' => isset($request->is_system) ? 1 : 0,
@@ -78,7 +81,7 @@ class ModuleManagerController extends Controller
             $request->validated();
             $this->generatorService->generateModel($request->all()); // model
             $this->generatorService->generateMigration($request->all(), $module->id); // migration
-            Artisan::call('migrate', array('--path' => '../app/database/migrations/Admin'));
+            Artisan::call('migrate', array('--path' => 'database/migrations/Admin', '--force' => true));
             $this->generatorService->generateController($request->all()); // migration
             $this->generatorService->generateRequest($request->all()); // req
             $this->generatorService->generateRoute($request->all()); // route
@@ -142,13 +145,11 @@ class ModuleManagerController extends Controller
             $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
 
             //return redirect()->route('module_manager.index');
-            DB::commit();
             return response()->json(['status' => true, 'message' => 'new admin module created successfully!', 'data' => $menuManager]);
         } catch (MenuManagerNotFoundException $ex) {
             DB::rollback();
             throw $ex;
         } catch (Exception $ex) {
-            DB::rollback();
             return response()->json(['status' => false, 'message' => $ex->getMessage()]);
         }
     }
