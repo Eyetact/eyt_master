@@ -34,48 +34,59 @@
   <link id="theme" href="{{ URL::asset('assets/switcher.css') }}" rel="stylesheet" type="text/css" />
   <link id="theme" href="{{ URL::asset('assets/demo.css') }}" rel="stylesheet" type="text/css" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
+  <!-- session messages style-->
+  <link href="{{ asset('assets/css/messages/messages.css') }}" rel="stylesheet">
+
+
+
   <style>
-    .select2-container {
-    display: block;
-    width: 100% !important;
-}
-  table#data_table tbody * {
-  font-size: 14px;
-  text-align: left;
-  font-weight: normal;
-  }
+      .select2-container {
+          display: block;
+          width: 100% !important;
+      }
 
-  input[name=serial_number] {
-    display: none;
-}
-label[for=serial-number] {
-    display: none;
-}
-input[name=main_code] {
-    display: none;
-}
-label[for=code] {
-    display: none;
-}
+      table#data_table tbody * {
+          font-size: 14px;
+          text-align: left;
+          font-weight: normal;
+      }
 
-.custom-control.custom-checkbox.ms-3.row.input-box {
-    height: 0px !important;
-    min-height: 0;
-    overflow: hidden;
-}
-.per-box {
-    border: 1px solid #ddd;
-    margin-top: 20px;
-}
+      input[name=serial_number] {
+          display: none;
+      }
 
-.per-box h5 {
-    padding: 10px;
-    text-transform: capitalize;
-    font-size: 12px;
-    font-weight: bold;
-}
+      label[for=serial-number] {
+          display: none;
+      }
 
-.per-box .row {
-    padding: 0px 15px;
-}
+      input[name=main_code] {
+          display: none;
+      }
+
+      label[for=code] {
+          display: none;
+      }
+
+      .custom-control.custom-checkbox.ms-3.row.input-box {
+          height: 0px !important;
+          min-height: 0;
+          overflow: hidden;
+      }
+
+      .per-box {
+          border: 1px solid #ddd;
+          margin-top: 20px;
+      }
+
+      .per-box h5 {
+          padding: 10px;
+          text-transform: capitalize;
+          font-size: 12px;
+          font-weight: bold;
+      }
+
+      .per-box .row {
+          padding: 0px 15px;
+      }
   </style>
