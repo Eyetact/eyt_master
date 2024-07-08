@@ -89,7 +89,7 @@ table {
                                     <th>email</th>
                                     <th >avatar</th>
                                     <th>phone</th>
-                                    {{-- <th>address</th> --}}
+                                    <th>address</th>
                                     <th>website</th>
                                     <th data-priority="1"></th>
                                 </tr>
@@ -100,74 +100,6 @@ table {
                     </div>
                 </div>
             </div>
-
-
-
-            <div class="modal fade bd-example-modal-lg" id="assign_groups" tabindex="-1" role="dialog"
-            aria-labelledby="myLargeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="myLargeModalLabel">Assign Selected</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span
-                                aria-hidden="true">×</span> </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <form  action="{{route('assign-cgroup')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="user_ids" value="">
-                        <div class="row">
-                            <div class="col-sm-10">
-                                <div class="input-box" style="margin:0 !important">
-                                    <select class="google-input" name="ids[]" tabindex="null" multiple>
-                                        <option value="" selected disabled>Select Group</option>
-                                        @php
-
-                                        if(auth()->user()->hasRole('super'))
-                                        {
-
-                                            $items = \App\Models\CustomerGroup::where('type', NULL)
-                                                                                ->whereNotIn('id', [1, 2, 3, 13])
-                                                                                ->get();
-
-                                        }
-                                        else{
-
-
-                                            $items = \App\Models\CustomerGroup::where('type',NULL)
-                                                                               ->where('created_by',auth()->user()->id)
-                                                                               ->whereNotIn('id', [1, 2, 3, 13])
-                                                                               ->get();
-                                        }
-
-
-                                        @endphp
-                                        @foreach ($items as $item)
-                                        @if($item)
-
-
-                                            <option value="{{ $item->id }}">{{ $item->name }}
-                                            </option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-info " type="submit" style="height: 50px;">Assign</button>
-                            </div>
-                        </div>
-                        </form>
-
-
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
         </div>
     </div>
     <!-- /Row -->
@@ -284,11 +216,11 @@ table {
                 'data':null,
                 'defaultContent':'',
                 'checkboxes':{
-
-
+ 
+ 
                     'selectRow':true
                 }
-            },
+            },  
                 {
                     data: 'name',
                     name: 'name'
@@ -313,10 +245,10 @@ table {
                     data: 'phone',
                     name: 'phone'
                 },
-                // {
-                //     data: 'address',
-                //     name: 'address'
-                // },
+                {
+                    data: 'address',
+                    name: 'address'
+                },
                 {
                     data: 'website',
                     name: 'website'
@@ -333,22 +265,6 @@ table {
             order: [
                 [1, 'asc']
             ]
-
-        });
-
-        table.button().add(0, {
-            action: function(e, dt, button, config) {
-        var selectedRows = table.rows({ selected: true }).data().toArray();
-        var ids = selectedRows.map(function(row) { return row.id; });
-
-
-        console.log('Selected User IDs:', ids); // Debug statement to verify selected IDs
-
-
-        $('#assign_groups input[name="user_ids"]').val(ids.join(','));
-                $("#assign_groups").modal('show');
-            },
-            text: 'Assign Group'
         });
 
         // console.log(table.buttons().container());

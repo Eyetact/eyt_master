@@ -193,13 +193,6 @@ class User extends Authenticatable
 
             $sum = Limit::where('subscription_id', $sub_id)->sum('data_limit');
 
-        }
-        else if ($this->hasRole('public_vendor')) {
-
-            $sub_id = $this->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first()?->id;
-
-            $sum = Limit::where('subscription_id', $sub_id)->sum('data_limit');
-
         } else {
 
             $customer = User::find($this->user_id);
@@ -384,7 +377,7 @@ class User extends Authenticatable
 
             $users = User::where('user_id', $this->id)->pluck('id');
 
-            if (!$this->hasRole('admin') && !$this->hasRole('vendor') && !$this->hasRole('public_vendor')) {
+            if (!$this->hasRole('admin') && !$this->hasRole('vendor')) {
                 $customer = User::find($this->user_id);
                 $users = User::where('user_id', $customer->id)->pluck('id');
                 if ($model->id == 5) {
@@ -442,27 +435,6 @@ class User extends Authenticatable
                     }
 
                 }
-
-                if ($this->hasRole('public_vendor')) {
-
-                    if ($only_me) {
-                        $customer = User::find($this->user_id);
-                        if ($model->id == 5) {
-                            $sum = $modelName::whereIn('created_by', $users)->orWhere('created_by', $this->id)
-                                ->count();
-
-                            return $sum;
-
-                        } else {
-                            $sum = $modelName::whereIn('user_id', $users)->orWhere('user_id', $this->id)
-                                ->count();
-                            return $sum;
-                        }
-                    }
-
-
-
-                }
             }
 
 
@@ -487,13 +459,6 @@ class User extends Authenticatable
                 }
 
             } else if ($this->hasRole('vendor')) {
-
-                $sub_id = $this->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first()?->id;
-                $sum = Limit::where('subscription_id', $sub_id)->where('module_id', $model_id)->sum('data_limit');
-                return $sum;
-
-            }
-            else if ($this->hasRole('public_vendor')) {
 
                 $sub_id = $this->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first()?->id;
                 $sum = Limit::where('subscription_id', $sub_id)->where('module_id', $model_id)->sum('data_limit');

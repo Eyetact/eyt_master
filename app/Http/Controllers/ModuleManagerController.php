@@ -604,8 +604,8 @@ class ModuleManagerController extends Controller
 
         ]);
         $request->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
-
-
+        
+        
         //default sub
         if (!isset($request->shared)) {
 

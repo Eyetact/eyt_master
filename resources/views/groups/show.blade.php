@@ -82,37 +82,6 @@
                                 <div class="card-body">
                                     <div class="row">
 
-
-
-                                        @if(auth()->user()->hasRole('super'))
-
-                                        <div class="col-lg-6 col-sm-6">
-                                            <div class="input-box">
-                                                <label class="input-label">Name</label>
-                                                <input type="text" class="google-input" name="name" id="name"
-                                                    value="{{ $group->name }}" />
-                                            </div>
-                                            @error('name')
-                                                <label id="name-error" class="error"
-                                                    for="name">{{ $message }}</label>
-                                            @enderror
-                                        </div>
-
-                                        <div class="col-lg-6 col-sm-6">
-                                        <div class="input-box">
-                                            <select class="google-input" name="type" tabindex="null">
-                                                <option value="" disabled>-- select type --</option>
-                                                <option value="admin" {{ $group->type == 'admin' ? 'selected' : '' }}>Admin</option>
-                                                <option value="public_vendor" {{ $group->type == 'public_vendor' ? 'selected' : '' }}>Public Vendor</option>
-                                            </select>
-                                        </div>
-                                        @error('type')
-                                            <label id="type-error" class="error" for="type">{{ $message }}</label>
-                                        @enderror
-                                        </div>
-
-                                        @else
-
                                         <div class="col-lg-12 col-sm-12">
                                             <div class="input-box">
                                                 <label class="input-label">Name</label>
@@ -125,9 +94,6 @@
                                             @enderror
                                         </div>
 
-
-
-                                    @endif
 
                                     </div>
                                 </div>
@@ -235,4 +201,4 @@
            ]
        });
 
-</script>
+</script> 

@@ -185,19 +185,6 @@ class ShowViewGenerator
 
                 switch ($field->type) {
 
-
-                    case 'calc':
-
-                        if($field->type_of_calc == 'two')
-                        {
-                            $trs .= "<tr>
-                            <td class=\"fw-bold\">{{ __('$fieldUcWords') }}</td>
-                            <td>{{ $" . $modelNameSingularCamelCase . "->" . $fieldSnakeCase . " }}</td>
-                        </tr>";
-
-                        }
-                        break;
-
                     case 'boolean':
                         $trs .= "<tr>
                                         <td class=\"fw-bold\">{{ __('$fieldUcWords') }}</td>

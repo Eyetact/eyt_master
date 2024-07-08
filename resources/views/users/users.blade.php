@@ -99,7 +99,7 @@
                                     <th>email</th>
                                     <th>avatar</th>
                                     <th>phone</th>
-                                    {{-- <th>address</th> --}}
+                                    <th>address</th>
                                     <th>website</th>
                                     <th data-priority="1">Action</th>
                                 </tr>
@@ -307,10 +307,10 @@
                     data: 'phone',
                     name: 'phone'
                 },
-                // {
-                //     data: 'address',
-                //     name: 'address'
-                // },
+                {
+                    data: 'address',
+                    name: 'address'
+                },
                 {
                     data: 'website',
                     name: 'website'

@@ -97,13 +97,13 @@ class UserController extends Controller
         if (auth()->user()->hasRole('super')) {
 
             $users = User::whereDoesntHave('roles', function ($query) {
-                $query->whereIn('name', ['super', 'vendor', 'admin','public_vendor']);
+                $query->whereIn('name', ['super', 'vendor', 'admin']);
             })->get();
 
 
         } else {
 
-            if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('vendor') || auth()->user()->hasRole('public_vendor')) {
+            if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('vendor')) {
 
                 $userId = auth()->user()->id;
                 $usersOfCustomers = User::where('user_id', $userId)->pluck('id');
@@ -111,7 +111,7 @@ class UserController extends Controller
                 $users = User::whereIn('user_id', $usersOfCustomers)
                     ->orWhere('user_id', $userId)
                     ->whereDoesntHave('roles', function ($query) {
-                        $query->whereIn('name', ['super', 'vendor', 'admin','public_vendor']);
+                        $query->whereIn('name', ['super', 'vendor', 'admin']);
                     })
                     ->get();
             } else {
@@ -122,7 +122,7 @@ class UserController extends Controller
                 $users = User::whereIn('user_id', $usersOfCustomers)
                     ->orWhere('user_id', $userId)
                     ->whereDoesntHave('roles', function ($query) {
-                        $query->whereIn('name', ['super', 'vendor', 'admin','public_vendor']);
+                        $query->whereIn('name', ['super', 'vendor', 'admin']);
                     })
                     ->get();
             }
@@ -207,62 +207,6 @@ class UserController extends Controller
         return view('users.admins');
     }
 
-    public function publicVendors()
-    {
-        if (request()->ajax()) {
-
-            if (auth()->user()->hasRole('super')) {
-
-                $users = User::role('public_vendor')->get();
-
-
-
-            } else {
-
-                $userId = auth()->user()->id;
-                $usersOfCustomers = User::role('public_vendor')
-                    ->where('user_id', $userId)
-                    ->pluck('id');
-
-                $users = User::whereIn('id', $usersOfCustomers)
-
-                    ->get();
-            }
-
-
-            return datatables()->of($users)
-                ->editColumn('avatar', function ($row) {
-                    return $row->avatar ? '<img src="' . $row->ProfileUrl . '" alt="user-img" class="avatar-xl rounded-circle mb-1">' : "<span>No Image</span>";
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="dropdown">
-                    <a class=" dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-
-                    </a>
-
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <li class="dropdown-item">
-                        <a  href="' . route('profile.index', $row->id) . '">View or Edit</a>
-                        </li>
-
-                        <li class="dropdown-item">
-                        <a  href="#" data-id="' . $row->id . '" class="user-delete">Delete</a>
-                        </li>
-                    </ul>
-                </div>';
-
-                    return $btn;
-                })
-                ->rawColumns(['avatar', 'action'])
-
-                ->addIndexColumn()
-                ->make(true);
-        }
-        return view('users.pvendors');
-    }
-
 
     public function myAdmins($user_id)
     {
@@ -341,7 +285,6 @@ class UserController extends Controller
             $roles = Role::where('name', '!=', 'admin')
                 ->where('name', '!=', 'vendor')
                 ->where('name', '!=', 'super')
-                ->where('name', '!=', 'public_vendor')
                 ->get();
 
         } else {
@@ -352,13 +295,11 @@ class UserController extends Controller
                 ->where('name', '!=', 'admin')
                 ->where('name', '!=', 'vendor')
                 ->where('name', '!=', 'super')
-                ->where('name', '!=', 'public_vendor')
 
                 ->orWhere('user_id', $userId)
                 ->where('name', '!=', 'admin')
                 ->where('name', '!=', 'vendor')
                 ->where('name', '!=', 'super')
-                ->where('name', '!=', 'public_vendor')
                 ->get();
         }
         return view('users.create-user', compact('groups', 'roles'));
@@ -375,15 +316,6 @@ class UserController extends Controller
         $groups = CustomerGroup::all();
 
         return view('users.create-vendor', compact('groups'));
-    }
-
-
-    public function createPublicVendor()
-    {
-
-        $groups = CustomerGroup::all();
-
-        return view('users.create-pvendor', compact('groups'));
     }
 
     /**
@@ -409,12 +341,6 @@ class UserController extends Controller
                 case 'vendor':
                     return redirect()->route('users.vendors');
                     break;
-
-                case 'public_vendor':
-
-                    return redirect()->route('users.pvendors');
-                      break;
-
                 case 'user':
                     return redirect()->route('users.users');
                     break;
@@ -432,11 +358,6 @@ class UserController extends Controller
             case 'vendor':
                 $c_group = 3;
                 break;
-
-                case 'public_vendor':
-                    $c_group = 13;
-                    break;
-
 
 
 
@@ -462,7 +383,7 @@ class UserController extends Controller
                 $c->group_id = $id;
                 $c->user_id = $user->id;
                 $c->save();
-                if (($request->role != "admin") || ($request->role != "vendor") || ($request->role != "public_vendor")) {
+                if (($request->role != "admin") || ($request->role != "vendor")) {
 
 
                     $role_db = DB::table('model_has_roles')
@@ -496,7 +417,7 @@ class UserController extends Controller
             $plan->save();
         }
 
-        if (($request->role == "admin") || ($request->role == "vendor") || ($request->role == "public_vendor")) {
+        if (($request->role == "admin") || ($request->role == "vendor")) {
             $sub = new Subscription();
             $sub->user_id = $user->id;
             $sub->plan_id = $plan->id;
@@ -507,14 +428,6 @@ class UserController extends Controller
             $sub->save();
 
             $user->assignRole($request->role);
-
-
-            $default = new UCGroup();
-            $default->group_id = $c_group;
-            $default->user_id = $user->id;
-            $default->save();
-
-
         } else {
             // $user->assignRole('user'); // TODO::
             $user->assignRole($request->role);
@@ -536,11 +449,6 @@ class UserController extends Controller
                 return redirect()->route('users.vendors')
                     ->with('success', 'Subscription has been added successfully');
                 break;
-
-                case 'public_vendor':
-                    return redirect()->route('users.pvendors')
-                        ->with('success', 'Subscription has been added successfully');
-                    break;
             case 'user':
                 return redirect()->route('users.users')
                     ->with('success', 'Subscription has been added successfully');

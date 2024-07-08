@@ -24,10 +24,7 @@ class CustomerGroupController extends Controller
                 // $ids = User::where('user_id', $userId)->pluck('id');
 
 
-                $groups = CustomerGroup::where(function($query) {
-                    $query->where('id', 2)
-                          ->orWhere('id', 13);
-                })
+                $groups = CustomerGroup::where('id',2)
                 ->orWhere('created_by', auth()->user()->id)
                 // ->orWhereIn('created_by', $ids)
                     ->get();
@@ -79,7 +76,7 @@ class CustomerGroupController extends Controller
                         <a  href="#" data-id="' . $row->id . '" class="group-delete">Delete</a>
                         </li>';
 
-                        if(in_array($row->id, [1,2,3,13])){
+                        if(in_array($row->id, [1,2,3])){
                             $d_btn = '';
                         }
                     $btn = '<div class="dropdown">

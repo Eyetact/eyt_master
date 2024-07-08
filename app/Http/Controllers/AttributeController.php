@@ -32,8 +32,6 @@ class AttributeController extends Controller
     {
 
 
-
-
         if (auth()->user()->hasRole('super')) {
 
             $attributes = Attribute::all();
@@ -211,7 +209,6 @@ class AttributeController extends Controller
      */
     public function store(AttributePostRequest $request)
     {
-
         $request->validated();
         $requestData = $request->all();
         // dd(  $requestData);
@@ -288,11 +285,7 @@ class AttributeController extends Controller
             'user_id' => auth()->user()->id,
             'multiple' => isset($request['multiple']) ? 1 : 0,
             'condition_attr' => $condition_attr,
-            'condition_value' => $condition_value,
-            'type_of_calc' => isset($request['type_of_calc']) ? $request['type_of_calc'] : null,
-            'operation' => isset($request['operation']) ? $request['operation'] : null,
-            'first_column' => isset($request['first_column']) ? $request['first_column'] : null,
-            'second_column' => isset($request['second_column']) ? $request['second_column'] : null,
+            'condition_value' => $condition_value
         ];
         // dd($createArr);
         $attribute = Attribute::create($createArr);
@@ -328,11 +321,6 @@ class AttributeController extends Controller
                 $m->constrain = isset($value['constrain']) ? $value['constrain'] : '';
                 $m->attribute = isset($value['attribute']) ? $value['attribute'] : '';
                 $m->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
-
-                $m->primary = isset($value['primary']) ? $value['primary'] : NULL;
-                $m->secondary = isset($value['secondary']) ? $value['secondary'] : NULL;
-                $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : NULL;
-                $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : NULL;
 
                 $m->save();
             }
@@ -533,19 +521,6 @@ class AttributeController extends Controller
                 }
                 if(isset($value['attribute'])){
                     $m->attribute = isset($value['attribute']) ? $value['attribute'] : '';
-                }
-
-                if(isset($value['primary'])){
-                    $m->primary = isset($value['primary']) ? $value['primary'] : '';
-                }
-                if(isset($value['secondary'])){
-                    $m->secondary = isset($value['secondary']) ? $value['secondary'] : '';
-                }
-                if(isset($value['fixed_value'])){
-                    $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : '';
-                }
-                if(isset($value['attribute2'])){
-                    $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : '';
                 }
                 $m->save();
             }

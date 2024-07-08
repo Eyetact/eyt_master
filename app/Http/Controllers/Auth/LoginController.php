@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AuthRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -43,31 +42,25 @@ class LoginController extends Controller
     }
 
 
-
-    public function login(AuthRequest $request)
+    /*
+    public function login(Request $request)
     {
-        $field = filter_var($request['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if (Auth::attempt([$field => $request['email'], 'password' => $request['password']])) {
+        // dd($request->all());
+        $loginData = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+
+        $field = filter_var($loginData['email'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        // dd($field );
+        if (Auth::attempt([$field => $loginData['email'], 'password' => $loginData['password']])) {
             // Authentication passed
-            return redirect()->intended('/dashboard')->with(['status' => true, 'message' => 'welcome ' . $request['email']]); // Redirect to the intended URL
-        } else {
-            return redirect()->back()->with([
-                'status' => false,
-                'message' => 'These credentials do not match our records.',
-            ])
-                ->withInput();
+            return redirect()->intended('/dashboard'); // Redirect to the intended URL
+        }else{
+            dd($field);
         }
-    }
 
-    public function logout(Request $request)
-    {
-        //1. invalidate the session
-        Auth::logout();
-        $request->session()->invalidate();
-        //2. regenerate token
-        $request->session()->regenerateToken();
-        //3. add this token to the session
-        //4. redirect to the login view with successfuly message
-        return redirect()->route('login')->with(['status' => true, 'message' => 'logout successfully']);
-    }
+        // Authentication failed
+        return back()->withErrors(['login' => 'Invalid login or password']);
+    }*/
 }

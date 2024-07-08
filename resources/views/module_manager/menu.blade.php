@@ -235,10 +235,10 @@
                             <div class="col-10" style="padding-top: 10px">Front - (
                                 {{ count(App\Models\MenuManager::where('menu_type', 'storfront')->get()) }} )</div>
                             <div class="col-1">
-
+                                
                                     <button type="button" data-target="#FrontForm" data-toggle="modal"
                                         class="btn btn-primary">Add</button>
-
+                                
                             </div>
                         </div>
 
@@ -1340,7 +1340,7 @@
                     }
                 }
             });
-
+            
             $("#moduleCreateSub").on("submit", function(event) {
                 if ($('#attr_id').val() <= 0) {
                     Swal.fire({
@@ -1349,7 +1349,7 @@
                         text: "Something went wrong!",
                         footer: '<a href="{{ url('attribute') }}">Create ?</a>'
                     });
-
+                   
                     event.preventDefault();
 
                     return;

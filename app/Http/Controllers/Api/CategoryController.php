@@ -219,7 +219,7 @@ class CategoryController extends ApiController
             $main_pumps = json_decode($machine->main_part->main_pump);
 
 
-
+                // Convert main_pumps to an array
         $main_pumps_array = get_object_vars($main_pumps);
 
             $indexMap = []; // To store the index for each component
@@ -230,25 +230,26 @@ class CategoryController extends ApiController
                 $component = Component::find($componentId);
                 if ($component) {
 
-
+                      // Access the description from the JSON object
                       $description = collect($set_component)->firstWhere('id', $componentId)->describtion;
                       $descriptions[$componentId] = $description;
 
-
+                          // Store the index for the component
                         $indexMap[$componentId] = $index + 1;
 
 
-
+       // Extract the flow rate for the current component
        $flowRate = $main_pumps_array[$index + 1]->pump_flow;
 
 
+                            // Calculate the result based on machine's main part type
                 if ($machine->main_part->main_type != 'Mixing With Carrier') {
                     $result = 1000 / $component->compo_concentration * $component->compo_value;
                 } else {
-
+                    // For 'mixing with carrier', calculate for all except the first component
                     if ($index == 0) {
 
-                        $result = null;
+                        $result = null; // Placeholder for the first component
                     } else {
                         $result = 1000 / $component->compo_concentration * $component->compo_value;
                     }
@@ -268,21 +269,22 @@ class CategoryController extends ApiController
 
 
 
+                   // Calculate the result for the first component if main_type is 'mixing with carrier'
         if ($machine->main_part->main_type == 'Mixing With Carrier') {
             $sumOfOtherResults = collect($results)->filter()->sum();
             $firstComponentId = $components->first()->id;
             $results[$firstComponentId] = 1000 - $sumOfOtherResults;
 
 
-
-                    $flowRate = $main_pumps_array[1]->pump_flow;
+                      // Calculate delay for the first component
+                    $flowRate = $main_pumps_array[1]->pump_flow; // The first pump in the original object
                     $delays[$firstComponentId] = ($results[$firstComponentId] * 60 / $flowRate) * 1000;
         }
 
         }
 
 
-
+            // Add descriptions to the component objects
     $components = $components->map(function ($component) use ($descriptions, $indexMap, $results, $delays) {
         $component->description = $descriptions[$component->id] ?? null;
         $component->json_index = $indexMap[$component->id] ?? null;

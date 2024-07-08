@@ -65,8 +65,6 @@
                                     <th width="30px"></th>
                                     {{thColumns}}
 
-                                    {{agg}}
-
                                         @if($model->is_system)
                                     	<th>{{ __('Global') }}</th>
 										<th>{{ __('Status') }}</th>
@@ -77,21 +75,6 @@
                                     <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
-                               <tfoot>
-                                <tr>
-                                    <th width="30px"></th>
-                                    {{tfColumns}}
-
-                                        @if($model->is_system)
-                                    	<th></th>
-										<th></th>
-                                        @endif
-
-                                    <th></th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -438,7 +421,7 @@ output {
     <script src="{{ URL::asset('assets/js/datatables.js') }}"></script>
     <script src="{{ URL::asset('assets/js/popover.js') }}"></script>
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
-    {{--<script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>--}}
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
     <script src="{{ asset('assets/plugins/fileupload/js/dropify.js') }}"></script>
 
@@ -599,18 +582,10 @@ output {
 
                 console.log("un: " + $('[data-source=' + main_model + ']').length)
 
-                    var fixed = $(this).data('fixmulti');
 
-
-
-
-
-                  if(fixed == undefined)
-                  {
                 if ($('[data-source=' + main_model + ']').length == 0) {
                     return;
                 }
-                  }
 
                 console.log('main_model:' + main_model)
                 var main_model_id = $(this).find('option:selected').data('id'); // 1
@@ -644,36 +619,6 @@ output {
                     $e_id = $e_string.split('_')
                     console.log('id : ' + '#' + $e_string)
                     console.log('source : ' + $('select[data-source=' + main_model + ']').length)
-
-
-
-                    if (fixed) {
-
-                        $this.closest('tr').find('label').data('source');
-                        var attr2= $this.closest('tr').find('label').data('attr2');
-
-
-                        path = "{{ url('/') }}/searchtargetfromsource/" + main_model + '/' +
-                            main_model_id + '/' + value
-                            .code + '/' + attr2
-
-                        // alert(path)
-                        console.log(path);
-                        $.ajax({
-                            url: path,
-                            success: function(response) {
-                                console.log(response);
-
-
-                                $this.closest('tr').find('label').html(response.data);
-
-                            }
-                        });
-
-
-                }
-
-
                     if ($('select[data-source=' + main_model + ']').length > 0) {
 
                         console.log(key + ": " + $e_id[0]);
@@ -863,36 +808,6 @@ output {
 
 
 
-     $(document).ready(function() {
-  var aggregate = "{{ isset($aggregate) ?  $aggregate : 'undefined' }}";
-
-  if (aggregate != undefined) {
-    var aggregates = @json($aggregates);
-
-    var table = $('#data_table').DataTable({
-      retrieve: true
-    });
-
-    updateTableFooterWithAggregates();
-
-    function updateTableFooterWithAggregates() {
-      console.log('Updating table footer with aggregates');
-
-      $.each(aggregates, function(key, value) {
-
-        var columnIndex = table.column(key + ':name').index();
-
-        console.log(`Updating footer for column: ${key}, index: ${columnIndex}, value: ${value}`);
-
-
-        $(table.column(columnIndex).footer()).html(value);
-      });
-    }
-  }
-});
-
-
-
                 $(document).on('click', '.model-delete', function() {
         	var id = $(this).attr("data-id");
             swal({
@@ -952,13 +867,10 @@ output {
                         $(this).closest('tr').find('.select-base').find('option[data-'+constrain+'='+id+']').show();
                     });
                     changeEvents()
-                    changeMulti()
 
                                             $('#role_form_modal').find('select[multiple]').select2();
                                             $('.inform').trigger('change');
                                             $('.based').trigger('change');
-                                            $('.fix-multi').trigger('change');
-
 
                 }
             });

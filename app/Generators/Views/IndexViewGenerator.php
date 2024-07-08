@@ -211,10 +211,8 @@ class IndexViewGenerator
         $modelNameSingularUcWords = GeneratorUtils::cleanSingularUcWords($code);
 
         $thColums = '';
-        $tfColums = '';
         $tdColumns = '';
         $trhtml = '';
-        $agg = '';
         $totalFields = count($module->fields()->where('is_enable', 1)->get());
 
         foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
@@ -227,55 +225,7 @@ class IndexViewGenerator
                  * <th>{{ __('Price') }}</th>
                  */
                 if ($field->type != 'foreignId' && $field->type != 'condition'&& $field->type != 'informatic' && $field->type != 'doublefk' && $field->primary != 'lookup' && $field->type != 'fk') {
-                    // $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
-
-
-                    if($field->type_of_calc == 'one')
-                    {
-
-
-
-
-
-                            $fieldNameParts = explode('_', $field->first_column);
-                            $lastPart = end($fieldNameParts);
-
-                            if ($lastPart === 'id') {
-                                $fkAttr = Attribute::where('code', $field->first_column)
-                                                   ->where('module',$id)
-                                                    ->first();
-
-
-
-
-                                $const = GeneratorUtils::setModelName((string)$fkAttr->constrain, 'default');
-
-
-                                $agg .= "'" . GeneratorUtils::singularSnakeCase($const) . "_" . str()->snake($fkAttr->attribute) . "." . $fkAttr->attribute . "'" . ' => App\\Models\\Admin\\' . GeneratorUtils::singularPascalCase($code) . "::get()->" . $field->operation  . '(function ($' . GeneratorUtils::singularSnakeCase($const) . ') {
-                                    return $' . GeneratorUtils::singularSnakeCase($const) . '->' . GeneratorUtils::singularSnakeCase($const) . "_" . str()->snake($fkAttr->attribute) . "?->" . str()->snake($fkAttr->attribute) . ';
-                                }),';
-
-
-
-
-                            }
-
-
-                       else{
-
-                        $agg .= "
-                         '".$field->first_column ."' => App\\Models\\Admin\\" .GeneratorUtils::singularPascalCase($code) ."::" . $field->operation . "('" . $field->first_column . "'),
-
-                  ";
-                       }
-
-                    }
-
-                    else{
-                        $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
-                        $tfColums .= "<th></th>";
-
-                    }
+                    $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
                 }
 
 
@@ -292,8 +242,8 @@ class IndexViewGenerator
 
 
                     $(document).on('click', '#add_new_tr_" . $field->id . "', function() {
-                        let table = $('#tbl-field-" . $field->id . " tbody').first();
-                        var list_" . $field->id . " = '';
+                        let table = $('#tbl-field-" . $field->id . " tbody')
+                        var list_" . $field->id . " = ''
 
                         let no = table.find('tr').length + 1\n";
 
@@ -359,69 +309,6 @@ class IndexViewGenerator
                                 ';
 
                                 break;
-
-
-                                case 'doubleMulti':
-
-                                    if($value->primary == 'lookup'){
-
-                                        $trhtml .= "var list_" . $field->id . $key . " = '<option selected disabled>-- select " . $value->constrain . " -- </option>'
-                                        \n";
-                                        $dataIds = '';
-                                        if (!empty($value->source)) {
-
-                                            $current_model = Module::where(
-                                                'code',
-                                                GeneratorUtils::singularSnakeCase($value->constrain)
-                                            )->orWhere('code', GeneratorUtils::pluralSnakeCase($value->constrain))
-                                                ->orWhere('code', $value->constrain)->first();
-                                            // dd($current_model);
-                                            $lookatrrs = Attribute::where("module", $current_model->id)->where(function ($query) {
-                                                $query->where('type', 'foreignId')
-                                                      ->orWhere('type', 'fk');
-
-                                            })
-                                            ->get();
-
-                                            foreach ($lookatrrs as $sa) {
-                                                // $dataIds .= "data-" . GeneratorUtils::singularSnakeCase($sa->constrain) . "={{ \$item2->" . $sa->code . "}}";
-
-                                                $dataIds .= "data-" . GeneratorUtils::singularSnakeCase($sa->constrain) . "=\"{{ \$item2->" . $sa->code . " }}\"";
-                                            }
-
-                                        }
-
-                                        $trhtml .= '@php
-                                        ';
-
-                                        $trhtml .= '$model = \App\Models\Module::where(\'code\', App\Generators\GeneratorUtils::singularSnakeCase(\'' . $value->constrain . '\'))->orWhere(\'code\', App\Generators\GeneratorUtils::pluralSnakeCase(\'' . $value->constrain . '\'))?->first();
-                                        ';
-                                        $trhtml .= 'if ($model) {
-                                            ';
-                                        $trhtml .= '$for_attr = json_encode($model->fields()->select(\'code\', \'attribute\')->where(\'type\', \'foreignId\')->orWhere(\'type\', \'fk\')->get());
-                                        ';
-                                        $trhtml .= '$for_attr = str_replace(\'"\', \'\\\'\', $for_attr);
-                                        ';
-                                        $trhtml .= '}
-                                        ';
-
-                                        $trhtml .= '@endphp
-                                        ';
-
-                                        $trhtml .= 'var attr_' . $field->id . $key . ' = "{{ $for_attr }}"
-                                        ';
-
-
-                                        $trhtml .= '@foreach( \\App\\Models\\Admin\\' . GeneratorUtils::singularPascalCase($value->constrain) . '::all() as $item2 )
-                                        ';
-                                        $trhtml .= 'list_' . $field->id . $key . ' += \'<option ' . $dataIds . ' data-id="{{ $item2->id }}"   value="{{ $item2->' . $value->attribute . '}}" >{{ $item2->' . $value->attribute . '}}</option>\'
-                                        ';
-                                        $trhtml .= '@endforeach
-
-                                        console.log(list_' . $field->id . $key . ')
-                                        ';
-                                    }
-                                    break;
                         }
                     }
 
@@ -449,299 +336,6 @@ class IndexViewGenerator
                                     </td>
                                     ';
                                 break;
-                                case 'doubleMulti':
-
-
-
-
-                                    if($value->primary == 'lookup')
-                                    {
-
-                                        $constrainModel = GeneratorUtils::setModelName($value->constrain, 'default');
-
-
-                                        if($value->secondary == 'prefix'){
-
-                                            $class = "select-base";
-
-
-                                            if (empty($value->source) || $value->source == 'disabled') {
-                                                $class = 'select-cond';
-                                            }
-
-
-
-                                            $trhtml .= '<td><div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                              <label class="input-group-text" for="inputGroupSelect01" > ' .  $value->fixed_value . '</label>
-                                            </div>';
-                                            $trhtml .= '<input type="hidden"  name="' . $field->code . '[${no}][id]" />';
-
-                                            $trhtml .= ' <select  data-source="' . $value->source . '" data-attr="${attr_' . $field->id . $key . '}" data-constrain="' . GeneratorUtils::singularSnakeCase($value->constrain) . '" name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select select-cond multi-type " required="">';
-                                            $trhtml .= '${list_' . $field->id . $key . '}';
-                                            $trhtml .= '</select>';
-                                            $trhtml .= '</div></td>';
-
-                                        }
-
-                                        if($value->secondary == 'suffix'){
-
-
-
-                                            $class = "select-base";
-
-
-                                            if (empty($value->source) || $value->source == 'disabled') {
-                                                $class = 'select-cond';
-                                            }
-
-
-
-                                            $trhtml .= '<td><div class="input-group mb-3">';
-                                            $trhtml .= '<input type="hidden"  name="' . $field->code . '[${no}][id]" />';
-
-                                            $trhtml .= ' <select data-source="' . $value->source . '" data-attr="${attr_' . $field->id . $key . '}" data-constrain="' . GeneratorUtils::singularSnakeCase($value->constrain) . '" name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select ' . $class . '  multi-type " required="">';
-                                            $trhtml .= '${list_' . $field->id . $key . '}';
-                                            $trhtml .= '</select>    <div class="input-group-prepend">
-                                            <label class="input-group-text" for="inputGroupSelect01"> ' .  $value->fixed_value . '</label>
-                                          </div>';
-                                            $trhtml .= '</div></td>';
-
-
-                                        }
-
-                                        if($value->secondary == 'lookprefix'){
-
-
-
-                                            $class = "select-base";
-
-
-                                            if (empty($value->source) || $value->source == 'disabled') {
-                                                $class = 'select-cond';
-                                            }
-
-
-
-                                            $trhtml .= '<td><div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                              <label class="input-group-text inform-multi" data-attr2="' . $value->attribute2  .  '" data-source="' .   $constrainModel .  '" for="inputGroupSelect01"></label>
-                                            </div>';
-                                            $trhtml .= '<input type="hidden"  name="' . $field->code . '[${no}][id]" />';
-
-                                            $trhtml .= ' <select data-fixmulti="true" data-source="' . $value->source . '" data-attr="${attr_' . $field->id . $key . '}" data-constrain="' . GeneratorUtils::singularSnakeCase($value->constrain) . '" name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select select-cond multi-type fix-multi " required="">';
-                                            $trhtml .= '${list_' . $field->id . $key . '}';
-                                            $trhtml .= '</select>';
-                                            $trhtml .= '</div></td>';
-
-
-                                        }
-
-                                        if($value->secondary == 'looksuffix'){
-
-
-
-                                            $class = "select-base";
-
-
-                                            if (empty($value->source) || $value->source == 'disabled') {
-                                                $class = 'select-cond';
-                                            }
-
-
-
-                                            $trhtml .= '<td><div class="input-group mb-3">';
-                                            $trhtml .= '<input type="hidden"  name="' . $field->code . '[${no}][id]" />';
-
-                                            $trhtml .= ' <select data-fixmulti="true" data-source="' . $value->source . '" data-attr="${attr_' . $field->id . $key . '}" data-constrain="' . GeneratorUtils::singularSnakeCase($value->constrain) . '" name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select select-cond multi-type fix-multi " required="">';
-                                            $trhtml .= '${list_' . $field->id . $key . '}';
-                                            $trhtml .= '</select>  <div class="input-group-prepend">
-                                            <label class="input-group-text inform-multi" data-attr2="' . $value->attribute2  .  '" data-source="' .   $constrainModel .  '" for="inputGroupSelect01"></label>
-                                          </div>';
-                                            $trhtml .= '</div></td>';
-
-
-                                        }
-
-                                    }
-
-                                    if($value->primary == 'text')
-                                    {
-                                        if($value->secondary == 'prefix'){
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-                                                 <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                <input type="text" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                     </div>
-                                        </td>
-                                        ';
-
-                                        }
-
-                                        else{
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-
-                                                <input type="text" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                    <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                     </div>
-                                        </td>
-                                        ';
-
-
-                                        }
-                                    }
-
-                                    if($value->primary == 'integer')
-                                    {
-                                        if($value->secondary == 'prefix'){
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-                                                 <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                <input type="number" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                     </div>
-                                        </td>
-                                        ';
-
-                                        }
-
-                                        else{
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-
-                                                <input type="number" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                    <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                     </div>
-                                        </td>
-                                        ';
-
-
-                                        }
-                                    }
-
-                                    if($value->primary == 'decimal')
-                                    {
-                                        if($value->secondary == 'prefix'){
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-                                                 <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                <input type="number" step="0.000000000000000001" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                     </div>
-                                        </td>
-                                        ';
-
-                                        }
-
-                                        else{
-
-                                            $trhtml .= ' <td>
-                                            <label class="input-label" > '. $value->name .' </label>
-                                            <div class="input-group mb-3">
-
-                                                <input type="number" step="0.000000000000000001" class="form-control" name="' . $field->code . '[${no}][' . $value->code . ']"
-                                                    aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"  required>
-
-                                                    <span class="input-group-text"
-                                                    id="inputGroup-sizing-default">
-                                                   '. $value->fixed_value . '
-                                                </span>
-                                                     </div>
-                                        </td>
-                                        ';
-
-
-                                        }
-                                    }
-
-
-                                    if($value->primary == 'select')
-                                    {
-                                        if($value->secondary == 'prefix'){
-
-
-
-                                            $arrOption = explode('|', $value->select_options);
-
-                                            $totalOptions = count($arrOption);
-                                            $trhtml .= '<td><div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                              <label class="input-group-text" for="inputGroupSelect01"> ' .  $value->fixed_value . '</label>
-                                            </div>';
-                                            $trhtml .= ' <select name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select multi-type" required="">';
-                                            $trhtml .= '<option selected disabled > -- select --</option>';
-                                            foreach ($arrOption as $arrOptionIndex => $value) {
-                                                $trhtml .= '<option value="' . $value . '" >' . $value . '</option>';
-
-                                            }
-                                            $trhtml .= '</select>';
-                                            $trhtml .= '</div></td>';
-
-
-                                        }
-
-                                        else{
-
-
-
-                                            $arrOption = explode('|', $value->select_options);
-
-                                            $totalOptions = count($arrOption);
-                                            $trhtml .= '<td><div class="input-group mb-3">';
-                                            $trhtml .= ' <select name="' . $field->code . '[${no}][' . $value->code . ']" class="custom-select multi-type" required="">';
-                                            $trhtml .= '<option selected disabled > -- select --</option>';
-                                            foreach ($arrOption as $arrOptionIndex => $svalue) {
-                                                $trhtml .= '<option value="' . $svalue . '" >' . $svalue . '</option>';
-
-                                            }
-                                            $trhtml .= '</select>  <div class="input-group-prepend">
-                                            <label class="input-group-text" for="inputGroupSelect01"> ' .  $value->fixed_value . '</label>
-                                          </div>';
-                                            $trhtml .= '</div></td>';
-
-
-                                        }
-                                    }
-
-
-
-
-
-                                    break;
                             case 'decimal':
                                 $trhtml .= ' <td>
                                             <div class="input-box">
@@ -925,7 +519,6 @@ class IndexViewGenerator
                     $constrainModel = GeneratorUtils::setModelName($field->constrain, 'default');
 
                     $thColums .= "<th>{{ __('" . GeneratorUtils::cleanSingularUcWords($constrainModel) . "') }}</th>";
-                    $tfColums .= "<th></th>";
 
                     /**
                      * will generate something like:
@@ -938,8 +531,6 @@ class IndexViewGenerator
                     data: \"" . GeneratorUtils::singularSnakeCase($constrainModel). "_" .str()->snake($field->attribute)  . "\",
                     name: \"" . GeneratorUtils::singularSnakeCase($constrainModel). "_" .str()->snake($field->attribute)   . "." . $field->attribute . "\"
                 },";
-
-
                 } else {
                     /**
                      * will generate something like:
@@ -948,13 +539,10 @@ class IndexViewGenerator
                      *    name: 'price'
                      * }
                      */
-
-                     if($field->type_of_calc != 'one'){
                     $tdColumns .= "{
                     data: \"" . str()->snake($field->code) . "\",
                     name: \"" . str()->snake($field->name) . "\",
                 },";
-                     }
                 }
 
                 if ($i + 1 != $totalFields) {
@@ -973,13 +561,11 @@ class IndexViewGenerator
                 '{{modelNameSingularLowercase}}',
                 '{{modelNamePluralLowerCase}}',
                 '{{thColumns}}',
-                '{{tfColumns}}',
                 '{{tdColumns}}',
                 '{{trHtml}}',
                 '{{modelNameSingularUcWords}}',
                 '{{code}}',
-                '{{code2}}',
-                '{{agg}}'
+                '{{code2}}'
 
             ],
             [
@@ -988,16 +574,11 @@ class IndexViewGenerator
                 $modelNameSingularLowercase,
                 $modelNamePluralLowerCase,
                 $thColums,
-                $tfColums,
                 $tdColumns,
                 $trhtml,
                 $modelNameSingularUcWords,
                 $module->code,
-                GeneratorUtils::singularPascalCase($code),
-                '@php
-                $aggregates = [' .$agg . '];
-                @endphp
-                '
+                GeneratorUtils::singularPascalCase($code)
             ],
             GeneratorUtils::getTemplate('views/index')
         );
