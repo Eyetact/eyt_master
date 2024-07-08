@@ -36,11 +36,25 @@ class ImapRepository {
                 'validate_cert' => true,
                 'username'      => $data->imaps->email,
                 'password'      => $data->imaps->password,
+                // 'username'      => 'super@eyt.app',
+                // 'password'      => 'jjlw ladl rcdd abnh',
                 'protocol'      => 'imap',
                 'options' => [
                     'fetch_order' => 'desc',
                 ]
             ];
+            //  $conn_array=[
+            //     'host'          => 'imap.gmail.com',
+            //     'port'          => 993,
+            //     'encryption'    => 'ssl',
+            //     'validate_cert' => true,
+            //     'username'      => 'pragyadalwadi@gmail.com',
+            //     'password'      => 'stisxueimiugozhe',
+            //     'protocol'      => 'imap',
+            //     'options' => [
+            //         'fetch_order' => 'desc',
+            //     ]
+            // ];
             // dd($data,$conn_array);
             $oClient = Client::make($conn_array);
 

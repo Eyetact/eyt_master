@@ -12,16 +12,19 @@ class SendReplay extends Mailable
     use Queueable, SerializesModels;
 
     public $body, $subject, $file;
+    public $fromEmail, $fromName;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($body, $subject, $file) {
+    public function __construct($body, $subject, $file, $fromEmail, $fromName) {
         $this->body = $body;
         $this->subject = $subject;
         $this->file = $file;
+        $this->fromEmail = $fromEmail;
+        $this->fromName = $fromName;
     }
 
     /**
@@ -30,19 +33,16 @@ class SendReplay extends Mailable
      * @return $this
      */
     public function build() {
-        if($this->file){
-            return $this->subject($this->subject)
-            ->markdown('emailTemplates.send_replay')
-            ->with([
-                'body' => $this->body
-            ])
-            ->attach(public_path($this->file));
-        }else{
-            return $this->subject($this->subject)
-            ->markdown('emailTemplates.send_replay')
-            ->with([
-                'body' => $this->body
-            ]);
+        $mail = $this->subject($this->subject)
+                        ->markdown('emailTemplates.send_replay')
+                        ->with('body', $this->body);
+
+        if ($this->file) {
+            $mail->attach(public_path($this->file));
         }
+
+        $mail->from($this->fromEmail, $this->fromName);
+
+        return $mail;
     }
 }

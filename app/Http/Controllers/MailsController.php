@@ -94,6 +94,18 @@ class MailsController extends Controller
 
     public function sendReply(Request $request, $id = '')
     {
+        /*$to = 'pragyadalwadi@gmail.com';
+        $subject = 'Test Email';
+        $message = 'This is a test email message.';
+        $fromEmail = 'your@email.com';
+        $fromName = 'Your Name';
+
+        Mail::raw($message, function ($mail) use ($to, $subject, $fromEmail, $fromName) {
+            $mail->to($to)
+                ->subject($subject)
+                ->from($fromEmail, $fromName);
+        });        exit;*/
+
         try {
 
             $file = '';
@@ -105,7 +117,26 @@ class MailsController extends Controller
                 $file = 'mails/' . $file_name;
             }
             // dd($request->all());
-            Mail::to($request->reply_email)->send(new SendReplay($request->body ,$request->subject, $file));
+
+            $to = $request->reply_email;
+            $subject = $request->subject;
+            $body = $request->body;
+            $file = $file; // Assuming you already have the file path
+
+            $fromEmail = $this->mail_data->smtps->email;
+            $fromName = $this->mail_data->smtps->mailer_id;
+
+            // Mail::send([], [], function ($message) use ($to, $subject, $body, $file, $fromEmail, $fromName) {
+            //     $message->to($to)
+            //             ->subject($subject)
+            //             ->setBody($body)
+            //             ->attach($file)
+            //             ->from($fromEmail, $fromName);
+            // });
+
+            Mail::to($to)
+            // ->from($fromEmail, $fromName)
+            ->send(new SendReplay($body ,$subject, $file, $fromEmail, $fromName));
 
             return redirect('mails/'.$id);//->back();
         } catch (\Throwable $th) {

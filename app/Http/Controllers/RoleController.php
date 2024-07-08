@@ -16,14 +16,13 @@ use App\Repositories\FlashRepository;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-
 class RoleController extends Controller
 {
     private $flashRepository;
 
     public function __construct()
     {
-        $this->flashRepository = new FlashRepository;
+        $this->flashRepository = new FlashRepository();
     }
     /**
      * Display a listing of the resource.
@@ -32,39 +31,25 @@ class RoleController extends Controller
      */
     public function index()
     {
-
-        if(auth()->user()->hasRole('super'))
-        {
-
-        $roles = Role::all();
-
-        }
-
-
-        else{
-            if(auth()->user()->hasRole('vendor') || auth()->user()->hasRole('admin') ){
+        if (auth()->user()->hasRole('super')) {
+            $roles = Role::all();
+        } else {
+            if (auth()->user()->hasRole('vendor') || auth()->user()->hasRole('admin')) {
                 $userId = auth()->user()->id;
                 $usersOfCustomers = User::where('user_id', $userId)->pluck('id');
 
-                $roles = Role::whereIn('user_id', $usersOfCustomers)
-                    ->orWhere('user_id', $userId)
-                    ->get();
-            }else{
+                $roles = Role::whereIn('user_id', $usersOfCustomers)->orWhere('user_id', $userId)->get();
+            } else {
                 $userId = auth()->user()->user_id;
-        $usersOfCustomers = User::where('user_id', $userId)->pluck('id');
+                $usersOfCustomers = User::where('user_id', $userId)->pluck('id');
 
-        $roles = Role::whereIn('user_id', $usersOfCustomers)
-            ->orWhere('user_id', $userId)
-            ->get();
+                $roles = Role::whereIn('user_id', $usersOfCustomers)->orWhere('user_id', $userId)->get();
             }
-
         }
-        $this->flashRepository = new FlashRepository;
+        $this->flashRepository = new FlashRepository();
         if (request()->ajax()) {
-
-
-
-            return datatables()->of($roles)
+            return datatables()
+                ->of($roles)
                 ->addColumn('action', 'company-action')
                 // ->addColumn('action', function ($row) {
                 //     // $btn = '<a class="btn-default  edit-role edit_form" data-path="'.route('role.edit', ['role' => $row->id]).'"> <button><i class="fa fa-edit"></i></button> </a>';
@@ -84,7 +69,7 @@ class RoleController extends Controller
         }
         $allPermission = Permission::all();
         $groupPermission = $allPermission->groupBy('module');
-        return view('role.index', ['role' => new Role(), 'allPermission' => $allPermission, 'groupPermission' => $groupPermission,'roles'=>$roles]);
+        return view('role.index', ['role' => new Role(), 'allPermission' => $allPermission, 'groupPermission' => $groupPermission, 'roles' => $roles]);
     }
 
     /**
@@ -94,7 +79,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $allPermission = Permission::where('attribute',NULL)->get();
+        $allPermission = Permission::where('attribute', null)->get();
         $groupPermission = $allPermission->groupBy('module');
         return view('role.create', ['role' => new Role(), 'allPermission' => $allPermission, 'groupPermission' => $groupPermission]);
     }
@@ -118,12 +103,13 @@ class RoleController extends Controller
         $permission_module = $inputData['permission_module']; // model
 
         $request->validate([
-            'name' => ['required',
+            'name' => [
+                'required',
                 Rule::unique('roles')->where(function ($query) use ($request) {
                     return $query->where('guard_name', $request['guard_name']);
-                })
+                }),
             ],
-            'guard_name' => 'required|max:255'
+            'guard_name' => 'required|max:255',
         ]);
 
         $role = Role::create(['name' => $inputData['name'], 'guard_name' => $inputData['guard_name']]);
@@ -141,17 +127,15 @@ class RoleController extends Controller
         $type = $request->schedule_time_delete;
 
         foreach ($request->schedule_no_delete as $key => $value) {
-
             PermissionCount::updateOrCreate(
                 [
-                    'role_id'=>$role->id,
-                    'permission_id'=>$key,
-
+                    'role_id' => $role->id,
+                    'permission_id' => $key,
                 ],
                 [
-                    'count'=>$value,
-                    'type' => $type[$key]
-                ]
+                    'count' => $value,
+                    'type' => $type[$key],
+                ],
             );
         }
 
@@ -160,14 +144,13 @@ class RoleController extends Controller
         foreach ($request->schedule_no_edit as $key => $value) {
             PermissionCount::updateOrCreate(
                 [
-                    'role_id'=>$role->id,
-                    'permission_id'=>$key,
-
+                    'role_id' => $role->id,
+                    'permission_id' => $key,
                 ],
                 [
-                    'count'=>$value,
-                    'type' => $type[$key]
-                ]
+                    'count' => $value,
+                    'type' => $type[$key],
+                ],
             );
         }
 
@@ -260,7 +243,7 @@ class RoleController extends Controller
             return view('role.index');
         }
 
-        $allPermission = Permission::where('attribute',NULL)->get();
+        $allPermission = Permission::where('attribute', null)->get();
         // $roleScheduler = RoleSchedulerSetting::all();, 'roleScheduler' => $roleScheduler
         $groupPermission = $allPermission->groupBy('module');
         return view('role.create', ['role' => $role, 'allPermission' => $allPermission, 'groupPermission' => $groupPermission]);
@@ -275,7 +258,6 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $role = Role::find($id);
         if (empty($role)) {
             $this->flashRepository->setFlashSession('alert-danger', 'Role not found.');
@@ -286,11 +268,15 @@ class RoleController extends Controller
         $permission_data = $inputData['permission_data'];
 
         $request->validate([
-            'name' => ['required',
-                Rule::unique('roles')->ignore($id)->where(function ($query) use ($request) {
-                    return $query->where('guard_name', $request['guard_name']);
-                })],
-            'guard_name' => 'required|max:255'
+            'name' => [
+                'required',
+                Rule::unique('roles')
+                    ->ignore($id)
+                    ->where(function ($query) use ($request) {
+                        return $query->where('guard_name', $request['guard_name']);
+                    }),
+            ],
+            'guard_name' => 'required|max:255',
         ]);
 
         $role->update(['name' => $request->name, 'guard_name' => $request->guard_name]);
@@ -300,17 +286,15 @@ class RoleController extends Controller
         $type = $request->schedule_time_delete;
 
         foreach ($request->schedule_no_delete as $key => $value) {
-
             PermissionCount::updateOrCreate(
                 [
-                    'role_id'=>$id,
-                    'permission_id'=>$key,
-
+                    'role_id' => $id,
+                    'permission_id' => $key,
                 ],
                 [
-                    'count'=>$value,
-                    'type' => $type[$key]
-                ]
+                    'count' => $value,
+                    'type' => $type[$key],
+                ],
             );
         }
 
@@ -319,17 +303,15 @@ class RoleController extends Controller
         foreach ($request->schedule_no_edit as $key => $value) {
             PermissionCount::updateOrCreate(
                 [
-                    'role_id'=>$id,
-                    'permission_id'=>$key,
-
+                    'role_id' => $id,
+                    'permission_id' => $key,
                 ],
                 [
-                    'count'=>$value,
-                    'type' => $type[$key]
-                ]
+                    'count' => $value,
+                    'type' => $type[$key],
+                ],
             );
         }
-
 
         $this->flashRepository->setFlashSession('alert-success', 'Role updated successfully.');
 
@@ -345,8 +327,9 @@ class RoleController extends Controller
     public function destroy($role)
     {
         $roleDelete = Role::find($role)->delete();
-        if ($roleDelete)
+        if ($roleDelete) {
             return response()->json(['msg' => 'Role deleted successfully!']);
+        }
 
         return response()->json(['msg' => 'Something went wrong, Please try again'], 500);
     }

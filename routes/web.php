@@ -1044,3 +1044,9 @@ Route::post('import-data',function(Request $request){
 
         return redirect('/')->with('success', 'All good!');
 })->name('import-data');
+
+Route::resource('categories', App\Http\Controllers\CategoryController::class);
+Route::resource('store_view', App\Http\Controllers\StoreViewController::class);
+Route::resource('pages', App\Http\Controllers\PagesController::class);
+Route::resource('sliders', App\Http\Controllers\SlidersController::class);
+Route::resource('testimonials', App\Http\Controllers\TestimonialsController::class);
