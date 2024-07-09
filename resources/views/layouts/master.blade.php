@@ -23,6 +23,7 @@
     </div>
     <!-- this session messages are for alerts (success or danger ) that appears as a response to requests-->
     @include('layouts.messages.session-messages')
+    @include('layouts.messages.header-messages')
 
     <div class="page">
         <div class="page-main">
@@ -31,7 +32,6 @@
             <div class="app-content main-content">
                 <div class="side-app">
                     <!-- this header messages are for alerts(success or danger) that appears as a response to ajax requests-->
-                    {{-- @include('layouts.messages.header-messages') --}}
                     @include('layouts.header')
                     @yield('page-header')
                     @yield('content')

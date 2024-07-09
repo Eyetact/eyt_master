@@ -9,7 +9,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-success">
                 <div id="successMessage" class="alert alert-success" role="alert">
                     <!-- Success message will be inserted here -->
                 </div>
@@ -30,7 +30,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-danger">
                 <div id="dangerMessage" class="alert alert-danger" role="alert">
                     <!-- Danger message will be inserted here -->
                 </div>
