@@ -201,9 +201,10 @@
             /* padding-bottom: 7px; */
             line-height: 0;
         }
+
         .swal2-container.swal2-center.swal2-backdrop-show {
-    z-index: 99999999;
-}
+            z-index: 99999999;
+        }
     </style>
 @endsection
 
@@ -228,27 +229,27 @@
     <div class="row">
         <div class="col-lg-12 col-xl-6 col-md-12 col-sm-12">
             @if (auth()->user()->hasRole('super'))
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title" style="width: 100%">
-                        <div class="row">
-                            <div class="col-10" style="padding-top: 10px">Front - (
-                                {{ count(App\Models\MenuManager::where('menu_type', 'storfront')->get()) }} )</div>
-                            <div class="col-1">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title" style="width: 100%">
+                            <div class="row">
+                                <div class="col-10" style="padding-top: 10px">Front - (
+                                    {{ count(App\Models\MenuManager::where('menu_type', 'storfront')->get()) }} )</div>
+                                <div class="col-1">
 
                                     <button type="button" data-target="#FrontForm" data-toggle="modal"
                                         class="btn btn-primary">Add</button>
 
+                                </div>
                             </div>
-                        </div>
 
-                    </h4>
-                </div>
+                        </h4>
+                    </div>
 
-                <div class="card-body">
-                    @include('module_manager.storfront_nested_menu')
+                    <div class="card-body">
+                        @include('module_manager.storfront_nested_menu')
+                    </div>
                 </div>
-            </div>
             @endif
             <div class="card">
                 <div class="card-header">
@@ -339,13 +340,14 @@
 
                                 <form
                                     action="{{ $menu->id == null ? route('module_manager.store') : route('module_manager.update', ['menu' => $menu->id]) }}"
-                                    id="admin_form" method="POST" autocomplete="off" novalidate="novalidate">
+                                    class="admin-form" id="admin_form" method="POST" autocomplete="off"
+                                    novalidate="novalidate">
                                     @csrf
                                     <input type="hidden" name="menu_type" value="admin">
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12">
                                             <div class="">
-
+                                                asd;lfkja
                                                 <div class="">
                                                     <div class="row">
                                                         <div class="col-sm-12 form-group">
@@ -355,6 +357,8 @@
                                                                 class="form-control" value="">
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
+                                                            <span id="name-admin-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -362,7 +366,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="code" id="code"
                                                                 class="form-control" value="">
-
+                                                            <span id="code-admin-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -370,6 +375,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="path" id="apath"
                                                                 class="form-control" value="">
+                                                            <span id="path-admin-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -377,6 +384,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="sidebar_name" id="sidebar_name"
                                                                 class="form-control" value="">
+                                                            <span id="sidebar_name-admin-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="form-group col-sm-4">
@@ -387,6 +396,7 @@
                                                                 <span class="custom-switch-indicator"></span>
                                                                 <span class="custom-switch-description">Include in
                                                                     menu</span>
+
                                                             </label>
                                                         </div>
 
@@ -420,6 +430,9 @@
                                                                 <option value="sortable">Sortable</option>
 
                                                             </select>
+
+                                                            <span id="mtype-admin-error"
+                                                                class="error text-danger d-none error-message"></span>
 
 
                                                         </div>
@@ -755,13 +768,13 @@
 
                                 <form
                                     action="{{ $menu->id == null ? route('module_manager.storeFront') : route('module_manager.update', ['menu' => $menu->id]) }}"
-                                    id="admin_form" method="POST" autocomplete="off" novalidate="novalidate">
+                                    class="storefront-form" id="admin_form" method="POST" autocomplete="off"
+                                    novalidate="novalidate">
                                     @csrf
                                     <input type="hidden" name="menu_type" value="storfront">
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12">
                                             <div class="">
-
                                                 <div class="">
                                                     <div class="row">
                                                         <div class="col-sm-12 form-group">
@@ -771,6 +784,10 @@
                                                                 class="form-control" value="">
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
+                                                            <span id="name-storefront-error"
+                                                                class="error text-danger d-none error-message"></span>
+
+
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -778,7 +795,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="code" id="code"
                                                                 class="form-control" value="">
-
+                                                            <span id="code-storefront-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -786,6 +804,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="path" id="apath"
                                                                 class="form-control" value="">
+                                                            <span id="path-storefront-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         <div class="col-sm-12 form-group">
@@ -793,6 +813,8 @@
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="sidebar_name" id="sidebar_name"
                                                                 class="form-control" value="">
+                                                            <span id="sidebar_name-storefront-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                         </div>
 
                                                         {{-- <div class="form-group col-sm-4">
@@ -836,6 +858,8 @@
                                                                 <option value="sortable">Sortable</option>
 
                                                             </select>
+                                                            <span id="mtype-storefront-error"
+                                                                class="error text-danger d-none error-message"></span>
 
 
                                                         </div>
@@ -1590,4 +1614,5 @@
 
     @include('module_manager.js.functions')
     @include('module_manager.js.actions')
+    @include('module_manager.js.menu.menu')
 @endsection
