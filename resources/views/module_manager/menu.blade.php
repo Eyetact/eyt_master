@@ -234,7 +234,10 @@
                         <h4 class="card-title" style="width: 100%">
                             <div class="row">
                                 <div class="col-10" style="padding-top: 10px">Front - (
-                                    {{ count(App\Models\MenuManager::where('menu_type', 'storfront')->get()) }} )</div>
+                                    <span
+                                        id="FrontForm-counter">{{ count(App\Models\MenuManager::where('menu_type', 'storfront')->get()) }}</span>
+                                    )
+                                </div>
                                 <div class="col-1">
 
                                     <button type="button" data-target="#FrontForm" data-toggle="modal"
@@ -256,7 +259,10 @@
                     <h4 class="card-title" style="width: 100%">
                         <div class="row">
                             <div class="col-10" style="padding-top: 10px">Admin - (
-                                {{ count(App\Models\MenuManager::where('menu_type', 'admin')->get()) }} )</div>
+                                <span id="addMenuLabel-counter">
+                                    {{ count(App\Models\MenuManager::where('menu_type', 'admin')->get()) }}
+                                </span>)
+                            </div>
                             <div class="col-1">
                                 @if (auth()->user()->checkAllowdMode())
                                     <button type="button" data-target="#addMenuLabel" data-toggle="modal"
