@@ -306,7 +306,6 @@ class ModuleManagerController extends Controller
 
     public function menu_update(Request $request)
     {
-        // dd($request);
         if ($request->type == 'storfront') {
             $dataArray = json_decode($request['storfront_json'], true);
         } else {
