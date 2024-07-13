@@ -202,19 +202,11 @@
                 // Add the new inserted row in the field
                 addNewStoreFrontModuleElementToList(response.data, listType);
                 // Display the success or danger message
-                $("#" + resultType + "Message").text(response.message);
+                toastr.success(response.message, "Success");
                 // increase the counter
                 increaseCounter(formType);
             } else
-                $("#" + resultType + "Message").text(response);
-
-            // 3. Display the success or danger modal
-            $("#" + resultType + "Modal").modal('show');
-
-            // 4. Hide the success or danger modal after a timeout
-            setTimeout(function() {
-                $("#" + resultType + "Modal").modal('hide');
-            }, timeout);
+                toastr.error(response, "Error");
         }
     });
 </script>

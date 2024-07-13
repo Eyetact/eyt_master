@@ -23,7 +23,6 @@
     </div>
     <!-- this session messages are for alerts (success or danger ) that appears as a response to requests-->
     @include('layouts.messages.session-messages')
-    @include('layouts.messages.header-messages')
 
     <div class="page">
         <div class="page-main">

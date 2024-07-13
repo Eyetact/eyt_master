@@ -23,7 +23,8 @@
   <!-- Color Skin css -->
   <link id="theme" href="{{ URL::asset('assets/colors/color1.css') }}" rel="stylesheet" type="text/css" />
 
-  <!-- Session messages style -->
-  <link href="{{ asset('assets/css/messages/messages.css') }}" rel="stylesheet">
-  <!-- Session messages JS -->
-  <script type="text/javascript" src="{{ asset('assets/js/messages/messages.js') }}"></script>
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
