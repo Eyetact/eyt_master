@@ -2063,6 +2063,11 @@ ${response}
     {
 
 
+        $('.mchild-drop1').remove()
+            $('.mchild-drop2').remove()
+            $('.fmulti-column').remove()
+            $('.smulti-column').remove()
+
         if ($(this).val() == 'one') {
 
             $('.operation-drop').remove()
@@ -2101,7 +2106,7 @@ ${response}
         console.log(response);
 
         $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
-         <div class="input-box child-drop form-constrain mt-2">
+         <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
                ${response}
@@ -2154,7 +2159,7 @@ ${response}
         console.log(response);
 
         $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
-        <div class="input-box child-drop form-constrain mt-2">
+        <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
                ${response}
@@ -2167,7 +2172,7 @@ ${response}
 
 
         $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
-         <div class="input-box child2-drop form-constrain mt-2">
+         <div class="input-box child2-drop multi-column2 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="second_column" required>
                ${response}
@@ -2188,6 +2193,88 @@ ${response}
 
 
 }
+
+
+    })
+
+
+
+    $(document).on('change','.multi-column1',function()
+    {
+
+        var selectedOption = $('option:selected', this);
+            var isMultiAttr = selectedOption.data('multiattr');
+            var multiName = selectedOption.val();
+            var id = selectedOption.data('id');
+            var type = $('.tcalc-drop').val();
+
+
+
+            if (isMultiAttr) {
+
+
+                if(type == 'one'){
+
+
+                $.ajax({
+                    url: '{{ url('/') }}/fields-of-multi/' + id,
+                    success: function(response) {
+                        console.log(response);
+
+                        $(`.options`).append(`<label class="form-label fmulti-column" >select column of ${multiName}  <span class="text-red">*</span></label>
+                         <div class="input-box  form-constrain mt-2">
+                        <div class="input-box mchild-drop2 form-on-update mt-2 form-on-update-foreign">
+                            <select class="google-input " name="first_multi_column" required>
+                               ${response}
+                            </select>
+                        </div></div>`);
+
+
+                    }
+                });
+
+
+
+
+            }
+
+            if(type == 'two'){
+
+                $('.child2-drop').remove();
+
+                $('.scolumn').hide();
+
+
+$.ajax({
+    url: '{{ url('/') }}/fields-of-multi/' + id,
+    success: function(response) {
+        console.log(response);
+
+        $(`.options`).append(`<label class="form-label fmulti-column" >select first column of ${multiName}  <span class="text-red">*</span></label>
+         <div class="input-box  form-constrain mt-2">
+        <div class="input-box mchild-drop1 form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input " name="first_multi_column" required>
+               ${response}
+            </select>
+        </div></div>`);
+
+
+        $(`.options`).append(`<label class="form-label smulti-column" >select second column of ${multiName}  <span class="text-red">*</span></label>
+         <div class="input-box  form-constrain mt-2">
+        <div class="input-box mchild-drop2 form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input " name="second_multi_column" required>
+               ${response}
+            </select>
+        </div></div>`);
+
+    }
+});
+
+
+
+
+}
+    }
 
 
     })

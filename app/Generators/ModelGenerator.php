@@ -288,7 +288,14 @@ class ModelGenerator
                             break;
                     }
                 }else{
+
+                    if($field->first_multi_column != NULL && $field->type_of_calc == 'two'){
+
+                    }
+                    else{
                     switch ($i + 1 != $totalFields) {
+
+
 
                         case true:
                             $fields .= "'" . str()->snake($field->code) . "', ";
@@ -297,6 +304,7 @@ class ModelGenerator
                             $fields .= "'" . str()->snake($field->code) . "'";
                             break;
                     }
+                }
                 }
 
             }

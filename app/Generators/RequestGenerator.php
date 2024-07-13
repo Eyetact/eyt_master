@@ -352,8 +352,20 @@ class RequestGenerator
 
                 } else {
 
+                    if($field->first_multi_column != NULL && $field->type_of_calc == 'one'){
+
+                        $validations .= "'" . str($field->code)->snake() . "' => ";
+
+                        }
+
+
+                    if($field->first_multi_column == NULL){
 
                     $validations .= "'" . str($field->code)->snake() . "' => ";
+
+                    }
+
+
 
                     /**
                      * will generate like:
@@ -376,12 +388,18 @@ class RequestGenerator
 
                         if($field->type == 'calc'){
 
+                            if($field->first_multi_column != NULL && $field->type_of_calc == 'two'){
+
+                            }
+
+                            else{
 
                             match ($field->required) {
                                 'yes' => $validations .= "'nullable",
                                 'on' => $validations .= "'nullable",
                                 default => $validations .= "'nullable"
                             };
+                        }
 
 
                         }
@@ -583,7 +601,15 @@ class RequestGenerator
                              * will generate like:
                              * 'name' => 'required|max:30|exists:App\Models\Product,id',
                              */
+
+                             if($field->first_multi_column == NULL){
                             $validations .= "',";
+                             }
+
+                             if($field->first_multi_column != NULL && $field->type_of_calc == 'one'){
+                                $validations .= "',";
+                                 }
+
                             break;
                     }
                 }

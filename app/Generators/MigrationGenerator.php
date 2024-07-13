@@ -245,8 +245,14 @@ class MigrationGenerator
                 $setFields2 .= "\$table->foreignId('" . str()->snake($field->constrain2.'_'.$field->attribute2. '_id');
             }
             elseif ($field->type == 'calc') {
+                if($field->first_multi_column != NULL && $field->type_of_calc == 'two'){
+
+                }
+                else{
                 $setFields .= "\$table->text('" . str()->snake($field->code);
+                }
             }
+
              else {
 
 
@@ -299,13 +305,34 @@ class MigrationGenerator
 
                         $setFields2 .= "')";
                     }
+
+                    if($field->first_multi_column != NULL && $field->type_of_calc == 'one' ){
+
+
+                        $setFields .= "')";
+
+                        }
+
+                        //for all other cases
+                    if($field->first_multi_column == NULL ){
+
+
                     $setFields .= "')";
+
+                    }
                 }
             }
 
             if ($field->required != 'on') {
 
+                if($field->first_multi_column != NULL && $field->type_of_calc == 'two'){
+
+                }
+
+                else{
+
                 $setFields .= "->nullable()";
+                }
             }
 
             if ($field->default_value) {

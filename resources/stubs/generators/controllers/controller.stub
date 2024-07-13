@@ -12,6 +12,7 @@ use App\Generators\GeneratorUtils;
 use App\Models\User;
 use App\Models\Limit;
 use Illuminate\Http\Request;
+use App\Models\Multi;
 use DB;
 
 
@@ -214,7 +215,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
 
 
 
-    $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->get();
+    $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->where('first_multi_column',NULL)->get();
 
             foreach($attrs as $attr)
             {
@@ -472,6 +473,102 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
 
 
 
+
+    $mAttrs = Attribute::where('module',$module_id)->where('type','calc')->where('first_multi_column','!=',NULL)->get();
+
+
+            foreach($mAttrs as $attr)
+            {
+
+
+                 if ($attr->type_of_calc == 'two') {
+                $multiAttr = Multi::where('name','like',$attr->name)->where('calc_attr',$attr->id)->first();
+
+                $multiCode =$multiAttr->code;
+
+                $multi=Attribute::where('id',$multiAttr->attribute_id)->first()->code;
+
+                $item1= $attr->first_multi_column;
+                $item2= $attr->second_multi_column;
+
+
+                $ar = json_decode(str($insert->$multi)->snake(), true);
+
+                foreach ($ar as $key => $item) {
+                       if($attr->operation == 'sum' )
+                    {
+
+                    $item[$multiCode] = (string)($item[$item1] + $item[$item2]);
+                    }
+
+
+                    if($attr->operation == 'multiple' )
+                    {
+
+                    $item[$multiCode] = (string)($item[$item1] * $item[$item2]);
+                    }
+
+                    $ar[$key] = $item;
+                }
+
+
+                $insert->$multi = $ar;
+                $insert->save();
+
+            }
+
+
+
+                   if ($attr->type_of_calc == 'one') {
+
+                $multiAttr = Attribute::where('module',$module_id)->where('type','multi')->where('code','like',$attr->first_column)->first();
+
+                $multiCode = $multiAttr->code;
+
+
+                $item1 = $attr->first_multi_column;
+                $aggAttr = match ($attr->operation) {
+                    'sum', 'count' => 0,
+                    'multiple' => 1,
+                    'avg', 'min', 'max' => null,
+                    default => 0,
+                };
+
+                $ar = json_decode(str($insert->$multiCode)->snake(), true);
+
+                foreach ($ar as $key => $item) {
+                    switch ($attr->operation) {
+                        case 'sum':
+                            $aggAttr += $item[$item1];
+                            break;
+                        case 'multiple':
+                            $aggAttr *= $item[$item1];
+                            break;
+                        case 'count':
+                            $aggAttr += 1;
+                            break;
+                        case 'avg':
+                            $aggAttr = ($aggAttr ?? 0) + $item[$item1];
+                            break;
+                        case 'min':
+                            $aggAttr = is_null($aggAttr) ? $item[$item1] : min($aggAttr, $item[$item1]);
+                            break;
+                        case 'max':
+                            $aggAttr = is_null($aggAttr) ? $item[$item1] : max($aggAttr, $item[$item1]);
+                            break;
+                    }
+                }
+
+                if ($attr->operation == 'avg') {
+                    $aggAttr = $aggAttr / count($ar);
+                }
+
+                $insert->{$attr->code} = $aggAttr;
+
+                $insert->save();
+            }
+
+            }
 
 
 
@@ -885,6 +982,102 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
             }
 
 
+
+
+   $mAttrs = Attribute::where('module',$module_id)->where('type','calc')->where('first_multi_column','!=',NULL)->get();
+
+
+            foreach($mAttrs as $attr)
+            {
+
+
+                 if ($attr->type_of_calc == 'two') {
+
+                $multiAttr = Multi::where('name','like',$attr->name)->where('calc_attr',$attr->id)->first();
+
+                $multiCode =$multiAttr->code;
+
+                $multi=Attribute::where('id',$multiAttr->attribute_id)->first()->code;
+
+                $item1= $attr->first_multi_column;
+                $item2= $attr->second_multi_column;
+
+
+                $ar = json_decode(str( ${{modelNameSingularCamelCase}}->$multi)->snake(), true);
+
+                foreach ($ar as $key => $item) {
+                       if($attr->operation == 'sum' )
+                    {
+
+                    $item[$multiCode] = (string)($item[$item1] + $item[$item2]);
+                    }
+
+
+                    if($attr->operation == 'multiple' )
+                    {
+
+                    $item[$multiCode] = (string)($item[$item1] * $item[$item2]);
+                    }
+
+                    $ar[$key] = $item;
+                }
+
+
+           ${{modelNameSingularCamelCase}}->$multi = $ar;
+
+             ${{modelNameSingularCamelCase}}->save();
+
+            }
+
+     if ($attr->type_of_calc == 'one') {
+
+                $multiAttr = Attribute::where('module',$module_id)->where('type','multi')->where('code','like',$attr->first_column)->first();
+
+                $multiCode = $multiAttr->code;
+
+
+                $item1 = $attr->first_multi_column;
+                $aggAttr = match ($attr->operation) {
+                    'sum', 'count' => 0,
+                    'multiple' => 1,
+                    'avg', 'min', 'max' => null,
+                    default => 0,
+                };
+
+                $ar = json_decode(str($onecalcmulti->$multiCode)->snake(), true);
+
+                foreach ($ar as $key => $item) {
+                    switch ($attr->operation) {
+                        case 'sum':
+                            $aggAttr += $item[$item1];
+                            break;
+                        case 'multiple':
+                            $aggAttr *= $item[$item1];
+                            break;
+                        case 'count':
+                            $aggAttr += 1;
+                            break;
+                        case 'avg':
+                            $aggAttr = ($aggAttr ?? 0) + $item[$item1];
+                            break;
+                        case 'min':
+                            $aggAttr = is_null($aggAttr) ? $item[$item1] : min($aggAttr, $item[$item1]);
+                            break;
+                        case 'max':
+                            $aggAttr = is_null($aggAttr) ? $item[$item1] : max($aggAttr, $item[$item1]);
+                            break;
+                    }
+                }
+
+                if ($attr->operation == 'avg') {
+                    $aggAttr = $aggAttr / count($ar);
+                }
+
+                $onecalcmulti->{$attr->code} = $aggAttr;
+
+                $onecalcmulti->save();
+            }
+            }
 
 
 

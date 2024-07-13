@@ -188,7 +188,7 @@ class ShowViewGenerator
 
                     case 'calc':
 
-                        if($field->type_of_calc == 'two')
+                        if($field->type_of_calc == 'two' && $field->first_multi_column == NULL)
                         {
                             $trs .= "<tr>
                             <td class=\"fw-bold\">{{ __('$fieldUcWords') }}</td>
@@ -196,6 +196,16 @@ class ShowViewGenerator
                         </tr>";
 
                         }
+
+                        if($field->type_of_calc == 'one' && $field->first_multi_column != NULL)
+                        {
+                            $trs .= "<tr>
+                            <td class=\"fw-bold\">{{ __('$fieldUcWords') }}</td>
+                            <td>{{ $" . $modelNameSingularCamelCase . "->" . $fieldSnakeCase . " }}</td>
+                        </tr>";
+
+                        }
+
                         break;
 
                     case 'boolean':
@@ -443,13 +453,14 @@ class ShowViewGenerator
                             $trs .= "<th>" . $value->name . "</th>";
                         }
 
-
                         $trs .= "</thead>
 
                                                         <tbody>
                                                         @if(!empty(\$ar))
                                                         @foreach( \$ar as \$item )
                                                         <tr>";
+
+
                         foreach ($field->multis as $key => $value) {
 
                             if($value->type=="texteditor"){

@@ -293,6 +293,8 @@ class AttributeController extends Controller
             'operation' => isset($request['operation']) ? $request['operation'] : null,
             'first_column' => isset($request['first_column']) ? $request['first_column'] : null,
             'second_column' => isset($request['second_column']) ? $request['second_column'] : null,
+            'first_multi_column' => isset($request['first_multi_column']) ? $request['first_multi_column'] : null,
+            'second_multi_column' => isset($request['second_multi_column']) ? $request['second_multi_column'] : null,
         ];
         // dd($createArr);
         $attribute = Attribute::create($createArr);
@@ -315,6 +317,49 @@ class AttributeController extends Controller
 
         }
 
+        if (isset($requestData['first_multi_column']) ) {
+
+
+                if($requestData['type_of_calc'] == 'two')
+                {
+
+                $attribute->second_column = $attribute->first_column;
+                $attribute->save();
+
+                $selectedOptionDataId = Attribute::where('module',$attribute->module)
+                ->where('type','multi')
+                ->where('code','like',$attribute->first_column)
+                ->first()
+                ->id;
+
+
+                $m = new Multi();
+                $m->name = $attribute->name;
+                $m->calc_attr = $attribute->id;
+                $m->type = 'text';
+                $m->source = '';
+                $m->select_options = '';
+                $m->attribute_id =   $selectedOptionDataId;
+                $m->constrain = '';
+                $m->attribute = '';
+                $m->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($attribute->name)->lower()));
+
+                $m->primary = NULL;
+                $m->secondary =  NULL;
+                $m->fixed_value =  NULL;
+                $m->attribute2 =  NULL;
+
+                $m->save();
+
+                }
+
+
+
+
+
+            }
+
+
         if (isset($requestData['multi'])) {
 
 
@@ -334,6 +379,7 @@ class AttributeController extends Controller
                 $m->fixed_value = isset($value['fixed_value']) ? $value['fixed_value'] : NULL;
                 $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : NULL;
 
+                $m->calc_attr = isset($value['calc_attr']) ? $value['calc_attr'] : NULL;
                 $m->save();
             }
         }
@@ -398,16 +444,31 @@ class AttributeController extends Controller
     }
 
 
-    public function getAttrByModel(Module $module)
-    {
-        $attributes = Attribute::where('module', $module->id)->get();
-        $options = '<option disabled selected>-- select --</option>';
+    // public function getAttrByModel(Module $module)
+    // {
+    //     $attributes = Attribute::where('module', $module->id)->get();
+    //     $options = '<option disabled selected>-- select --</option>';
 
-        foreach ($attributes as $key => $value) {
-            $options .= '<option data-id="' . $value->id . '" value="' . $value->code . '" >' . $value->name . '</option>';
+    //     foreach ($attributes as $key => $value) {
+    //         $options .= '<option data-id="' . $value->id . '" value="' . $value->code . '" >' . $value->name . '</option>';
+    //     }
+    //     return $options;
+    // }
+
+    public function getAttrByModel(Module $module)
+{
+    $attributes = Attribute::where('module', $module->id)->get();
+    $options = '<option disabled selected>-- select --</option>';
+
+    foreach ($attributes as $key => $value) {
+        if ($value->type == "multi") {
+            $options .= '<option data-id="' . $value->id . '" data-multiattr="true" value="' . $value->code . '" >' . $value->name . '</option>';
+        } else {
+            $options .= '<option data-id="' . $value->id . '" data-multiattr="false" value="' . $value->code . '" >' . $value->name . '</option>';
         }
-        return $options;
     }
+    return $options;
+}
 
 
     public function getAttrByModel2(Module $module)
@@ -417,6 +478,19 @@ class AttributeController extends Controller
 
         foreach ($attributes as $key => $value) {
             $options .= '<option data-id="' . $value->id . '" value="' . $value->id . '" >' . $value->name . '</option>';
+        }
+        return $options;
+    }
+
+    public function getFieldsOfMulti($attr_id)
+    {
+        $fields = Multi::where('attribute_id',$attr_id)->get();
+        $options = '<option disabled selected>-- select --</option>';
+
+        foreach ( $fields  as $key => $value) {
+
+                $options .= '<option data-id="' . $value->id . '"  value="' . $value->name . '" >' . $value->name . '</option>';
+
         }
         return $options;
     }

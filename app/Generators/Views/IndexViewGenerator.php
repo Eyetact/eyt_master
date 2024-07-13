@@ -233,9 +233,7 @@ class IndexViewGenerator
                     if($field->type_of_calc == 'one')
                     {
 
-
-
-
+                        if($field->first_multi_column == NULL){
 
                             $fieldNameParts = explode('_', $field->first_column);
                             $lastPart = end($fieldNameParts);
@@ -268,12 +266,27 @@ class IndexViewGenerator
 
                   ";
                        }
+                    }
+
+
+                    else
+                    {
+
+
+                        $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
+                        $tfColums .= "<th></th>";
+                    }
 
                     }
 
                     else{
+
+                        if($field->first_multi_column == NULL){
+
                         $thColums .= "<th>{{ __('" . GeneratorUtils::cleanUcWords($field->name) . "') }}</th>";
                         $tfColums .= "<th></th>";
+
+                        }
 
                     }
                 }
@@ -950,10 +963,33 @@ class IndexViewGenerator
                      */
 
                      if($field->type_of_calc != 'one'){
+
+
+                        if($field->first_multi_column == NULL){
+
                     $tdColumns .= "{
                     data: \"" . str()->snake($field->code) . "\",
                     name: \"" . str()->snake($field->name) . "\",
                 },";
+
+                        }
+
+
+
+                     }
+
+
+                     if($field->first_multi_column != NULL &&  $field->type_of_calc == 'one'){
+
+
+
+                    $tdColumns .= "{
+                    data: \"" . str()->snake($field->code) . "\",
+                    name: \"" . str()->snake($field->name) . "\",
+                },";
+
+
+
                      }
                 }
 

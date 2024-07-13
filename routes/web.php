@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/attribute/{attributeId}/updateStatus', 'updateStatus')->name('attribute.updateStatus');
         Route::get('/attribute-by-module/{module}', 'getAttrByModel')->name('attribute.get');
         Route::get('/attribute-by-module2/{module}', 'getAttrByModel2')->name('attribute.get');
+        Route::get('/fields-of-multi/{attr_id}', 'getFieldsOfMulti')->name('fields.get');
         Route::get('/data-by-module/{model_id}/{attr_condition}', 'getDataByModel')->name('data.get');
     });
 
