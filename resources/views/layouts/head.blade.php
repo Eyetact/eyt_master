@@ -24,6 +24,13 @@
   <!---Icons css-->
   <link href="{{ URL::asset('assets/css/icons.css') }}" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
   @yield('css')
   @stack('styles')
   <!-- Simplebar css -->
@@ -35,8 +42,11 @@
   <link id="theme" href="{{ URL::asset('assets/demo.css') }}" rel="stylesheet" type="text/css" />
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 
-  <!-- session messages style-->
-  <link href="{{ asset('assets/css/messages/messages.css') }}" rel="stylesheet">
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <!-- Toastr JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 
 
