@@ -724,7 +724,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
             }
 
 
-          $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->get();
+          $attrs = Attribute::where('module',$module_id)->where('second_column','!=',NULL)->where('first_multi_column',NULL)->get();
 
             foreach($attrs as $attr)
             {
@@ -1044,7 +1044,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
                     default => 0,
                 };
 
-                $ar = json_decode(str($onecalcmulti->$multiCode)->snake(), true);
+                $ar = json_decode(str(${{modelNameSingularCamelCase}}->$multiCode)->snake(), true);
 
                 foreach ($ar as $key => $item) {
                     switch ($attr->operation) {
@@ -1073,9 +1073,9 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
                     $aggAttr = $aggAttr / count($ar);
                 }
 
-                $onecalcmulti->{$attr->code} = $aggAttr;
+                ${{modelNameSingularCamelCase}}->{$attr->code} = $aggAttr;
 
-                $onecalcmulti->save();
+                ${{modelNameSingularCamelCase}}->save();
             }
             }
 

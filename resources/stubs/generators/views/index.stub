@@ -65,7 +65,34 @@
                                     <th width="30px"></th>
                                     {{thColumns}}
 
+
+
+                                    @php
+
+                                        $checkAttr = App\Models\Attribute::where('module',$model_id)
+
+                                                              ->count();
+
+                                                              $callAggr = false;
+                                                              if(  $checkAttr > 0)
+                                                              {
+                                                                $callAggr = true;
+
+                                                              }
+                                                              else{
+
+                                                                $callAggr = false;
+
+                                                              }
+
+                                    @endphp
+
+                                      @if($callAggr)
+
                                     {{agg}}
+
+                                    @endif
+
 
                                         @if($model->is_system)
                                     	<th>{{ __('Global') }}</th>
@@ -80,7 +107,11 @@
                                <tfoot>
                                 <tr>
                                     <th width="30px"></th>
+
+                                   @if($callAggr)
                                     {{tfColumns}}
+                                    @endif
+
 
                                         @if($model->is_system)
                                     	<th></th>
@@ -864,9 +895,12 @@ output {
 
 
      $(document).ready(function() {
-  var aggregate = "{{ isset($aggregate) ?  $aggregate : 'undefined' }}";
 
-  if (aggregate != undefined) {
+        var aggregatesData = {!! isset($aggregates) ? json_encode($aggregates) : '{}' !!};
+
+if (typeof aggregatesData === 'object') {
+
+
     var aggregates = @json($aggregates);
 
     var table = $('#data_table').DataTable({
@@ -889,6 +923,10 @@ output {
       });
     }
   }
+
+  else{
+    console.log('$aggregates is undefined, skipping footer update.');
+}
 });
 
 
