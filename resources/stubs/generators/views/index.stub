@@ -901,7 +901,7 @@ output {
 if (typeof aggregatesData === 'object') {
 
 
-    var aggregates = @json($aggregates);
+       var aggregates = aggregatesData;
 
     var table = $('#data_table').DataTable({
       retrieve: true
