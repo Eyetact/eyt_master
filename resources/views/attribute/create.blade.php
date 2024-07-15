@@ -1,6 +1,6 @@
 @php
     $data = json_decode($attribute->fields_info, true);
-    // dump($data);
+    // dump($attribute->name);
 @endphp
 <form action="{{ route('attribute.store') }}" id="attributeCreate" method="POST" autocomplete="off"
     enctype="multipart/form-data">
@@ -14,8 +14,9 @@
                 <div class="card-body pb-2">
                     <div class="row">
                         <div class="col-sm-12 input-box">
-                            <label class="form-label" for="module">Add Attribute To<span class="text-red">*</span></label>
-                            <select name="module" class="google-input module" id="module" required>
+                            <label class="form-label" for="module">Add Attribute To<span
+                                    class="text-red">*</span></label>
+                            <select name="module" class="google-input module" id="module">
                                 <option value="" selected>Select Module</option>
                                 @foreach ($moduleData as $module)
                                     <option value="{{ $module->id }}"
@@ -40,19 +41,17 @@
                         </div>
 
                         <div class="col-sm-12 input-box">
-                            <label class="form-label" for="code">Code<span class="text-red">*</span></label>
-                            <input type="text" name="code"
-                                class="google-input input-code @error('code') is-invalid @enderror"
+                            <label class="form-label" for="code2">Code<span class="text-red">*</span></label>
+                            <input type="text" name="code" id="code"
+                                class="google-input @error('code') is-invalid @enderror"
                                 value="{{ old('code', $attribute->code) }}">
-                            <small class="text-secondary">
-                                <ul class="my-1 mx-2 p-0">
-                                    <li>is not allowed to use numbers or ( ID word ) or symbols</li>
-                                </ul>
-                            </small>
+
                             @error('code')
                                 <span class="error code-error">{{ $message }}</span>
                             @enderror
+
                         </div>
+
                     </div>
 
                     <div class="row">
@@ -81,7 +80,7 @@
 
                         <div class="input-box col-sm-12">
                             <label class="form-label">Select Attribute type<span class="text-red">*</span></label>
-                            <select name="input_types" class="form-select form-input-types  google-input" required>
+                            <select name="input_types" class="form-select form-input-types  google-input">
                                 <option value="" disabled selected>-- {{ __('Select input type') }}--</option>
                                 <option value="multi">Multi Attribute</option>
                                 <option value="text">Text</option>
@@ -183,7 +182,7 @@
             <div class="row">
                 <div class="col-sm-12 input-box">
                     <label class="form-label" for="source">source<span class="text-red">*</span></label>
-                    <select class="google-input " name="source"  id="source">
+                    <select class="google-input " name="source" id="source">
                     </select>
                 </div>
 

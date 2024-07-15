@@ -28,7 +28,7 @@ class ModulePostRequest extends FormRequest
         $menuId = $this->route('menu');
         return [
 
-            'name' => 'required|unique:modules,name' . $menuId . '|min:3|regex:/^[^0-9]*$/',
+            'name' => 'required|unique:modules,name,NULL,id,user_id,' . $this->user()->id . '|min:3|regex:/^[^0-9]*$/',
             'path' => 'required | unique:menus,path,' . $menuId . '|regex:/^[^0-9]*$/',
             'code' => 'required| unique:modules,code' . '|regex:/^[^0-9]*$/',
             'mtype' => 'required',
@@ -41,7 +41,7 @@ class ModulePostRequest extends FormRequest
     {
         return [
             'name.required' => 'the name is required',
-            'name.unique' => 'this name has already been taken!',
+            'name.unique' => 'you have already been taken this name!',
             'name.regex' => 'name should not contain numbers!',
 
             'path.required' => 'the path is required',

@@ -422,38 +422,37 @@
 
                         var listd = '';
 
-//                         @foreach (App\Models\Attribute::where('type', 'foreignId')->get() as $it)
+                        //                         @foreach (App\Models\Attribute::where('type', 'foreignId')->get() as $it)
 
-// listd +=
-//     '<option value="{{ explode('_id', $it->code)[0] }}" >{{ $it->name }}</option>'
-// @endforeach
-
-
-
-
-                       if($('.multi-type').val() == 'foreignId')
-                       {
-                        $.ajax({
-                url: '{{ url('/') }}/get-relations-multi/' + id,
-                success: function(response) {
-                    console.log(response);
+                        // listd +=
+                        //     '<option value="{{ explode('_id', $it->code)[0] }}" >{{ $it->name }}</option>'
+                        // @endforeach
 
 
 
-                    parent.append(` <div class="input-box child-drop form-constrain mt-2">
+
+                        if ($('.multi-type').val() == 'foreignId') {
+                            $.ajax({
+                                url: '{{ url('/') }}/get-relations-multi/' + id,
+                                success: function(response) {
+                                    console.log(response);
+
+
+
+                                    parent.append(` <div class="input-box child-drop form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input " name="multi[${index}][source]" required>
                             <option value="disabled">disabled</option>
                             ${response}
                         </select>
                     </div></div>`);
-                }
-                });
+                                }
+                            });
 
-            }
+                        }
 
 
-                    //     parent.append(` <div class="input-box child-drop form-constrain mt-2">
+                        //     parent.append(` <div class="input-box child-drop form-constrain mt-2">
                     // <div class="input-box form-on-update mt-2 form-on-update-foreign">
                     //     <select class="google-input " name="multi[${index}][source]" required>
                     //         <option value="disabled">disabled</option>
@@ -463,27 +462,27 @@
 
 
 
-                    if($('.secondary-drop').val() == 'lookprefix' || $('.secondary-drop').val() == 'looksuffix')
-                       {
+                        if ($('.secondary-drop').val() == 'lookprefix' || $('.secondary-drop').val() ==
+                            'looksuffix') {
 
-                        $.ajax({
-                url: '{{ url('/') }}/get-belongs-to-multi/' + id,
-                success: function(response) {
-                    console.log(response);
+                            $.ajax({
+                                url: '{{ url('/') }}/get-belongs-to-multi/' + id,
+                                success: function(response) {
+                                    console.log(response);
 
 
 
-                    parent.append(` <div class="input-box child-drop form-constrain mt-2">
+                                    parent.append(` <div class="input-box child-drop form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input smodule2 " name="multi[${index}][source]" required>
                             <option value="disabled">disabled</option>
                             ${response}
                         </select>
                     </div></div>`);
-                }
-                });
+                                }
+                            });
 
-            }
+                        }
 
 
                     }
@@ -491,15 +490,16 @@
             });
         })
 
-        $(document).on('change','.smodule2',function(){
+        $(document).on('change', '.smodule2', function() {
 
 
 
             $(this).closest('tr').find('.cd2').remove();
             var id = $(this).find(':selected').data('id');
             var parent = $(this).parent().parent().parent().parent().parent().find('.select_options');
-            let index = parseInt($(this).parent().parent().parent().parent().parent().parent().find('.text-center').find(
-                '.input-box').html());
+            let index = parseInt($(this).parent().parent().parent().parent().parent().parent().find('.text-center')
+                .find(
+                    '.input-box').html());
             // alert(index)
             $.ajax({
                 url: '{{ url('/') }}/attribute-by-module/' + id,
@@ -603,51 +603,51 @@
 
             }
 
-//             if ($('.fktype-radio:checked').val() == 'based') {
+            //             if ($('.fktype-radio:checked').val() == 'based') {
 
 
 
 
 
-//                 var id = $('.lookup-drop').find(':selected').data('id');
-//                 $.ajax({
-//                     url: '{{ url('/') }}/get-relations-modules/' + id,
-//                     success: function(response) {
-//                         console.log(response);
+            //                 var id = $('.lookup-drop').find(':selected').data('id');
+            //                 $.ajax({
+            //                     url: '{{ url('/') }}/get-relations-modules/' + id,
+            //                     success: function(response) {
+            //                         console.log(response);
 
 
 
 
-//                         $(`.options`).append(`
-//     <div class="input-box form-constrain fkey2 mt-2">
-//         <div class="input-box form-on-update mt-2 form-on-update-foreign">
-//             <select class="google-input lookup-drop2"  name="constrains2" required>
-//                ${response}
-//             </select>
-//         </div>
-//         <small class="text-secondary">
-//             <ul class="my-1 mx-2 p-0">
-//                 <li>Use '/' if related model at sub folder, e.g.: Main/Product.</li>
-//                 <li>Field name must be related model + "_id", e.g.: user_id</li>
-//             </ul>
-//         </small>
-//     </div>
-//     <div class="input-box form-foreign-id mt-2">
-//         <input type="hidden" name="foreign_ids" class="google-input" placeholder="Foreign key (optional)">
-//     </div>
+            //                         $(`.options`).append(`
+        //     <div class="input-box form-constrain fkey2 mt-2">
+        //         <div class="input-box form-on-update mt-2 form-on-update-foreign">
+        //             <select class="google-input lookup-drop2"  name="constrains2" required>
+        //                ${response}
+        //             </select>
+        //         </div>
+        //         <small class="text-secondary">
+        //             <ul class="my-1 mx-2 p-0">
+        //                 <li>Use '/' if related model at sub folder, e.g.: Main/Product.</li>
+        //                 <li>Field name must be related model + "_id", e.g.: user_id</li>
+        //             </ul>
+        //         </small>
+        //     </div>
+        //     <div class="input-box form-foreign-id mt-2">
+        //         <input type="hidden" name="foreign_ids" class="google-input" placeholder="Foreign key (optional)">
+        //     </div>
 
-//     <input type="hidden" name="on_update_foreign" class="google-input" value="1">
+        //     <input type="hidden" name="on_update_foreign" class="google-input" value="1">
 
-//     <input type="hidden" name="on_delete_foreign" class="google-input" value="1">
-
-
-// `);
+        //     <input type="hidden" name="on_delete_foreign" class="google-input" value="1">
 
 
-//                     }
-//                 });
+        // `);
 
-//             }
+
+            //                     }
+            //                 });
+
+            //             }
 
             if ($('.secondary-drop').val() == 'lookprefix' || $('.secondary-drop').val() == 'looksuffix') {
 
@@ -1066,8 +1066,7 @@ ${response}
                 $(this).parent().parent().find('.select_options').append(`<div class="input-box s-option mt-2">
                 <input type="text" name="multi[${index}][select_options]" class="google-input" placeholder="Seperate with '|', e.g.: water|fire">
             </div>`);
-            }
-            else if ($(this).val() == 'doubleMulti') {
+            } else if ($(this).val() == 'doubleMulti') {
 
 
 
@@ -1111,11 +1110,7 @@ ${response}
 
               `);
 
-            }
-
-
-
-            else if ($(this).val() == 'foreignId') {
+            } else if ($(this).val() == 'foreignId') {
                 var list = `{!! $all !!}`;
 
 
@@ -1174,20 +1169,20 @@ ${response}
             if ($(`.primary-drop`).val() == "select") {
 
 
-            if($('.form-input-types').val() == 'doubleattr'){
-                $(`.form-min-lengths`).hide()
-                $(`.form-max-lengths`).hide()
-                $('.fkey').hide();
-                $('.fkey2').hide();
-                $('select[name=attribute]').hide()
-                $('.child-drop').hide()
+                if ($('.form-input-types').val() == 'doubleattr') {
+                    $(`.form-min-lengths`).hide()
+                    $(`.form-max-lengths`).hide()
+                    $('.fkey').hide();
+                    $('.fkey2').hide();
+                    $('select[name=attribute]').hide()
+                    $('.child-drop').hide()
 
-                $('.fixed-val').show();
+                    $('.fixed-val').show();
 
-                $('.secondary-drop option[value="lookprefix"]').remove();
-                $('.secondary-drop option[value="looksuffix"]').remove();
+                    $('.secondary-drop option[value="lookprefix"]').remove();
+                    $('.secondary-drop option[value="looksuffix"]').remove();
 
-                $(`.options`).append(`
+                    $(`.options`).append(`
 <div class="option_fields select-drop mt-5">
     <div class="form-group col-sm-12">
                         <label class="custom-switch form-label">
@@ -1220,52 +1215,52 @@ ${response}
             </div>
         </div>
 `)
-            }
+                }
 
-             if($('.form-input-types').val() == 'multi'){
+                if ($('.form-input-types').val() == 'multi') {
 
-                let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
-                .html());
-                // alert(index);
+                    let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center')
+                        .find('.input-box')
+                        .html());
+                    // alert(index);
 
-                $(this).closest('tr').find('.child-drop').remove();
-                $(this).closest('tr').find('.select-module').remove();
-                $(this).closest('tr').find('.smodule2').remove();
-                $(this).closest('tr').find('.cd2').remove();
+                    $(this).closest('tr').find('.child-drop').remove();
+                    $(this).closest('tr').find('.select-module').remove();
+                    $(this).closest('tr').find('.smodule2').remove();
+                    $(this).closest('tr').find('.cd2').remove();
 
 
 
 
-                $(this).closest('tr').find('.select_options').append(`<div class="input-box s-option mt-2">
+                    $(this).closest('tr').find('.select_options').append(`<div class="input-box s-option mt-2">
                 <input type="text" name="multi[${index}][select_options]" class="google-input" placeholder="Seperate with '|', e.g.: water|fire">
             </div>`);
-            }
+                }
 
-        }
+            }
 
             if ($(`.primary-drop`).val() == "lookup") {
 
 
-                 if($('.form-input-types').val() == 'doubleattr')
-                 {
+                if ($('.form-input-types').val() == 'doubleattr') {
 
-                $('.select-drop').hide();
+                    $('.select-drop').hide();
 
-                $(`.form-min-lengths`).hide()
-                $(`.form-max-lengths`).hide()
-
+                    $(`.form-min-lengths`).hide()
+                    $(`.form-max-lengths`).hide()
 
 
-                $(`.secondary-drop`).append(`
+
+                    $(`.secondary-drop`).append(`
                 <option value="lookprefix">Lookup prefix</option>
                                   <option value="looksuffix">Lookup suffix</option>
 
                                   `)
 
-                var list = `{!! $all !!}`;
-                // alert( list )
+                    var list = `{!! $all !!}`;
+                    // alert( list )
 
-                $(`.options`).append(`
+                    $(`.options`).append(`
                 <div class="input-box form-constrain fkey mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input lookup-drop"  name="constrains" required>
@@ -1289,9 +1284,9 @@ ${response}
 
 
             `)
-                 }
+                }
 
-                 if($('.form-input-types').val() == 'multi'){
+                if ($('.form-input-types').val() == 'multi') {
 
                     $(this).closest('tr').find('.s-option').remove();
 
@@ -1302,13 +1297,14 @@ ${response}
                                   `)
 
                     var list = `{!! $all !!}`;
-                    let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
-                .html());
+                    let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center')
+                        .find('.input-box')
+                        .html());
 
-                // alert(index);
+                    // alert(index);
 
 
-                $(this).closest('tr').find('.select_options').append(` <div class="input-box c-f form-constrain mt-2">
+                    $(this).closest('tr').find('.select_options').append(` <div class="input-box c-f form-constrain mt-2">
     <div class="input-box form-on-update mt-2 form-on-update-foreign">
         <select class="google-input select-module" name="multi[${index}][constrain]" required>
            ${list}
@@ -1325,7 +1321,7 @@ ${response}
 `);
 
 
-                 }
+                }
             }
 
 
@@ -1347,13 +1343,13 @@ ${response}
 
 
 
-                if($('.form-input-types').val() == 'multi'){
+                if ($('.form-input-types').val() == 'multi') {
 
-                $(this).closest('tr').find('.child-drop').remove();
-                $(this).closest('tr').find('.select-module').remove();
-                $(this).closest('tr').find('.smodule2').remove();
-                $(this).closest('tr').find('.cd2').remove();
-                $(this).closest('tr').find('.s-option').remove();
+                    $(this).closest('tr').find('.child-drop').remove();
+                    $(this).closest('tr').find('.select-module').remove();
+                    $(this).closest('tr').find('.smodule2').remove();
+                    $(this).closest('tr').find('.cd2').remove();
+                    $(this).closest('tr').find('.s-option').remove();
                 }
 
             }
@@ -1766,9 +1762,7 @@ ${response}
             //     <option value="datalist">Datalist</option>
             // `)
 
-            }
-
-            else if ($(this).val() == 'calc') {
+            } else if ($(this).val() == 'calc') {
 
 
 
@@ -1810,8 +1804,7 @@ ${response}
             //     <option value="datalist">Datalist</option>
             // `)
 
-            }
-            else if ($(this).val() == 'doublefk') {
+            } else if ($(this).val() == 'doublefk') {
                 // alert('hi');
                 removeAllInputHidden(index)
                 checkMinAndMaxLength(index)
@@ -2059,26 +2052,25 @@ ${response}
         });
 
 
-        $(document).on('change','.tcalc-drop',function()
-    {
+        $(document).on('change', '.tcalc-drop', function() {
 
 
-        $('.mchild-drop1').remove()
+            $('.mchild-drop1').remove()
             $('.mchild-drop2').remove()
             $('.fmulti-column').remove()
             $('.smulti-column').remove()
 
-        if ($(this).val() == 'one') {
+            if ($(this).val() == 'one') {
 
-            $('.operation-drop').remove()
-            $('.child-drop').remove()
-            $('.child2-drop').remove()
-            $('.fcolumn').remove()
-            $('.scolumn').remove()
+                $('.operation-drop').remove()
+                $('.child-drop').remove()
+                $('.child2-drop').remove()
+                $('.fcolumn').remove()
+                $('.scolumn').remove()
 
 
 
-            $(`.options`).append(`
+                $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="operation" required>
@@ -2097,15 +2089,15 @@ ${response}
 
             `)
 
-            var id = $('.module').val();
+                var id = $('.module').val();
 
 
-  $.ajax({
-    url: '{{ url('/') }}/attribute-by-module/' + id,
-    success: function(response) {
-        console.log(response);
+                $.ajax({
+                    url: '{{ url('/') }}/attribute-by-module/' + id,
+                    success: function(response) {
+                        console.log(response);
 
-        $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+                        $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
          <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
@@ -2119,22 +2111,22 @@ ${response}
 
 
 
-        }
+                    }
 
 
-        })
-    }
+                })
+            }
 
-        if ($(this).val() == 'two') {
-
-
-            $('.operation-drop').remove()
-            $('.child-drop').remove()
-            $('.fcolumn').remove()
+            if ($(this).val() == 'two') {
 
 
+                $('.operation-drop').remove()
+                $('.child-drop').remove()
+                $('.fcolumn').remove()
 
-            $(`.options`).append(`
+
+
+                $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="operation" required>
@@ -2151,14 +2143,14 @@ ${response}
 
             `)
 
-            var id = $('.module').val();
+                var id = $('.module').val();
 
-  $.ajax({
-    url: '{{ url('/') }}/attribute-by-module/' + id,
-    success: function(response) {
-        console.log(response);
+                $.ajax({
+                    url: '{{ url('/') }}/attribute-by-module/' + id,
+                    success: function(response) {
+                        console.log(response);
 
-        $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+                        $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
         <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
@@ -2171,7 +2163,7 @@ ${response}
         `);
 
 
-        $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+                        $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
          <div class="input-box child2-drop multi-column2 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="second_column" required>
@@ -2185,24 +2177,23 @@ ${response}
 
 
 
-        }
+                    }
+
+
+                })
+
+
+
+            }
 
 
         })
 
 
 
-}
+        $(document).on('change', '.multi-column1', function() {
 
-
-    })
-
-
-
-    $(document).on('change','.multi-column1',function()
-    {
-
-        var selectedOption = $('option:selected', this);
+            var selectedOption = $('option:selected', this);
             var isMultiAttr = selectedOption.data('multiattr');
             var multiName = selectedOption.val();
             var id = selectedOption.data('id');
@@ -2213,15 +2204,15 @@ ${response}
             if (isMultiAttr) {
 
 
-                if(type == 'one'){
+                if (type == 'one') {
 
 
-                $.ajax({
-                    url: '{{ url('/') }}/fields-of-multi/' + id,
-                    success: function(response) {
-                        console.log(response);
+                    $.ajax({
+                        url: '{{ url('/') }}/fields-of-multi/' + id,
+                        success: function(response) {
+                            console.log(response);
 
-                        $(`.options`).append(`<label class="form-label fmulti-column" >select column of ${multiName}  <span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label fmulti-column" >select column of ${multiName}  <span class="text-red">*</span></label>
                          <div class="input-box  form-constrain mt-2">
                         <div class="input-box mchild-drop2 form-on-update mt-2 form-on-update-foreign">
                             <select class="google-input " name="first_multi_column" required>
@@ -2230,27 +2221,27 @@ ${response}
                         </div></div>`);
 
 
-                    }
-                });
+                        }
+                    });
 
 
 
 
-            }
+                }
 
-            if(type == 'two'){
+                if (type == 'two') {
 
-                $('.child2-drop').remove();
+                    $('.child2-drop').remove();
 
-                $('.scolumn').hide();
+                    $('.scolumn').hide();
 
 
-$.ajax({
-    url: '{{ url('/') }}/fields-of-multi/' + id,
-    success: function(response) {
-        console.log(response);
+                    $.ajax({
+                        url: '{{ url('/') }}/fields-of-multi/' + id,
+                        success: function(response) {
+                            console.log(response);
 
-        $(`.options`).append(`<label class="form-label fmulti-column" >select first column of ${multiName}  <span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label fmulti-column" >select first column of ${multiName}  <span class="text-red">*</span></label>
          <div class="input-box  form-constrain mt-2">
         <div class="input-box mchild-drop1 form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_multi_column" required>
@@ -2259,7 +2250,7 @@ $.ajax({
         </div></div>`);
 
 
-        $(`.options`).append(`<label class="form-label smulti-column" >select second column of ${multiName}  <span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label smulti-column" >select second column of ${multiName}  <span class="text-red">*</span></label>
          <div class="input-box  form-constrain mt-2">
         <div class="input-box mchild-drop2 form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="second_multi_column" required>
@@ -2267,17 +2258,17 @@ $.ajax({
             </select>
         </div></div>`);
 
-    }
-});
+                        }
+                    });
 
 
 
 
-}
-    }
+                }
+            }
 
 
-    })
+        })
 
         $(document).on('change', '.fktype-radio', function() {
 
@@ -2566,7 +2557,7 @@ $.ajax({
                 case 'assign':
                     $('#type').val('assign').trigger('change')
                     break;
-                    case 'calc':
+                case 'calc':
                     $('#type').val('calc').trigger('change')
                     break;
 
@@ -2626,7 +2617,7 @@ $.ajax({
                 $(this).val() == 'month' ||
                 $(this).val() == 'password' ||
                 $(this).val() == 'number' ||
-                  $(this).val() == 'calc'
+                $(this).val() == 'calc'
             ) {
                 minLength.prop('readonly', true).hide()
                 maxLength.prop('readonly', true).hide()
@@ -2796,14 +2787,11 @@ $.ajax({
 
                     $(el).valid();
                 },
-                // errorClass: "invalid-feedback is-invalid",
-                // validClass: 'valid-feedback is-valid',
+                errorClass: "invalid-feedback is-invalid",
+                validClass: 'valid-feedback is-valid',
                 ignore: ":hidden",
                 rules: {
-                    name: {
-                        required: true,
-                        maxlength: 255,
-                    },
+
                     code: {
                         required: true,
                         maxlength: 255,
@@ -2812,18 +2800,22 @@ $.ajax({
                         notEqual3: 'iD',
                         notEqual4: 'Id',
                     },
-                    input_types: {
-                        required: true,
-                        maxlength: 255,
-                    },
 
                 },
                 messages: {},
+                /*the following lines are for inserting the error message under the code input field*/
                 errorPlacement: function(error, element) {
-                    error.insertAfter($(element).parent());
+                    error.addClass('d-block');
+                    error.insertAfter(element);
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
                 },
             });
-            // alert($('#attributeCreate').valid());
         });
     </script>
 @endsection

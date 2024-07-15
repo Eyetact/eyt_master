@@ -111,6 +111,10 @@
         }
 
 
+        .radio-spacing {
+            margin-right: 20px;
+            /* Adjust the spacing as needed */
+        }
 
 
 
@@ -423,19 +427,23 @@
                                                             </label>
                                                         </div>
 
-                                                        <div class="col-sm-12 input-box">
+                                                        <div class="col-sm-12">
                                                             <label class="form-label" for="module">Type<span
                                                                     class="text-red">*</span></label>
+                                                            <br>
 
-
-                                                            <select name="mtype" class="google-input module"
-                                                                id="mtype" required>
-                                                                <option disabled value="" selected>Select</option>
-                                                                <option value="stander">Stander</option>
-                                                                <option value="sortable">Sortable</option>
-
-                                                            </select>
-
+                                                            <div class="google-input module" id="mtype">
+                                                                <label class="radio-spacing">
+                                                                    <input type="radio" name="mtype" value="stander"
+                                                                        required checked>
+                                                                    Stander
+                                                                </label>
+                                                                <label>
+                                                                    <input type="radio" name="mtype" value="sortable"
+                                                                        required>
+                                                                    Sortable
+                                                                </label>
+                                                            </div>
                                                             <span id="mtype-admin-error"
                                                                 class="error text-danger d-none error-message"></span>
 
@@ -851,18 +859,25 @@
                                                             </label>
                                                         </div>
 
-                                                        <div class="col-sm-12 input-box">
+                                                        <div class="col-sm-12 ">
                                                             <label class="form-label" for="module">Type<span
                                                                     class="text-red">*</span></label>
+                                                            <br>
+
+                                                            <div class="google-input module" id="mtype">
+                                                                <label class="radio-spacing">
+                                                                    <input type="radio" name="mtype" value="stander"
+                                                                        required checked>
+                                                                    Stander
+                                                                </label>
+                                                                <label>
+                                                                    <input type="radio" name="mtype" value="sortable"
+                                                                        required>
+                                                                    Sortable
+                                                                </label>
+                                                            </div>
 
 
-                                                            <select name="mtype" class="google-input module"
-                                                                id="mtype" required>
-                                                                <option disabled value="" selected>Select</option>
-                                                                <option value="stander">Stander</option>
-                                                                <option value="sortable">Sortable</option>
-
-                                                            </select>
                                                             <span id="mtype-storefront-error"
                                                                 class="error text-danger d-none error-message"></span>
 
