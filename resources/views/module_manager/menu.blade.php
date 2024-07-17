@@ -244,8 +244,8 @@
                                 </div>
                                 <div class="col-1">
 
-                                    <button type="button" data-target="#FrontForm" data-toggle="modal"
-                                        class="btn btn-primary">Add</button>
+                                    <button type="button" id="add-store-front-btn" data-target="#FrontForm"
+                                        data-toggle="modal" class="btn btn-primary">Add</button>
 
                                 </div>
                             </div>
@@ -269,8 +269,8 @@
                             </div>
                             <div class="col-1">
                                 @if (auth()->user()->checkAllowdMode())
-                                    <button type="button" data-target="#addMenuLabel" data-toggle="modal"
-                                        class="btn btn-primary">Add</button>
+                                    <button id ="add-admin-btn" type="button" data-target="#addMenuLabel"
+                                        data-toggle="modal" class="btn btn-primary">Add</button>
                                 @endif
                             </div>
                         </div>
@@ -363,7 +363,7 @@
                                                             <label class="form-label" for="name">Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="name" id="aname"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
                                                             <span id="name-admin-error"
@@ -374,7 +374,7 @@
                                                             <label class="form-label" for="code2">Code <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="code" id="code"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="code-admin-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -383,7 +383,7 @@
                                                             <label class="form-label" for="path">Path <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="path" id="apath"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="path-admin-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -392,7 +392,7 @@
                                                             <label class="form-label" for="path">Sidebar Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="sidebar_name" id="sidebar_name"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="sidebar_name-admin-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -435,12 +435,12 @@
                                                             <div class="google-input module" id="mtype">
                                                                 <label class="radio-spacing">
                                                                     <input type="radio" name="mtype" value="stander"
-                                                                        required checked>
-                                                                    Stander
+                                                                        checked required>
+                                                                    Standerd
                                                                 </label>
                                                                 <label>
-                                                                    <input type="radio" name="mtype" value="sortable"
-                                                                        required>
+                                                                    <input type="radio" name="mtype"
+                                                                        value="sortable">
                                                                     Sortable
                                                                 </label>
                                                             </div>
@@ -458,8 +458,9 @@
                                                         id="remove-admin-menu" type="button" value="Delete">
                                                     <input title="Reset form" class="btn btn-success d-none"
                                                         id="restore-admin-menu" type="button" value="Restore">
-                                                    <input title="Save module" class="btn btn-primary"
-                                                        id="submit-admin-menu" type="submit" value="Save">
+                                                    <input title="Save module" class="btn btn-primary admin-form-submit"
+                                                        id="submit-admin-menu" type="submit" value="Save" disabled>
+
                                                     {{-- <input title="Reset form" class="btn btn-warning" type="reset" value="Reset"> --}}
                                                 </div>
                                             </div>
@@ -794,7 +795,7 @@
                                                             <label class="form-label" for="name">Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="name" id="aname"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
                                                             <span id="name-storefront-error"
@@ -807,7 +808,7 @@
                                                             <label class="form-label" for="code2">Code <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="code" id="code"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="code-storefront-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -816,7 +817,7 @@
                                                             <label class="form-label" for="path">Path <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="path" id="apath"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="path-storefront-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -825,7 +826,7 @@
                                                             <label class="form-label" for="path">Sidebar Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="sidebar_name" id="sidebar_name"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="sidebar_name-storefront-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                         </div>
@@ -871,8 +872,8 @@
                                                                     Stander
                                                                 </label>
                                                                 <label>
-                                                                    <input type="radio" name="mtype" value="sortable"
-                                                                        required>
+                                                                    <input type="radio" name="mtype"
+                                                                        value="sortable">
                                                                     Sortable
                                                                 </label>
                                                             </div>
@@ -892,7 +893,8 @@
                                                         id="remove-admin-menu" type="button" value="Delete">
                                                     <input title="Reset form" class="btn btn-success d-none"
                                                         id="restore-admin-menu" type="button" value="Restore">
-                                                    <input title="Save module" class="btn btn-primary"
+                                                    <input title="Save module"
+                                                        class="btn btn-primary store-front-form-submit"
                                                         id="submit-admin-menu" type="submit" value="Save">
                                                     {{-- <input title="Reset form" class="btn btn-warning" type="reset" value="Reset"> --}}
                                                 </div>
@@ -930,6 +932,9 @@
     <script src="{{ URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.js') }}"></script>
     <script src="{{ URL::asset('assets/plugins/sweet-alert/sweetalert.min.js') }}"></script>
     <script src="{{ URL::asset('assets/js/sweet-alert.js') }}"></script>
+
+    <!-- user interactive forms -->
+    <script src="{{ URL::asset('assets/js/user interactive/userInteractiveForms.js') }}"></script>
     <script src="//code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -976,7 +981,7 @@
 
 
             $("#addMenuLabel").on('shown.bs.modal', function() {
-                // alert('aaa')
+
                 $('.label-form').hide();
                 $('.sub-form').hide();
 
