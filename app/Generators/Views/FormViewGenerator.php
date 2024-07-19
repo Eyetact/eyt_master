@@ -5,6 +5,7 @@ namespace App\Generators\Views;
 use App\Generators\GeneratorUtils;
 use App\Models\Attribute;
 use App\Models\Module;
+use App\Models\Multi;
 
 class FormViewGenerator
 {
@@ -715,7 +716,7 @@ class FormViewGenerator
         $template .= "</div>\n";
         $template .= "</div>\n";
         $template .= "@endif\n";
-
+;
 
         foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
             $field->name = GeneratorUtils::singularSnakeCase($field->name);
@@ -1964,7 +1965,7 @@ class FormViewGenerator
 
 
                         $template .= '<div class="multi-options col-12">
-                        <div class="attr_header row flex justify-content-end my-5 align-items-end">
+                        <div class="attr_header row flex  justify-content-end my-5 align-items-end">
                             <input title="Reset form" class="btn btn-success" id="add_new_tr_' . $field->id . '" type="button" value="+ Add">
                         </div>';
 
@@ -1979,11 +1980,20 @@ class FormViewGenerator
 
                         <input type="hidden"  name="' . $field->name . '" />
 
-                        <table class="table table-bordered align-items-center mb-0" id="tbl-field-' . $field->id . '">
+                        <table class="table table-bordered table-field align-items-center mb-0" id="tbl-field-' . $field->id . '">
                         <thead>';
 
                         foreach ($field->multis as $key => $value) {
+
+                            if($value->type_of_calc == 'one')
+                            {
+
+                            }
+                            else{
+
                             $template .= '<th>' . $value->name . '</th>';
+
+                            }
                         }
 
                         $template .= '
@@ -2020,6 +2030,30 @@ class FormViewGenerator
                                     </td>
                                     ';
                                     break;
+                                    case 'calc':
+
+                                        if($value->type_of_calc == 'one')
+                                        {
+
+
+                                        }
+
+                                        if($value->type_of_calc == 'two')
+                                        {
+
+
+                                            $template .= ' <td>
+                                            <div class="input-box">
+                                                <input type="number" name="' . $field->code . '[{{ $index }}][' . $value->code . ']"
+                                                    class="form-control google-input" data-first="'. $value->first_column .'"  data-second="'. $value->second_column .'" data-operation="'. $value->operation .'"
+                                                    placeholder="' . $value->code . '" value="{{ isset($item->' . $value->code . ') ? $item->' . $value->code . ' : \'\' }}" required readonly>
+                                            </div>
+                                        </td>
+                                        ';
+
+                                        }
+
+                                        break;
                                     case 'doubleMulti':
 
 
@@ -2575,6 +2609,9 @@ class FormViewGenerator
                         @endforeach
                         @endif
                         </tbody>
+                              <tfoot>
+                            <!-- Footer will be populated by JavaScript -->
+                        </tfoot>
                         </table>
                         </div>
                         ';
@@ -3484,8 +3521,57 @@ class FormViewGenerator
         }
 
 
-        $template .= "</div>";
+        $template .= "</div>
+        @php
 
+        \$mAttrs = App\Models\Attribute::where('module', \$model->id)
+                            ->where('type', 'multi')
+                            ->pluck('id')
+                            ->toArray();
+
+        \$m = App\Models\Multi::whereIn('attribute_id', \$mAttrs)->get();
+
+        \$calcOperations = [];
+
+        foreach (\$m as \$item) {
+            if (\$item->type == 'calc' && \$item->type_of_calc == 'one') {
+                \$multiInput = App\Models\Multi::where('attribute_id', \$item->attribute_id)
+                                    ->where(function (\$query) use (\$item) {
+                                        \$query->where('name', 'like', \$item->first_column)
+                                              ->orWhere('code', 'like', \$item->first_column);
+                                    })
+                                    ->first();
+
+                \$inputCalc = \$multiInput->code;
+                \$operation = \$item->operation;
+
+                \$calcOperations[\$inputCalc] = \$operation;
+            }
+        }
+
+        @endphp
+
+        <script>
+        $(document).ready(function() {
+            var calcOperations = @json(\$calcOperations);
+
+            function applyCalcOperations() {
+                $.each(calcOperations, function(inputName, operation) {
+                    $(`input[name*='[\${inputName}]']`).each(function() {
+                        $(this).attr('data-agg', 'true');
+                        if (operation === 'sum') {
+                            $(this).attr('data-sum', 'true');
+                        } else if (operation === 'avg') {
+                            $(this).attr('data-avg', 'true');
+                        }
+                    });
+                });
+            }
+
+            applyCalcOperations();
+        });
+        </script>
+        ";
         // create a blade file
         switch ($path) {
             case '':

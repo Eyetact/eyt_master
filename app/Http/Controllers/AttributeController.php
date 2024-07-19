@@ -255,6 +255,68 @@ class AttributeController extends Controller
 
         // dd($request);
 
+
+        if (isset($requestData['multi'])) {
+
+
+            foreach ($requestData['multi'] as $key => $value) {
+
+                if (isset($value['type']) && $value['type'] == 'calc' && isset($value['type_of_calc']) && $value['type_of_calc'] == 'one')
+                {
+
+                    $calcAttr = new Attribute();
+
+                    $calcAttr->module = $requestData['module'];
+                    $calcAttr->name = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
+                    $calcAttr->type = 'calc';
+                    $calcAttr->min_length = null;
+                    $calcAttr->max_length = null;
+                    $calcAttr->steps = null;
+                    $calcAttr->input = 'calc';
+                    $calcAttr->required = 'no';
+                    $calcAttr->default_value = null;
+                    $calcAttr->select_option = null;
+                    $calcAttr->constrain = null;
+                    $calcAttr->constrain2 = null;
+                    $calcAttr->on_update_foreign = null;
+                    $calcAttr->on_delete_foreign = null;
+                    $calcAttr->is_enable = 1;
+                    $calcAttr->is_system = 0;
+                    $calcAttr->is_multi = 0;
+                    $calcAttr->max_size = null;
+                    $calcAttr->file_type = null;
+                    $calcAttr->source = '-- select --';
+                    $calcAttr->target = null;
+                    $calcAttr->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));;
+                    $calcAttr->attribute = '';
+                    $calcAttr->attribute2 = null;
+                    $calcAttr->primary = null;
+                    $calcAttr->secondary = null;
+                    $calcAttr->fixed_value = null;
+                    $calcAttr->fk_type = null;
+                    $calcAttr->user_id = auth()->user()->id;
+                    $calcAttr->multiple = 0;
+                    $calcAttr->condition_attr = $condition_attr;
+                    $calcAttr->condition_value = $condition_value;
+                    $calcAttr->type_of_calc = 'one';
+                    $calcAttr->operation = $value['operation'];
+                    $calcAttr->first_column = $requestData['code'];
+                    $calcAttr->second_column = null;
+                    $calcAttr->first_multi_column =  $value['first_column'];
+                    $calcAttr->second_multi_column = null;
+
+                    $calcAttr->save();
+
+
+                    $this->generatorService->generateCalcMigration($request['module'],$calcAttr->name);
+                    Artisan::call("migrate");
+
+
+                }
+
+            }
+        }
+
         $createArr = [
 
             'module' => $request['module'],
@@ -349,6 +411,12 @@ class AttributeController extends Controller
                 $m->fixed_value =  NULL;
                 $m->attribute2 =  NULL;
 
+
+                $m->type_of_calc =  NULL;
+                $m->first_column =  NULL;
+                $m->second_column =  NULL;
+                $m->operation =  NULL;
+
                 $m->save();
 
                 }
@@ -364,6 +432,8 @@ class AttributeController extends Controller
 
 
             foreach ($requestData['multi'] as $key => $value) {
+
+
                 $m = new Multi();
                 $m->name =$value['name'];
                 $m->type = $value['type'];
@@ -380,6 +450,11 @@ class AttributeController extends Controller
                 $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : NULL;
 
                 $m->calc_attr = isset($value['calc_attr']) ? $value['calc_attr'] : NULL;
+
+                $m->type_of_calc = isset($value['type_of_calc']) ? $value['type_of_calc'] : NULL;
+                $m->first_column = isset($value['first_column']) ? $value['first_column'] : NULL;
+                $m->second_column = isset($value['second_column']) ? $value['second_column'] : NULL;
+                $m->operation = isset($value['operation']) ? $value['operation'] : NULL;
                 $m->save();
             }
         }
@@ -389,8 +464,11 @@ class AttributeController extends Controller
 
             if(!isset($requestData['multiple']))
             {
+
+
             $this->generatorService->reGenerateMigration($request['module']);
             Artisan::call("migrate");
+
             }
 
             $this->generatorService->reGenerateController($request['module']);
@@ -593,8 +671,75 @@ class AttributeController extends Controller
         if (isset($request['multi'])) {
             $attribute->multis()->delete();
 
+
             // dd($request['multi']);
             foreach ($request['multi'] as $key => $value) {
+
+                if (isset($value['type']) && $value['type'] == 'calc' && isset($value['type_of_calc']) && $value['type_of_calc'] == 'one')
+                {
+                        $existingAttr = Attribute::where('module',$attribute->module)
+                                                  ->where('name', str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower())))
+                                                  ->where('type','calc')
+                                                  ->where('code',str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower())))
+                                                  ->where('operation',$value['operation'])
+                                                  ->where('type_of_calc','one')
+                                                  ->where('first_multi_column',$value['first_column'])
+                                                     ->first();
+
+                        if (!$existingAttr) {
+
+                    $calcAttr = new Attribute();
+
+                    $calcAttr->module = $attribute->module;
+                    $calcAttr->name = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
+                    $calcAttr->type = 'calc';
+                    $calcAttr->min_length = null;
+                    $calcAttr->max_length = null;
+                    $calcAttr->steps = null;
+                    $calcAttr->input = 'calc';
+                    $calcAttr->required = 'no';
+                    $calcAttr->default_value = null;
+                    $calcAttr->select_option = null;
+                    $calcAttr->constrain = null;
+                    $calcAttr->constrain2 = null;
+                    $calcAttr->on_update_foreign = null;
+                    $calcAttr->on_delete_foreign = null;
+                    $calcAttr->is_enable = 1;
+                    $calcAttr->is_system = 0;
+                    $calcAttr->is_multi = 0;
+                    $calcAttr->max_size = null;
+                    $calcAttr->file_type = null;
+                    $calcAttr->source = '-- select --';
+                    $calcAttr->target = null;
+                    $calcAttr->code = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($value['name'])->lower()));
+                    $calcAttr->attribute = '';
+                    $calcAttr->attribute2 = null;
+                    $calcAttr->primary = null;
+                    $calcAttr->secondary = null;
+                    $calcAttr->fixed_value = null;
+                    $calcAttr->fk_type = null;
+                    $calcAttr->user_id = auth()->user()->id;
+                    $calcAttr->multiple = 0;
+                    $calcAttr->condition_attr = null;
+                    $calcAttr->condition_value = $condition_value;
+                    $calcAttr->type_of_calc = 'one';
+                    $calcAttr->operation = $value['operation'];
+                    $calcAttr->first_column = $attribute->code;
+                    $calcAttr->second_column = null;
+                    $calcAttr->first_multi_column =  $value['first_column'];
+                    $calcAttr->second_multi_column = null;
+
+                    $calcAttr->save();
+
+
+                    $this->generatorService->generateCalcMigration($attribute->module,$calcAttr->name);
+                    Artisan::call("migrate");
+
+                        }
+
+                }
+
+
                 $m = new Multi();
                 $m->name = str()->snake(str_replace('.', '', str($value['name'])->lower()));
                 $m->type = $value['type'];
@@ -620,6 +765,23 @@ class AttributeController extends Controller
                 }
                 if(isset($value['attribute2'])){
                     $m->attribute2 = isset($value['attribute2']) ? $value['attribute2'] : '';
+                }
+
+                if(isset($value['calc_attr'])){
+                $m->calc_attr = isset($value['calc_attr']) ? $value['calc_attr'] : NULL;
+                }
+
+                if(isset($value['type_of_calc'])){
+                $m->type_of_calc = isset($value['type_of_calc']) ? $value['type_of_calc'] : NULL;
+                }
+                if(isset($value['type_of_calc'])){
+                $m->first_column = isset($value['type_of_calc']) ? $value['first_column'] : NULL;
+                }
+                if(isset($value['second_column'])){
+                $m->second_column = isset($value['second_column']) ? $value['second_column'] : NULL;
+                }
+                if(isset($value['operation'])){
+                $m->operation = isset($value['operation']) ? $value['operation'] : NULL;
                 }
                 $m->save();
             }

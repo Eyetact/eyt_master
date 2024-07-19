@@ -168,6 +168,8 @@
                     $(".modal-title").html("edit Plan");
                     $("#role_form_modal").modal('show');
                     $('.dropify').dropify();
+                    updateFirstColumnOptions();
+                    updateSecondColumnOptions();
                 }
             });
         });
@@ -323,6 +325,9 @@
         $(document).on('click', '.btn-delete', function() {
             $(this).parent().parent().parent().remove()
             generateNo()
+            updateFirstColumnOptions();
+            updateSecondColumnOptions();
+
         })
         $(document).on('click', '#add_new_tr', function() {
             let table = $('#tbl-field tbody')
@@ -340,7 +345,7 @@
                                             <td>
                                                 <div class="input-box">
                                                     <input type="text" name="multi[${no}][name]"
-                                                        class="form-control google-input"
+                                                        class="form-control google-input field-name"
                                                         placeholder="{{ __('Field Name') }}" required>
                                                 </div>
                                             </td>
@@ -358,7 +363,7 @@
                                                         <option value="email">Email</option>
                                                         <option value="tel">Telepon</option>
                                                         <option value="url">Url</option>
-                                                        <option value="search">Search</option>
+
                                                         <option value="number">Number</option>
                                                         <option value="number">Integer Number</option>
                                                         <option value="decimal">Decimal Number</option>
@@ -370,6 +375,7 @@
                                                         <option value="select">Select</option>
                                                         <option value="foreignId">Lookup</option>
                                                         <option value="doubleMulti">Double Attribute</option>
+                                                              <option value="calc">Calculate</option>
 
                                                     </select>
 
@@ -395,7 +401,15 @@
             `
 
             table.append(tr)
+            updateFirstColumnOptions();
+            updateSecondColumnOptions();
         })
+
+
+        $(document).on('input', '.field-name', function() {
+            updateFirstColumnOptions();
+            updateSecondColumnOptions();
+        });
 
         $(document).on('change', '.select-module', function() {
             var id = $(this).find(':selected').data('id');
@@ -1110,7 +1124,40 @@ ${response}
 
               `);
 
-            } else if ($(this).val() == 'foreignId') {
+
+            }
+
+            else if ($(this).val() == 'calc') {
+
+
+
+
+$(this).parent().parent().find('.select_options').append(`
+
+
+  <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input tcalc-drop"  name="multi[${index}][type_of_calc]" required>
+                            <option value="" disabled selected>-- Select type of calculate --</option>
+                                  <option value="one">One Column For Calculate</option>
+                                  <option value="two">Two Column For Calculate</option>
+
+                        </select>
+                    </div>
+                    </div>
+
+`);
+
+}
+
+
+
+
+
+
+
+            else if ($(this).val() == 'foreignId') {
+
                 var list = `{!! $all !!}`;
 
 
@@ -1487,7 +1534,7 @@ ${response}
                                             <td>
                                                 <div class="input-box">
                                                     <input type="text" name="multi[1][name]"
-                                                        class="form-control google-input"
+                                                        class="form-control google-input field-name"
                                                         placeholder="{{ __('Field Name') }}" required>
                                                 </div>
                                             </td>
@@ -1505,7 +1552,7 @@ ${response}
                                                         <option value="email">Email</option>
                                                         <option value="tel">Telepon</option>
                                                         <option value="url">Url</option>
-                                                        <option value="search">Search</option>
+
                                                         <option value="number">Number</option>
                                                         <option value="number">Integer Number</option>
                                                         <option value="decimal">Decimal Number</option>
@@ -1515,6 +1562,7 @@ ${response}
                                                         <option value="select">Select</option>
                                                         <option value="foreignId">Lookup</option>
                                                         <option value="doubleMulti">Double Attribute</option>
+                                                             <option value="calc">Calculate</option>
 
                                                     </select>
                                                 </div>
@@ -2055,22 +2103,31 @@ ${response}
         $(document).on('change', '.tcalc-drop', function() {
 
 
+
+
+        if ($(this).val() == 'one') {
+
+
+
+
+
+            if($('.form-input-types').val() == 'calc'){
+
+
             $('.mchild-drop1').remove()
             $('.mchild-drop2').remove()
             $('.fmulti-column').remove()
             $('.smulti-column').remove()
 
-            if ($(this).val() == 'one') {
 
-                $('.operation-drop').remove()
-                $('.child-drop').remove()
-                $('.child2-drop').remove()
-                $('.fcolumn').remove()
-                $('.scolumn').remove()
+            $('.operation-drop').remove()
+            $('.child-drop').remove()
+            $('.child2-drop').remove()
+            $('.fcolumn').remove()
+            $('.scolumn').remove()
 
+            $(`.options`).append(`
 
-
-                $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="operation" required>
@@ -2117,12 +2174,90 @@ ${response}
                 })
             }
 
-            if ($(this).val() == 'two') {
 
 
-                $('.operation-drop').remove()
-                $('.child-drop').remove()
-                $('.fcolumn').remove()
+    if($('.form-input-types').val() == 'multi'){
+
+
+
+        let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
+                .html());
+
+        $(this).closest('tr').find('.mchild-drop1').remove()
+        $(this).closest('tr').find('.mchild-drop2').remove()
+        $(this).closest('tr').find('.fmulti-column').remove()
+        $(this).closest('tr').find('.smulti-column').remove()
+
+        $(this).closest('tr').find('.operation-drop').remove()
+        $(this).closest('tr').find('.child-drop').remove()
+        $(this).closest('tr').find('.child2-drop').remove()
+        $(this).closest('tr').find('.fcolumn').remove()
+        $(this).closest('tr').find('.scolumn').remove()
+
+
+
+            $(this).closest('tr').find('.select_options').append(`
+                <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input operation-drop"  name="multi[${index}][operation]" required>
+                            <option value="" disabled selected>-- Select operation --</option>
+                                  <option value="sum">sum</option>
+
+                                  <option value="avg">average</option>
+
+
+                        </select>
+                    </div>
+                    </div>
+
+
+
+            `)
+
+
+
+
+            $(this).closest('tr').find('.select_options').append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+         <div class="input-box child-drop multi-column1 form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input test-first" name="multi[${index}][first_column]" required>
+
+
+            </select>
+        </div></div>
+
+
+
+        `);
+
+        updateFirstColumnOptions();
+
+
+
+
+    }
+
+
+
+
+    }
+
+        if ($(this).val() == 'two') {
+
+
+            if($('.form-input-types').val() == 'calc'){
+
+                $('.mchild-drop1').remove()
+            $('.mchild-drop2').remove()
+            $('.fmulti-column').remove()
+            $('.smulti-column').remove()
+
+
+
+            $('.operation-drop').remove()
+            $('.child-drop').remove()
+            $('.fcolumn').remove()
+
 
 
 
@@ -2182,6 +2317,78 @@ ${response}
 
                 })
 
+    }
+
+
+    if($('.form-input-types').val() == 'multi'){
+
+
+        $('.mchild-drop1').remove()
+        $(this).closest('tr').find('.mchild-drop2').remove()
+        $(this).closest('tr').find('.fmulti-column').remove()
+        $(this).closest('tr').find('.smulti-column').remove()
+
+
+        let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
+                .html());
+
+
+                $(this).closest('tr').find('.operation-drop').remove()
+                $(this).closest('tr').find('.child-drop').remove()
+                $(this).closest('tr').find('.fcolumn').remove()
+
+
+
+                $(this).closest('tr').find(`.select_options`).append(`
+                <div class="input-box form-constrain mt-2">
+                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                        <select class="google-input operation-drop"  name="multi[${index}][operation]" required>
+                            <option value="" disabled selected>-- Select operation --</option>
+                                  <option value="sum">sum</option>
+                                  <option value="multiple">multiple</option>
+
+
+                        </select>
+                    </div>
+                    </div>
+
+
+
+            `)
+
+
+
+            $(this).closest('tr').find(`.select_options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+        <div class="input-box child-drop multi-column1 form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input test-first" name="multi[${index}][first_column]" required>
+
+            </select>
+        </div></div>
+
+
+
+        `);
+
+        updateFirstColumnOptions();
+
+        $(this).closest('tr').find(`.select_options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+         <div class="input-box child2-drop multi-column2 form-constrain mt-2">
+        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+            <select class="google-input test-second" name="multi[${index}][second_column]" required>
+
+            </select>
+        </div></div>
+
+
+
+        `);
+
+        updateSecondColumnOptions();
+
+
+
+    }
 
 
             }
@@ -2189,7 +2396,41 @@ ${response}
 
         })
 
+    function updateFirstColumnOptions() {
+let fieldNames = [];
+$('.field-name').each(function() {
+fieldNames.push($(this).val());
+});
 
+        $('.test-first').each(function() {
+            let $select = $(this);
+            let selectedValue = $select.val();
+            $select.empty();
+            fieldNames.forEach(function(name) {
+                let option = $('<option>').val(name).text(name);
+                $select.append(option);
+            });
+            $select.val(selectedValue);
+        });
+    }
+
+    function updateSecondColumnOptions() {
+let fieldNames = [];
+$('.field-name').each(function() {
+fieldNames.push($(this).val());
+});
+
+        $('.test-second').each(function() {
+            let $select = $(this);
+            let selectedValue = $select.val();
+            $select.empty();
+            fieldNames.forEach(function(name) {
+                let option = $('<option>').val(name).text(name);
+                $select.append(option);
+            });
+            $select.val(selectedValue);
+        });
+    }
 
         $(document).on('change', '.multi-column1', function() {
 

@@ -18,4 +18,10 @@ class Attribute extends Model
     public function multis(){
         return $this->hasMany(Multi::class);
     }
+
+    public function activemultis()
+    {
+        return $this->hasMany(Multi::class)->where('type_of_calc',NULL)->orWhere('type_of_calc','two');
+    }
+
 }

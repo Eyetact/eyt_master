@@ -656,4 +656,39 @@ class MigrationGenerator
         Artisan::call("migrate");
 
     }
+
+
+    public function generateCalc($id,$field)
+    {
+
+        $module = Module::find($id);
+
+        $model = GeneratorUtils::setModelName($module->code);
+        $tableNamePluralLowercase = GeneratorUtils::pluralSnakeCase($model);
+
+
+            $template = str_replace(
+                [
+                    '{{tableNamePluralLowecase}}',
+                    '{{fieldName}}'
+                ],
+                [
+                    $tableNamePluralLowercase,
+                    $field
+
+                ],
+                GeneratorUtils::getTemplate('migration-calc')
+            );
+
+
+
+            $migrationName = date('Y') . '_' . date('m') . '_' . date('d') . '_' . date('h') . date('i') . date('s') . '_edit_' . $tableNamePluralLowercase . '_table.php';
+        // $module = Module::find($id);
+        // $migrationName = $module->migration ;
+
+        file_put_contents(database_path("/migrations/Admin/$migrationName"), $template);
+
+        Artisan::call("migrate");
+
+    }
 }

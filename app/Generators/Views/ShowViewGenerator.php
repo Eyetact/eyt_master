@@ -449,7 +449,7 @@ class ShowViewGenerator
                                                         <thead>
                                                         ";
 
-                        foreach ($field->multis as $key => $value) {
+                        foreach ($field->activemultis as $key => $value) {
                             $trs .= "<th>" . $value->name . "</th>";
                         }
 
@@ -461,7 +461,7 @@ class ShowViewGenerator
                                                         <tr>";
 
 
-                        foreach ($field->multis as $key => $value) {
+                        foreach ($field->activemultis as $key => $value) {
 
                             if($value->type=="texteditor"){
                                 $trs .= "<td>{!! \$item->" . $value->code . " !!}</td>";

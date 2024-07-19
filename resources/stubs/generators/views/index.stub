@@ -58,6 +58,42 @@
                 </div>
                 <div class="card-body">
 
+                  @php
+
+                                            $mAttrs = App\Models\Attribute::where('module', $model_id)
+                                                                ->where('type', 'multi')
+                                                                ->pluck('id')
+                                                                ->toArray();
+
+
+                                            $m = App\Models\Multi::whereIn('attribute_id', $mAttrs)->get();
+
+                                            $calcOperations = [];
+
+
+                                            foreach ($m as $item) {
+
+                                                if ($item->type == 'calc' && $item->type_of_calc == 'one') {
+
+                                                    $multiInput = App\Models\Multi::where('attribute_id', $item->attribute_id)
+                                                                        ->where(function ($query) use ($item) {
+                                                                            $query->where('name', 'like', $item->first_column)
+                                                                                  ->orWhere('code', 'like', $item->first_column);
+                                                                        })
+                                                                        ->first();
+
+                                                  $inputCalc=$multiInput->code;
+
+                                                    $operation =$item->operation;
+
+                                                    $calcOperations[$inputCalc] = $operation;
+
+                                                }
+
+                                            }
+
+                                        @endphp
+
                     <div class="table-responsive p-1">
                         <table class="table align-items-center mb-0" id="data_table" width="100%">
                             <thead>
@@ -482,7 +518,7 @@ output {
     <script src="https://laravel.spruko.com/admitro/Vertical-IconSidedar-Light/assets/plugins/wysiwyag/jquery.richtext.js"></script>
 
     <script>
-
+ var calcOperations = @json($calcOperations);
 
     function changeBased() {
     $(document).on('change', '.based', function() {
@@ -896,12 +932,15 @@ output {
 
      $(document).ready(function() {
 
+             applyCalcOperations();
+             dynamicCalculation();
+
         var aggregatesData = {!! isset($aggregates) ? json_encode($aggregates) : '{}' !!};
 
 if (typeof aggregatesData === 'object') {
 
 
-    var aggregates = @json($aggregates);
+       var aggregates = aggregatesData;
 
     var table = $('#data_table').DataTable({
       retrieve: true
@@ -929,6 +968,55 @@ if (typeof aggregatesData === 'object') {
 }
 });
 
+                function applyCalcOperations() {
+
+                        $.each(calcOperations, function(inputName, operation) {
+
+                            $(`input[name*='[${inputName}]']`).each(function() {
+                                $(this).attr('data-agg', 'true');
+                                if (operation === 'sum') {
+                                    $(this).attr('data-sum', 'true');
+                                } else if (operation === 'avg') {
+                                    $(this).attr('data-avg', 'true');
+                                }
+                            });
+                        });
+
+
+                        $('.table-field').each(function() {
+                            sumGeneric($(this));
+                        });
+                    }
+
+
+                   function dynamicCalculation() {
+            $('input[data-first][data-second]').each(function() {
+                let $input = $(this);
+                let firstField = $input.data('first');
+                let secondField = $input.data('second');
+                let operation = $input.data('operation');
+
+                function calculate() {
+                    let firstValue = parseFloat($input.closest('tr').find(`input[name*='[${firstField}]']`).val()) || 0;
+                    let secondValue = parseFloat($input.closest('tr').find(`input[name*='[${secondField}]']`).val()) || 0;
+                    let result = 0;
+
+                    if (operation === 'sum') {
+                        result = firstValue + secondValue;
+                    } else if (operation === 'multiple') {
+                        result = firstValue * secondValue;
+                    }
+
+                    $input.val(result.toFixed(2));
+                }
+
+                // Initial calculation
+                calculate();
+
+                // Bind events
+                $input.closest('tr').find(`input[name*='[${firstField}]'], input[name*='[${secondField}]']`).on('input', calculate);
+            });
+        }
 
 
                 $(document).on('click', '.model-delete', function() {
@@ -996,6 +1084,11 @@ if (typeof aggregatesData === 'object') {
                                             $('.inform').trigger('change');
                                             $('.based').trigger('change');
                                             $('.fix-multi').trigger('change');
+                                                    $('#role_form_modal .table-field').each(function() {
+                                                    sumGeneric($(this));
+                                                })
+                                                applyCalcOperations();
+                                                dynamicCalculation();
 
 
                 }
@@ -1003,6 +1096,79 @@ if (typeof aggregatesData === 'object') {
         });
 
 
+                    function sumGeneric(table) {
+                    if (table.length === 0) {
+                    console.error('Table not found');
+                    return;
+                    }
+
+                    let sums = {};
+                    let counts = {};
+                    table.find('thead th').each(function(index) {
+                    let inputs = table.find(`tbody tr td:nth-child(${index + 1}) input[data-agg]`);
+                    if (inputs.length) {
+                    sums[index] = 0;
+                    counts[index] = 0;
+                    }
+                    });
+
+
+                    table.find('tbody tr').each(function() {
+                    $(this).find('td').each(function(index) {
+                    let inputs = $(this).find('input[data-agg]');
+                    inputs.each(function() {
+                    let value = parseFloat($(this).val());
+                    if (!isNaN(value)) { // Check if the value is a valid number
+                    if (sums.hasOwnProperty(index)) {
+                    sums[index] += value;
+                    counts[index]++;
+                    }
+                    }
+                    });
+                    });
+                    });
+
+                    // Debugging
+                    console.log('Calculated sums:', sums);
+                    console.log('Calculated counts:', counts);
+
+
+                    let footer = table.find('tfoot');
+                    footer.empty();
+                    let footerRow = $('<tr></tr>');
+                    table.find('thead th').each(function(index) {
+                    let td = $('<td></td>');
+                    if (sums.hasOwnProperty(index)) {
+                    if (table.find(`tbody tr td:nth-child(${index + 1}) input[data-sum]`).length > 0) {
+                    td.addClass('sum-cell').text(sums[index].toFixed(2));
+                    } else if (table.find(`tbody tr td:nth-child(${index + 1}) input[data-avg]`).length > 0) {
+                    let avg = counts[index] > 0 ? (sums[index] / counts[index]).toFixed(2) : '0.00';
+                    td.addClass('avg-cell').text(avg);
+                    } else {
+                    td.text('');
+                    }
+                    } else {
+                    td.text('');
+                    }
+                    footerRow.append(td);
+                    });
+                    footer.append(footerRow);
+
+
+                    table.find('input[data-agg]').off('input').on('input', function() {
+                    sumGeneric(table.closest('.table-field'));
+                    });
+
+                    table.find('.btn-delete').off('click').on('click', function() {
+                    $(this).closest('tr').remove();
+                    sumGeneric(table.closest('.table-field'));
+                    });
+                    }
+
+
+                    $('.table-field').each(function() {
+                    sumGeneric($(this));
+                    });
 
 
         {{trHtml}}
