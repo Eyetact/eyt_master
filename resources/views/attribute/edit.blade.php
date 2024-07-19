@@ -262,7 +262,7 @@
                                                             <div class="input-box">
                                                                 <input type="text"
                                                                     name="multi[{{ $index }}][name]"
-                                                                    class="form-control google-input"
+                                                                    class="form-control google-input field-name"
                                                                     placeholder="{{ __('Field Name') }}"
                                                                     value="{{ $multi->name }}" required>
                                                             </div>
@@ -289,8 +289,7 @@
                                                                         value="email">Email</option>
                                                                     <option @selected($multi->type == 'tel')
                                                                         value="tel">Telepon</option>
-                                                                    <option @selected($multi->type == 'url')
-                                                                        value="url">Url</option>
+
                                                                     <option @selected($multi->type == 'search')
                                                                         value="search">Search</option>
                                                                     <option @selected($multi->type == 'number')
@@ -312,6 +311,8 @@
 
                                                                         <option @selected($multi->type == 'doubleMulti')
                                                                             value="doubleMulti">Double Attribute</option>
+                                                                            <option @selected($multi->type == 'calc')
+                                                                                value="calc">Calculate Attribute</option>
 
                                                                 </select>
                                                             </div>
@@ -421,6 +422,95 @@
                                                                     </div>
                                                                 @endif
 
+
+
+
+                                                                @if ($multi->type == 'calc')
+
+                                                                <div class="input-box form-constrain mt-2">
+                                                                    <div class="input-box form-on-update mt-2 form-on-update-foreign">
+
+                                                                        <select class="google-input tcalc-drop"  name="multi[{{ $index }}][type_of_calc]" required>
+                                                                            <option value="" disabled selected>-- Select type of calculate --</option>
+                                                                                  <option value="one"  @if ($multi->type_of_calc == 'one') selected @endif>One Column For Calculate</option>
+                                                                                  <option value="two" @if ($multi->type_of_calc == 'two') selected @endif>Two Column For Calculate</option>
+
+                                                                        </select>
+                                                                    </div>
+                                                                    </div>
+
+
+                                                                    @if ($multi->type_of_calc == 'one')
+
+
+                                                                    <div class="input-box form-constrain mt-2">
+                                                                        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                                                                            <select class="google-input operation-drop"  name="multi[{{ $index }}][operation]" required>
+                                                                                <option value="" disabled selected>-- Select operation --</option>
+                                                                                      <option value="sum" @if ($multi->operation == 'sum') selected @endif>sum</option>
+
+                                                                                      <option value="avg" @if ($multi->operation == 'avg') selected @endif>average</option>
+
+
+                                                                            </select>
+                                                                        </div>
+                                                                        </div>
+
+
+                                                                        <label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+                                                                        <div class="input-box child-drop multi-column1 form-constrain mt-2">
+                                                                        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                                                                            <select class="google-input test-first" name="multi[{{ $index }}][first_column]" required>
+
+                                                                                <option value="{{$multi->first_column}}" >{{$multi->first_column}}</option>
+                                                                            </select>
+                                                                        </div></div>
+
+                                                                    @endif
+
+
+
+                                                                    @if ($multi->type_of_calc == 'two')
+
+                                                                    <div class="input-box form-constrain mt-2">
+                                                                        <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                                                                            <select class="google-input operation-drop"  name="multi[{{ $index }}][operation]" required>
+                                                                                <option value="" disabled selected>-- Select operation --</option>
+                                                                                      <option value="sum" @if ($multi->operation == 'sum') selected @endif>sum</option>
+                                                                                      <option value="multiple" @if ($multi->operation == 'multiple') selected @endif>multiple</option>
+
+
+                                                                            </select>
+                                                                        </div>
+                                                                        </div>
+
+
+
+                                                                        <label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+                                                                            <div class="input-box child-drop multi-column1 form-constrain mt-2">
+                                                                            <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                                                                                <select class="google-input test-first" name="multi[{{ $index }}][first_column]" required>
+                                                                                    <option value="{{$multi->first_column}}" >{{$multi->first_column}}</option>
+                                                                                </select>
+                                                                            </div></div>
+
+
+                                                                            <label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+                                                                            <div class="input-box child2-drop multi-column2 form-constrain mt-2">
+                                                                            <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                                                                                <select class="google-input test-second" name="multi[{{ $index }}][second_column]" required>
+                                                                                    <option value="{{$multi->second_column}}" >{{$multi->second_column}}</option>
+                                                                                </select>
+                                                                            </div></div>
+
+                                                                    @endif
+
+
+
+
+
+
+                                                                @endif
 
 
                                                                 @if ($multi->type == 'doubleMulti')

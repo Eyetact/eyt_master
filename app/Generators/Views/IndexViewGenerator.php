@@ -6,6 +6,7 @@ use App\Generators\GeneratorUtils;
 use App\Models\Attribute;
 use App\Models\Crud;
 use App\Models\Module;
+use App\Models\Multi;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Illuminate\Support\Facades\File;
@@ -462,6 +463,26 @@ class IndexViewGenerator
                                     </td>
                                     ';
                                 break;
+
+                                case 'calc':
+
+                                    if($value->type_of_calc == 'two')
+                                    {
+
+
+                                        $trhtml .= ' <td>
+                                        <div class="input-box">
+                                            <input type="number" name="' . $field->code . '[${no}][' . $value->code . ']"
+                                                class="form-control google-input" data-first="'. $value->first_column .'"  data-second="'. $value->second_column .'" data-operation="'. $value->operation .'"
+                                                placeholder="' . $value->name . '" required readonly>
+                                        </div>
+                                    </td>
+                                    ';
+
+                                    }
+
+
+                                    break;
                                 case 'doubleMulti':
 
 
@@ -765,6 +786,7 @@ class IndexViewGenerator
                                         </td>
                                         ';
                                 break;
+
                             case 'image':
                                 $trhtml .= ' <td>
                                             <div class="input-box">
@@ -886,6 +908,8 @@ class IndexViewGenerator
                             table.append(tr)
 
                             table.find('.content:last').richText();
+                             applyCalcOperations();
+                             dynamicCalculation();
 
                         });\n";
                 }

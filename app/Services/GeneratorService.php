@@ -63,6 +63,12 @@ class GeneratorService
         (new MigrationGenerator)->generateMultiple($table_name,$id1, $id2);
     }
 
+    public function generateCalcMigration($id,$field): void
+    {
+        (new MigrationGenerator)->generateCalc($id,$field);
+    }
+
+
 
     public function generateController(array $request): void
     {
