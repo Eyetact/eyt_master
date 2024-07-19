@@ -19,6 +19,32 @@
 
     $(document).ready(function() {
 
+        $("#addMenuLabel").on('shown.bs.modal', function() {
+            // Run validation on keyup and change events
+            $('input[required]').on('keyup change', function() {
+                validateForm('.admin-form', '.admin-form-submit');
+            });
+
+            // Initial validation check
+            validateForm('.admin-form', '.admin-form-submit');
+
+        });
+
+        $("#FrontForm").on('shown.bs.modal', function() {
+            // Run validation on keyup and change events
+            $('input[required]').on('keyup change', function() {
+                validateForm('.storefront-form', '.store-front-form-submit');
+            });
+
+            // Initial validation check
+            validateForm('.storefront-form', '.store-front-form-submit');
+
+        });
+
+
+
+
+
         /**
          * THIS ACTION HANDLER IS TO HANDLE THE SUBMIT BUTTON OF STORE-FRONT FORM 
          */
