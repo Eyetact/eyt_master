@@ -35,5 +35,6 @@ app/Http/Requests/Admin
 /public/css
 /public/fonts
 /public/js
+/public/mix-mainfest.json
 
 
