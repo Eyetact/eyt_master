@@ -3567,5 +3567,91 @@ class ViewServiceProvider extends ServiceProvider
 
 
 
+
+		if(Schema::hasTable('firstmodules')){
+    if (Schema::hasColumn('firstmodules', 'name')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_firstmodules',
+                \App\Models\Admin\Firstmodule::all()
+            );
+        });
+}
+}
+
+
+
+
+		if(Schema::hasTable('firstmodules')){
+    if (Schema::hasColumn('firstmodules', 'name')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_firstmodules',
+                \App\Models\Admin\Firstmodule::all()
+            );
+        });
+}
+}
+
+
+
+
+		if(Schema::hasTable('adminmodules')){
+    if (Schema::hasColumn('adminmodules', 'admin')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_adminmodules',
+                \App\Models\Admin\Adminmodule::all()
+            );
+        });
+}
+}
+
+
+
+
+		if(Schema::hasTable('adminmodules')){
+    if (Schema::hasColumn('adminmodules', 'description')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_adminmodules',
+                \App\Models\Admin\Adminmodule::all()
+            );
+        });
+}
+}
+
+
+
+
+
+		if(Schema::hasTable('firstmodules')){
+    if (Schema::hasColumn('firstmodules', 'name')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_firstmodules',
+                \App\Models\Admin\Firstmodule::all()
+            );
+        });
+}
+}
+
+
+
+
+		if(Schema::hasTable('firstmodules')){
+    if (Schema::hasColumn('firstmodules', 'name')){
+    View::composer(['admin.*', 'admin.*'], function ($view) {
+            return $view->with(
+                'look_firstmodules',
+                \App\Models\Admin\Firstmodule::all()
+            );
+        });
+}
+}
+
+
+
+
 	}
 }

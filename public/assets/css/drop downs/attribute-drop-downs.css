@@ -1,0 +1,12 @@
+ .fktypes .custom-controls-stacked {
+     display: flex;
+     flex-direction: row;
+     align-items: center;
+     margin-right: 20px;
+     /* Adjust the margin as needed */
+ }
+
+ .fktypes .custom-control {
+     margin-right: 15px;
+     /* Adjust the margin as needed */
+ }

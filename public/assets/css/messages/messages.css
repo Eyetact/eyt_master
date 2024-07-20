@@ -1,0 +1,71 @@
+.alert {
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    position: relative;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-success:before {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    font-size: 20px;
+}
+
+.alert .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: inherit;
+    cursor: pointer;
+}
+
+.alert .close:hover {
+    color: #000;
+}
+
+.alert-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    display: none;
+    z-index: 1050;
+    transition: all 0.5s ease-in-out;
+}
+
+.session-messages {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.modal-success {
+    padding: 1.25rem;
+    /* or whatever padding you prefer */
+    border-color: #c3e6cb;
+    /* matching border color */
+}
+
+/* Optional: Additional styling to make it look nice */
+.modal-success .alert-success {
+    margin: 0;
+    padding: 1rem;
+}

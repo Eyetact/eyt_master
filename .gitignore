@@ -30,4 +30,10 @@ app/Providers/Generator
 app/Models/Admin
 app/Http/Controllers/Admin
 app/Http/Requests/Admin
-/public/
+
+# gitignore for public directory ()
+/public/css
+/public/fonts
+/public/js
+
+
