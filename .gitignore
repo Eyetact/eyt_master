@@ -36,5 +36,7 @@ app/Http/Requests/Admin
 /public/fonts
 /public/js
 /public/mix-mainfest.json
-
+/public/favicon.ico
+/public/robots.txt
+/public/web.config
 
