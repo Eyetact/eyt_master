@@ -30,4 +30,13 @@ app/Providers/Generator
 app/Models/Admin
 app/Http/Controllers/Admin
 app/Http/Requests/Admin
-/public/
+
+# gitignore for public directory ()
+/public/css
+/public/fonts
+/public/js
+/public/mix-mainfest.json
+/public/favicon.ico
+/public/robots.txt
+/public/web.config
+
