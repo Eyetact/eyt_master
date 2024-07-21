@@ -23,8 +23,10 @@ class AttributePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:modules,name,NULL,id,user_id,' . $this->user()->id,
-            'code' => 'required|unique:attributes,code',
+            'name' => 'required',
+            'code' => 'required',
+            // 'name' => 'required|unique:modules,name,NULL,id,user_id,' . $this->user()->id,
+            // 'code' => 'required|unique:attributes,code',
 
         ];
     }

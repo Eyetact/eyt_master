@@ -184,11 +184,11 @@ class MigrationGenerator
         $setFields2 = '';
         $totalFields = count($module->fields);
 
-        if( count($module->fields()->orderBy('created_at', 'desc')->take(1)->get()) <=0 ){
+        if( count($module->fields()->orderBy('id', 'desc')->take(1)->get()) <=0 ){
             return;
         }
 
-        foreach ($module->fields()->orderBy('created_at', 'desc')->take(1)->get() as $i => $field) {
+        foreach ($module->fields()->orderBy('id', 'desc')->take(1)->get() as $i => $field) {
             $field->code = !empty($field->code) ? GeneratorUtils::singularSnakeCase($field->code) : GeneratorUtils::singularSnakeCase($field->name);
 
             if ($field->type == 'date' && $field->input == 'month') {
@@ -682,7 +682,7 @@ class MigrationGenerator
 
 
 
-            $migrationName = date('Y') . '_' . date('m') . '_' . date('d') . '_' . date('h') . date('i') . date('s') . '_edit_' . $tableNamePluralLowercase . '_table.php';
+            $migrationName = date('Y') . '_' . date('m') . '_' . date('d') . '_' . date('h') . date('i') . date('s') .'2'.'_edit_' . $tableNamePluralLowercase . '_table.php';
         // $module = Module::find($id);
         // $migrationName = $module->migration ;
 
