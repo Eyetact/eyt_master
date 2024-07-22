@@ -25,19 +25,15 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <label id="module-error" class="error text-red hide" for="module"></label>
-                            @error('module')
-                                <span class="error module-error">{{ $message }}</span>
-                            @enderror
+                            {{-- <label id="module-error" class="error text-red hide" for="module"></label> --}}
+                            <span id="module-error" class="error text-danger d-none error-message"></span>
                         </div>
                         <div class="col-sm-12 input-box">
                             <label class="form-label" for="name">Name<span class="text-red">*</span></label>
                             <input type="text" name="name" id="name"
                                 class="google-input @error('name') is-invalid @enderror"
                                 value="{{ old('name', $attribute->name) }}">
-                            @error('name')
-                                <span class="error name-error">{{ $message }}</span>
-                            @enderror
+                            <span id="name-error" class="error text-danger d-none error-message"></span>
                         </div>
 
                         <div class="col-sm-12 input-box">
@@ -46,9 +42,7 @@
                                 class="google-input @error('code') is-invalid @enderror"
                                 value="{{ old('code', $attribute->code) }}">
 
-                            @error('code')
-                                <span class="error code-error">{{ $message }}</span>
-                            @enderror
+                            <span id="code-error" class="error text-danger d-none error-message"></span>
 
                         </div>
 
@@ -118,9 +112,7 @@
                                 {{-- <option value="assign">Assign</option> --}}
                             </select>
                             <label id="field_type-error" class="error text-red hide" for="field_type"></label>
-                            @error('field_type')
-                                <span class="error field_type-error">{{ $message }}</span>
-                            @enderror
+                            <span id="input_types-error" class="error text-danger d-none error-message"></span>
                             <div class="input-options"></div>
 
                             {{-- <div class="multi">
@@ -269,3 +261,5 @@
     </div>
 </form>
 <!-- End Row -->
+<!-- add the needed js scripts-->
+@include('attribute.js.attribute.attribute')

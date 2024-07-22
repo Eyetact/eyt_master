@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\attributeRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AttributePostRequest extends FormRequest
 {
@@ -23,18 +25,27 @@ class AttributePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'code' => 'required',
-            // 'name' => 'required|unique:modules,name,NULL,id,user_id,' . $this->user()->id,
-            // 'code' => 'required|unique:attributes,code',
-
+            'name' => ['required', Rule::unique('attributes')->where(function ($query) {
+                return $query->where('module', $this->module);
+            })],
+            'code' => 'required|unique:attributes,code',
+            'module' => 'required',
+            'input_types' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'code.required' => 'code should be required'
+            'name.required' => 'name is required',
+            'name.unique' => 'name should be unique in the module',
+
+            'module.required' => 'module is required',
+
+            'input_types.required' => 'attribute type is required',
+
+            'code.unique' => 'code should be unique over all the system',
+            'code.required' => 'code is required'
         ];
     }
 }
