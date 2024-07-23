@@ -486,7 +486,7 @@
                                                             <label class="form-label" for="name">Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="name" id="aname"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
                                                         </div>
