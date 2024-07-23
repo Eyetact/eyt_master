@@ -493,31 +493,31 @@ class AttributeController extends Controller
     }
 
 
-    // public function getAttrByModel(Module $module)
-    // {
-    //     $attributes = Attribute::where('module', $module->id)->get();
-    //     $options = '<option disabled selected>-- select --</option>';
-
-    //     foreach ($attributes as $key => $value) {
-    //         $options .= '<option data-id="' . $value->id . '" value="' . $value->code . '" >' . $value->name . '</option>';
-    //     }
-    //     return $options;
-    // }
-
     public function getAttrByModel(Module $module)
     {
         $attributes = Attribute::where('module', $module->id)->get();
         $options = '<option disabled selected>-- select --</option>';
 
         foreach ($attributes as $key => $value) {
-            if ($value->type == "multi") {
-                $options .= '<option data-id="' . $value->id . '" data-multiattr="true" value="' . $value->code . '" >' . $value->name . '</option>';
-            } else {
-                $options .= '<option data-id="' . $value->id . '" data-multiattr="false" value="' . $value->code . '" >' . $value->name . '</option>';
-            }
+            $options .= '<option data-id="' . $value->id . '" data-multiattr="false" value="' . $value->code . '" >' . $value->name . '</option>';
         }
         return $options;
     }
+
+    // public function getAttrByModel(Module $module)
+    // {
+    //     $attributes = Attribute::where('module', $module->id)->get();
+    //     $options = '<option disabled selected>-- select --</option>';
+
+    //     foreach ($attributes as $key => $value) {
+    //         if ($value->type == "multi") {
+    //             $options .= '<option data-id="' . $value->id . '" data-multiattr="true" value="' . $value->code . '" >' . $value->name . '</option>';
+    //         } else {
+    //             $options .= '<option data-id="' . $value->id . '" data-multiattr="false" value="' . $value->code . '" >' . $value->name . '</option>';
+    //         }
+    //     }
+    //     return $options;
+    // }
 
 
     public function getAttrByModel2(Module $module)
