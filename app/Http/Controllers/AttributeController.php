@@ -775,6 +775,36 @@ class AttributeController extends Controller
         return redirect()->route('attribute.index');
     }
 
+
+    public function sortAttributes(){
+
+
+        $models = Module::where('user_id',auth()->user()->id)->get();
+
+        return view('attribute.sort-attributes',compact('models'));
+
+    }
+
+    public function getSortAttrsByModule($module_id)
+{
+    $attributes = Attribute::where('module', $module_id)->orderBy('sequence', 'asc')->get();
+    return response()->json($attributes);
+}
+
+public function updateAttributeSequence(Request $request)
+{
+    $sequenceData = $request->input('sequence');
+    foreach ($sequenceData as $sequence => $id) {
+        $attribute = Attribute::find($id);
+        if ($attribute) {
+            $attribute->sequence = $sequence;
+            $attribute->save();
+
+        }
+    }
+    return response()->json(['status' => 'success']);
+}
+
     /**
      * Remove the specified resource from storage.
      *

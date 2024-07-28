@@ -107,7 +107,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
         if (auth()->user()->id != 1) {
 
             $sub = auth()->user()?->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
-            if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin'))) && auth()->user()->user_id != 1) {
+            if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin')) || !(auth()->user()->hasRole('public_vendor'))) && auth()->user()->user_id != 1) {
                 $customer = User::find(auth()->user()->user_id);
                 $sub = $customer->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
             }
@@ -121,10 +121,10 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
             if (!$limit) {
                 $do = true;
 
-                if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin'))) && auth()->user()->user_id != 1) {
+                if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin')) || !(auth()->user()->hasRole('public_vendor'))) && auth()->user()->user_id != 1) {
                     $customer = User::find(auth()->user()->user_id);
                     $sub = $customer->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
-                } elseif ((!(auth()->user()->hasRole('vendor')) && !(auth()->user()->hasRole('admin'))) && auth()->user()->user_id == 1) {
+                } elseif ((!(auth()->user()->hasRole('vendor')) && !(auth()->user()->hasRole('admin')) && !(auth()->user()->hasRole('public_vendor'))) && auth()->user()->user_id == 1) {
                     $do = false;
                 }
 
@@ -164,7 +164,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
 
         }
 
-        if (auth()->user()->hasAnyRole(['vendor', 'admin'])) {
+        if (auth()->user()->hasAnyRole(['vendor', 'admin','public_vendor'])) {
             if ($request->global == 0) {
 
 
@@ -1185,7 +1185,7 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
             if (auth()->user()->id != 1) {
 
                 $sub = auth()->user()?->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
-                if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin'))) && auth()->user()->user_id != 1) {
+                if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin')) || !(auth()->user()->hasRole('public_vendor'))) && auth()->user()->user_id != 1) {
                     $customer = User::find(auth()->user()->user_id);
                     $sub = $customer->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
                 }
@@ -1197,10 +1197,10 @@ class {{modelNameSingularPascalCase}}Controller extends Controller
                     if ($limit) {
                         $do = true;
 
-                        if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin')) )&& auth()->user()->user_id != 1) {
+                        if ((!(auth()->user()->hasRole('vendor')) || !(auth()->user()->hasRole('admin')) || !(auth()->user()->hasRole('public_vendor')) )&& auth()->user()->user_id != 1) {
                             $customer = User::find(auth()->user()->user_id);
                             $sub = $customer->subscriptions()->where('status', 'active')->orderBy('created_at', 'desc')->first();
-                        } elseif ((!(auth()->user()->hasRole('vendor')) && !(auth()->user()->hasRole('admin'))) && auth()->user()->user_id == 1) {
+                        } elseif ((!(auth()->user()->hasRole('vendor')) && !(auth()->user()->hasRole('admin')) && !(auth()->user()->hasRole('public_vendor'))) && auth()->user()->user_id == 1) {
                             $do = false;
                         }
                         if ($do) {

@@ -718,7 +718,7 @@ class FormViewGenerator
         $template .= "@endif\n";
 ;
 
-        foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
+        foreach ($module->fields()->where('is_enable', 1)->orderBy('sequence', 'asc')->get() as $i => $field) {
             $field->name = GeneratorUtils::singularSnakeCase($field->name);
             $field->code = !empty($field->code) ? GeneratorUtils::singularSnakeCase($field->code) : GeneratorUtils::singularSnakeCase($field->name);
 
