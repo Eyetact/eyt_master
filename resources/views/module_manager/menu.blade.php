@@ -401,7 +401,7 @@
                                                             <label class="custom-switch form-label">
                                                                 <input type="checkbox" name="include_in_menu"
                                                                     id="ainclude_in_menu" class="custom-switch-input"
-                                                                    id="is_enable">
+                                                                    id="is_enable" checked>
                                                                 <span class="custom-switch-indicator"></span>
                                                                 <span class="custom-switch-description">Include in
                                                                     menu</span>

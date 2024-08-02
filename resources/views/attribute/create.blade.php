@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-                        <div class="input-box col-sm-12">
+                        <div class="input-box col-sm-12 attribute-type-drop-down">
                             <label class="form-label">Select Attribute type<span class="text-red">*</span></label>
                             <select name="input_types" class="form-select form-input-types  google-input">
                                 <option value="" disabled selected>-- {{ __('Select input type') }}--</option>
@@ -236,13 +236,13 @@
                 <input type="hidden" name="default_values" class="form-default-value"
                     placeholder="{{ __('Default Value (optional)') }}">
 
-                <div class="col-md-6">
+                <div class="col-md-6 min-value">
                     <div class="input-box">
                         <input type="number" name="min_lengths" class=" google-input form-control form-min-lengths"
                             min="1" placeholder="Min">
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 max-value">
                     <div class="input-box">
                         <input type="number" name="max_lengths" class="  google-input form-control form-max-lengths"
                             min="1" placeholder="Max">

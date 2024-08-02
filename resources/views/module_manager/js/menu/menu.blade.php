@@ -42,6 +42,100 @@
         });
 
 
+        jQuery.validator.addMethod("notEqual", function(value, element, param) {
+            return this.optional(element) || value != param;
+        }, "Please change the name, you can't enter id");
+
+        jQuery.validator.addMethod("notEqual2", function(value, element, param) {
+            return this.optional(element) || value != param;
+        }, "Please change the name, you can't enter id");
+
+
+        jQuery.validator.addMethod("notEqual3", function(value, element, param) {
+            return this.optional(element) || value != param;
+        }, "Please change the name, you can't enter id");
+
+        jQuery.validator.addMethod("notEqual4", function(value, element, param) {
+            return this.optional(element) || value != param;
+        }, "Please change the name, you can't enter id");
+
+        // validation listener in store-front
+        $(document).on('change', '.storefront-form', function() {
+            $(".storefront-form").validate({
+                onkeyup: function(el, e) {
+                    console.log("yes");
+                    $(el).valid();
+                },
+                errorClass: "invalid-feedback is-invalid",
+                validClass: 'valid-feedback is-valid',
+                ignore: ":hidden",
+                rules: {
+
+                    code: {
+                        required: true,
+                        maxlength: 255,
+                        notEqual: 'id',
+                        notEqual2: 'ID',
+                        notEqual3: 'iD',
+                        notEqual4: 'Id',
+                    },
+
+                },
+                messages: {},
+                /*the following lines are for inserting the error message under the code input field*/
+                errorPlacement: function(error, element) {
+                    error.addClass('d-block');
+                    error.insertAfter(element);
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                },
+            });
+        });
+
+        // validation listener in admin-form
+        $(document).on('change', '.admin-form', function() {
+            $(".admin-form").validate({
+                onkeyup: function(el, e) {
+                    console.log("yes");
+                    $(el).valid();
+                },
+                errorClass: "invalid-feedback is-invalid",
+                validClass: 'valid-feedback is-valid',
+                ignore: ":hidden",
+                rules: {
+
+                    code: {
+                        required: true,
+                        maxlength: 255,
+                        notEqual: 'id',
+                        notEqual2: 'ID',
+                        notEqual3: 'iD',
+                        notEqual4: 'Id',
+                    },
+
+                },
+                messages: {},
+                /*the following lines are for inserting the error message under the code input field*/
+                errorPlacement: function(error, element) {
+                    error.addClass('d-block');
+                    error.insertAfter(element);
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                },
+            });
+        });
+
+
 
 
 

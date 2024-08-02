@@ -8,6 +8,10 @@
     <link href="{{ URL::asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/plugins/sweet-alert/jquery.sweet-modal.min.css') }}" rel="stylesheet" />
     <link href="{{ URL::asset('assets/plugins/sweet-alert/sweetalert.css') }}" rel="stylesheet" />
+
+    <!-- drop down style -->
+    <link href="{{ URL::asset('assets/css/drop downs/attribute-drop-downs.css') }}" rel="stylesheet" />
+
     <style>
         .multi-item {
             background: #e9e9e9;
@@ -403,6 +407,8 @@
             table.append(tr)
             updateFirstColumnOptions();
             updateSecondColumnOptions();
+
+
         })
 
 
@@ -505,9 +511,6 @@
         })
 
         $(document).on('change', '.smodule2', function() {
-
-
-
             $(this).closest('tr').find('.cd2').remove();
             var id = $(this).find(':selected').data('id');
             var parent = $(this).parent().parent().parent().parent().parent().find('.select_options');
@@ -571,7 +574,6 @@
 
 
         $(document).on('change', 'select[name=attribute]', function() {
-
             var selectedValue = $('.lookup-drop').val();
             var modifiedValue = selectedValue + '_' + $(this).val() + '_id';
             // alert(modifiedValue);
@@ -591,6 +593,7 @@
 
                 $(`.options`).append(`
     <div class="input-box form-constrain fkey2 mt-2">
+        
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input lookup-drop2"  name="constrains2" required>
                ${list}
@@ -764,9 +767,9 @@ ${response}
 
                     if ($('.fktype-radio:checked').val() == 'based') {
 
-
                         $(`.options`).append(` <div class="input-box cond-wrapper form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="condition_attr">linked attribute<span class="text-red">*</span></label>
                         <select class="google-input condition-drop" name="condition_attr" required>
 
 
@@ -781,7 +784,6 @@ ${response}
 
 
                     if ($('.fktype-radio:checked').val() == 'condition') {
-
                         parent.append(` <div class="input-box child-drop form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input " name="attribute" required>
@@ -813,7 +815,7 @@ ${response}
                         $('.input-code').val(modifiedValue);
                         $('.input-code').prop('readonly', true);
 
-                        parent.append(` <div class="input-box cond-wrapper form-constrain mt-2">
+                        ('.options').append(` <div class="input-box cond-wrapper form-constrain mt-2">
 <div class="input-box form-on-update mt-2 form-on-update-foreign">
 <select class="google-input condition-drop" name="condition_attr" required>
    ${response}
@@ -829,6 +831,7 @@ ${response}
                         .val() != 'condition') {
                         parent.append(` <div class="input-box child-drop form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="attribute">linked attribute<span class="text-red">*</span></label>
                         <select class="google-input " name="attribute" required>
                            ${response}
                         </select>
@@ -843,6 +846,7 @@ ${response}
                     </label>
                 </div>
                     `);
+
 
 
                         if ($('.form-input-types').val() == 'condition') {
@@ -1137,18 +1141,17 @@ ${response}
               `);
 
 
-            }
-
-            else if ($(this).val() == 'calc') {
+            } else if ($(this).val() == 'calc') {
 
 
 
 
-$(this).parent().parent().find('.select_options').append(`
+                $(this).parent().parent().find('.select_options').append(`
 
 
   <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="x">type of calculate<span class="text-red">*</span></label>
                         <select class="google-input tcalc-drop"  name="multi[${index}][type_of_calc]" required>
                             <option value="" disabled selected>-- Select type of calculate --</option>
                                   <option value="one">One Column For Calculate</option>
@@ -1160,15 +1163,7 @@ $(this).parent().parent().find('.select_options').append(`
 
 `);
 
-}
-
-
-
-
-
-
-
-            else if ($(this).val() == 'foreignId') {
+            } else if ($(this).val() == 'foreignId') {
 
                 var list = `{!! $all !!}`;
 
@@ -1510,6 +1505,9 @@ $(this).parent().parent().find('.select_options').append(`
 
 
             } else if ($(this).val() == 'multi') {
+                // disable the min-max
+                $('.min-value').hide();
+                $('.max-value').hide();
                 removeAllInputHidden(index)
                 checkMinAndMaxLength(index)
                 addColumTypeHidden(index)
@@ -1669,7 +1667,6 @@ $(this).parent().parent().find('.select_options').append(`
             // `)
 
             } else if ($(this).val() == 'foreignId') {
-                // alert('hi');
                 removeAllInputHidden(index)
                 checkMinAndMaxLength(index)
                 $('.source-card').show();
@@ -1717,57 +1714,36 @@ $(this).parent().parent().find('.select_options').append(`
             // `)
 
             } else if ($(this).val() == 'fk') {
-                // alert('hi');
                 removeAllInputHidden(index)
-                checkMinAndMaxLength(index)
+                //checkMinAndMaxLength(index)
                 $('.source-card').hide();
                 $('.deff-class').hide();
 
                 $(`.form-option`).remove()
 
                 $(`.options`).append(`
-
-                        <div class="col-md-12 fktypes">
+                          <div class="col-md-12 fktypes lookup-options">
         <p>Type</p>
         <div class="custom-controls-stacked">
             <label class="custom-control custom-radio" for="basic">
-
-
-                    <input class="custom-control-input fktype-radio" type="radio"
-                        name="fk_type" id="basic" value="basic"
-                       required>
-
+                <input class="custom-control-input fktype-radio" type="radio" name="fk_type" id="basic" value="basic" required>
                 <span class="custom-control-label">Basic</span>
-
             </label>
         </div>
 
         <div class="custom-controls-stacked">
             <label class="custom-control custom-radio" for="condition">
-
-
-                    <input class="custom-control-input fktype-radio" type="radio"
-                        name="fk_type" id="condition" value="condition"
-                       required>
-
+                <input class="custom-control-input fktype-radio" type="radio" name="fk_type" id="condition" value="condition" required>
                 <span class="custom-control-label">Condition</span>
-
             </label>
         </div>
 
         <div class="custom-controls-stacked">
             <label class="custom-control custom-radio" for="based">
-
-
-                    <input class="custom-control-input fktype-radio" type="radio"
-                        name="fk_type" id="based" value="based"
-                       required>
-
+                <input class="custom-control-input fktype-radio" type="radio" name="fk_type" id="based" value="based" required>
                 <span class="custom-control-label">Based On</span>
-
             </label>
         </div>
-
     </div>
             `)
 
@@ -1843,6 +1819,7 @@ $(this).parent().parent().find('.select_options').append(`
                 $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="type_of_calc">type of calculate<span class="text-red">*</span></label>
                         <select class="google-input tcalc-drop"  name="type_of_calc" required>
                             <option value="" disabled selected>-- Select type of calculate --</option>
                                   <option value="one">One Column For Calculate</option>
@@ -1937,7 +1914,8 @@ $(this).parent().parent().find('.select_options').append(`
                 $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
-                        <select class="google-input primary-drop"  name="primary" required>
+                    <label class="form-label" for="primay">primary attribute<span class="text-red">*</span></label>
+                    <select class="google-input primary-drop"  name="primary" required>
                             <option value="" disabled selected>-- Select primary attribute --</option>
                                   <option value="text">Text</option>
                                   <option value="integer">Integer Number</option>
@@ -1950,6 +1928,7 @@ $(this).parent().parent().find('.select_options').append(`
 
                     <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="secondary">secondary attribute<span class="text-red">*</span></label>
                         <select class="google-input secondary-drop"  name="secondary" required>
                             <option value="" disabled selected>-- Select secondary attribute --</option>
                                   <option value="prefix">fixed prefix</option>
@@ -2117,28 +2096,28 @@ $(this).parent().parent().find('.select_options').append(`
 
 
 
-        if ($(this).val() == 'one') {
+            if ($(this).val() == 'one') {
 
 
 
 
 
-            if($('.form-input-types').val() == 'calc'){
+                if ($('.form-input-types').val() == 'calc') {
 
 
-            $('.mchild-drop1').remove()
-            $('.mchild-drop2').remove()
-            $('.fmulti-column').remove()
-            $('.smulti-column').remove()
+                    $('.mchild-drop1').remove()
+                    $('.mchild-drop2').remove()
+                    $('.fmulti-column').remove()
+                    $('.smulti-column').remove()
 
 
-            $('.operation-drop').remove()
-            $('.child-drop').remove()
-            $('.child2-drop').remove()
-            $('.fcolumn').remove()
-            $('.scolumn').remove()
+                    $('.operation-drop').remove()
+                    $('.child-drop').remove()
+                    $('.child2-drop').remove()
+                    $('.fcolumn').remove()
+                    $('.scolumn').remove()
 
-            $(`.options`).append(`
+                    $(`.options`).append(`
 
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
@@ -2158,15 +2137,15 @@ $(this).parent().parent().find('.select_options').append(`
 
             `)
 
-                var id = $('.module').val();
+                    var id = $('.module').val();
 
 
-                $.ajax({
-                    url: '{{ url('/') }}/attribute-by-module/' + id,
-                    success: function(response) {
-                        console.log(response);
+                    $.ajax({
+                        url: '{{ url('/') }}/attribute-by-module/' + id,
+                        success: function(response) {
+                            console.log(response);
 
-                        $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
          <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
@@ -2180,35 +2159,36 @@ $(this).parent().parent().find('.select_options').append(`
 
 
 
-                    }
+                        }
 
 
-                })
-            }
-
-
-
-    if($('.form-input-types').val() == 'multi'){
+                    })
+                }
 
 
 
-        let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
-                .html());
-
-        $(this).closest('tr').find('.mchild-drop1').remove()
-        $(this).closest('tr').find('.mchild-drop2').remove()
-        $(this).closest('tr').find('.fmulti-column').remove()
-        $(this).closest('tr').find('.smulti-column').remove()
-
-        $(this).closest('tr').find('.operation-drop').remove()
-        $(this).closest('tr').find('.child-drop').remove()
-        $(this).closest('tr').find('.child2-drop').remove()
-        $(this).closest('tr').find('.fcolumn').remove()
-        $(this).closest('tr').find('.scolumn').remove()
+                if ($('.form-input-types').val() == 'multi') {
 
 
 
-            $(this).closest('tr').find('.select_options').append(`
+                    let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center')
+                        .find('.input-box')
+                        .html());
+
+                    $(this).closest('tr').find('.mchild-drop1').remove()
+                    $(this).closest('tr').find('.mchild-drop2').remove()
+                    $(this).closest('tr').find('.fmulti-column').remove()
+                    $(this).closest('tr').find('.smulti-column').remove()
+
+                    $(this).closest('tr').find('.operation-drop').remove()
+                    $(this).closest('tr').find('.child-drop').remove()
+                    $(this).closest('tr').find('.child2-drop').remove()
+                    $(this).closest('tr').find('.fcolumn').remove()
+                    $(this).closest('tr').find('.scolumn').remove()
+
+
+
+                    $(this).closest('tr').find('.select_options').append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="multi[${index}][operation]" required>
@@ -2229,7 +2209,7 @@ $(this).parent().parent().find('.select_options').append(`
 
 
 
-            $(this).closest('tr').find('.select_options').append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
+                    $(this).closest('tr').find('.select_options').append(`<label class="form-label fcolumn" >select column<span class="text-red">*</span></label>
          <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input test-first" name="multi[${index}][first_column]" required>
@@ -2242,38 +2222,38 @@ $(this).parent().parent().find('.select_options').append(`
 
         `);
 
-        updateFirstColumnOptions();
+                    updateFirstColumnOptions();
 
 
 
 
-    }
+                }
 
 
 
 
-    }
+            }
 
-        if ($(this).val() == 'two') {
-
-
-            if($('.form-input-types').val() == 'calc'){
-
-                $('.mchild-drop1').remove()
-            $('.mchild-drop2').remove()
-            $('.fmulti-column').remove()
-            $('.smulti-column').remove()
+            if ($(this).val() == 'two') {
 
 
+                if ($('.form-input-types').val() == 'calc') {
 
-            $('.operation-drop').remove()
-            $('.child-drop').remove()
-            $('.fcolumn').remove()
+                    $('.mchild-drop1').remove()
+                    $('.mchild-drop2').remove()
+                    $('.fmulti-column').remove()
+                    $('.smulti-column').remove()
 
 
 
+                    $('.operation-drop').remove()
+                    $('.child-drop').remove()
+                    $('.fcolumn').remove()
 
-                $(`.options`).append(`
+
+
+
+                    $(`.options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="operation" required>
@@ -2290,14 +2270,14 @@ $(this).parent().parent().find('.select_options').append(`
 
             `)
 
-                var id = $('.module').val();
+                    var id = $('.module').val();
 
-                $.ajax({
-                    url: '{{ url('/') }}/attribute-by-module/' + id,
-                    success: function(response) {
-                        console.log(response);
+                    $.ajax({
+                        url: '{{ url('/') }}/attribute-by-module/' + id,
+                        success: function(response) {
+                            console.log(response);
 
-                        $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
         <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="first_column" required>
@@ -2310,7 +2290,7 @@ $(this).parent().parent().find('.select_options').append(`
         `);
 
 
-                        $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+                            $(`.options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
          <div class="input-box child2-drop multi-column2 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input " name="second_column" required>
@@ -2324,34 +2304,35 @@ $(this).parent().parent().find('.select_options').append(`
 
 
 
-                    }
+                        }
 
 
-                })
+                    })
 
-    }
-
-
-    if($('.form-input-types').val() == 'multi'){
+                }
 
 
-        $('.mchild-drop1').remove()
-        $(this).closest('tr').find('.mchild-drop2').remove()
-        $(this).closest('tr').find('.fmulti-column').remove()
-        $(this).closest('tr').find('.smulti-column').remove()
+                if ($('.form-input-types').val() == 'multi') {
 
 
-        let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center').find('.input-box')
-                .html());
+                    $('.mchild-drop1').remove()
+                    $(this).closest('tr').find('.mchild-drop2').remove()
+                    $(this).closest('tr').find('.fmulti-column').remove()
+                    $(this).closest('tr').find('.smulti-column').remove()
 
 
-                $(this).closest('tr').find('.operation-drop').remove()
-                $(this).closest('tr').find('.child-drop').remove()
-                $(this).closest('tr').find('.fcolumn').remove()
+                    let index = parseInt($(this).parent().parent().parent().parent().parent().find('.text-center')
+                        .find('.input-box')
+                        .html());
+
+
+                    $(this).closest('tr').find('.operation-drop').remove()
+                    $(this).closest('tr').find('.child-drop').remove()
+                    $(this).closest('tr').find('.fcolumn').remove()
 
 
 
-                $(this).closest('tr').find(`.select_options`).append(`
+                    $(this).closest('tr').find(`.select_options`).append(`
                 <div class="input-box form-constrain mt-2">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
                         <select class="google-input operation-drop"  name="multi[${index}][operation]" required>
@@ -2370,7 +2351,7 @@ $(this).parent().parent().find('.select_options').append(`
 
 
 
-            $(this).closest('tr').find(`.select_options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
+                    $(this).closest('tr').find(`.select_options`).append(`<label class="form-label fcolumn" >select first field<span class="text-red">*</span></label>
         <div class="input-box child-drop multi-column1 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input test-first" name="multi[${index}][first_column]" required>
@@ -2382,9 +2363,9 @@ $(this).parent().parent().find('.select_options').append(`
 
         `);
 
-        updateFirstColumnOptions();
+                    updateFirstColumnOptions();
 
-        $(this).closest('tr').find(`.select_options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
+                    $(this).closest('tr').find(`.select_options`).append(`<label class="form-label scolumn" >select second field<span class="text-red">*</span></label>
          <div class="input-box child2-drop multi-column2 form-constrain mt-2">
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input test-second" name="multi[${index}][second_column]" required>
@@ -2396,11 +2377,11 @@ $(this).parent().parent().find('.select_options').append(`
 
         `);
 
-        updateSecondColumnOptions();
+                    updateSecondColumnOptions();
 
 
 
-    }
+                }
 
 
             }
@@ -2408,41 +2389,41 @@ $(this).parent().parent().find('.select_options').append(`
 
         })
 
-    function updateFirstColumnOptions() {
-let fieldNames = [];
-$('.field-name').each(function() {
-fieldNames.push($(this).val());
-});
-
-        $('.test-first').each(function() {
-            let $select = $(this);
-            let selectedValue = $select.val();
-            $select.empty();
-            fieldNames.forEach(function(name) {
-                let option = $('<option>').val(name).text(name);
-                $select.append(option);
+        function updateFirstColumnOptions() {
+            let fieldNames = [];
+            $('.field-name').each(function() {
+                fieldNames.push($(this).val());
             });
-            $select.val(selectedValue);
-        });
-    }
 
-    function updateSecondColumnOptions() {
-let fieldNames = [];
-$('.field-name').each(function() {
-fieldNames.push($(this).val());
-});
-
-        $('.test-second').each(function() {
-            let $select = $(this);
-            let selectedValue = $select.val();
-            $select.empty();
-            fieldNames.forEach(function(name) {
-                let option = $('<option>').val(name).text(name);
-                $select.append(option);
+            $('.test-first').each(function() {
+                let $select = $(this);
+                let selectedValue = $select.val();
+                $select.empty();
+                fieldNames.forEach(function(name) {
+                    let option = $('<option>').val(name).text(name);
+                    $select.append(option);
+                });
+                $select.val(selectedValue);
             });
-            $select.val(selectedValue);
-        });
-    }
+        }
+
+        function updateSecondColumnOptions() {
+            let fieldNames = [];
+            $('.field-name').each(function() {
+                fieldNames.push($(this).val());
+            });
+
+            $('.test-second').each(function() {
+                let $select = $(this);
+                let selectedValue = $select.val();
+                $select.empty();
+                fieldNames.forEach(function(name) {
+                    let option = $('<option>').val(name).text(name);
+                    $select.append(option);
+                });
+                $select.val(selectedValue);
+            });
+        }
 
         $(document).on('change', '.multi-column1', function() {
 
@@ -2536,7 +2517,7 @@ fieldNames.push($(this).val());
                     // $('.options').remove();
 
 
-                    $('.form-column-types').val('fk').trigger('change');
+                    //$('.form-column-types').val('fk').trigger('change');
 
                     $('.fktypes:last-child').remove();
 
@@ -2550,8 +2531,9 @@ fieldNames.push($(this).val());
                     // alert( list )
 
                     $(`.options`).append(`
-                <div class="input-box form-constrain mt-2 fkey1">
+                <div class="input-box form-constrain mt-2 fkey1 linked-module-attribute">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="constrains">module to link with<span class="text-red">*</span></label>
                         <select class="google-input lookup-drop"  name="constrains" required>
                            ${list}
                         </select>
@@ -2579,7 +2561,6 @@ fieldNames.push($(this).val());
                 }
 
                 if ($('.fktype-radio:checked').val() == 'condition') {
-
                     $('.fkey1').hide();
                     $('select[name=attribute]').hide();
 
@@ -2601,6 +2582,7 @@ fieldNames.push($(this).val());
                     $(`.options`).append(`
                 <div class="input-box form-constrain mt-2 fkey1">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="constrains">module to link with<span class="text-red">*</span></label>
                         <select class="google-input lookup-drop"  name="constrains" required>
                            ${list}
                         </select>
@@ -2654,6 +2636,7 @@ fieldNames.push($(this).val());
                     $(`.options`).append(`
                 <div class="input-box form-constrain mt-2 fkey1">
                     <div class="input-box form-on-update mt-2 form-on-update-foreign">
+                    <label class="form-label" for="constrains">module to link with<span class="text-red">*</span></label>
                         <select class="google-input lookup-drop"  name="constrains" required>
                            ${list}
                         </select>
@@ -2750,37 +2733,57 @@ fieldNames.push($(this).val());
                 case 'text':
                 case 'textarea':
                 case 'texteditor':
+                case 'tel':
+                case 'password':
+                    $('.min-value').show();
+                    $('.max-value').show();
+                    $('#type').val('text').trigger('change');
+                    break;
+                case 'url':
                 case 'file':
                 case 'image':
                 case 'email':
-                case 'tel':
-                case 'password':
-                case 'url':
+                    $('.min-value').hide();
+                    $('.max-value').hide();
+                    $('#type').val('text').trigger('change');
+                    break;
+
                 case 'search':
                     $('#type').val('text').trigger('change')
                     break;
                 case 'decimal':
                 case 'number':
+                    $('#type').val('double').trigger('change');
+                    $('.min-value').show();
+                    $('.max-value').show();
+                    break;
                 case 'range':
-                    $('#type').val('double').trigger('change')
+                    $('#type').val('double').trigger('change');
+                    $('.min-value').hide();
+                    $('.max-value').hide();
                     break;
                 case 'radio':
                 case 'switch':
-                    $('#type').val('boolean').trigger('change')
+                    $('.min-value').hide();
+                    $('.max-value').hide();
+                    $('#type').val('boolean').trigger('change');
                     break;
+
                 case 'date':
                 case 'month':
-                    $('#type').val('date').trigger('change')
+                    $('#type').val('date').trigger('change');
                     break;
                 case 'time':
                     $('#type').val('time').trigger('change')
                     break;
                 case 'datalist':
-                    $('#type').val('year').trigger('change')
+                    $('#type').val('year').trigger('change');
                     break;
+
                 case 'datetime-local':
                     $('#type').val('dateTime').trigger('change')
                     break;
+
                 case 'select':
                 case 'radioselect':
                     $('#type').val('enum').trigger('change')
@@ -2789,16 +2792,23 @@ fieldNames.push($(this).val());
                     $('#type').val('multi').trigger('change')
                     break;
                 case 'foreignId':
+                    // stopped from the drop-down list
+                    $('.min-value').hide();
+                    $('.max-value').hide();
                     $('#type').val('foreignId').trigger('change')
                     break;
                 case 'fk':
+                    $('.min-value').hide();
+                    $('.max-value').hide();
                     $('#type').val('fk').trigger('change')
                     break;
 
                 case 'informatic':
+                    // stopped from the drop-down list
                     $('#type').val('informatic').trigger('change')
                     break;
                 case 'doublefk':
+                    // stopped from the drop-down list
                     $('#type').val('doublefk').trigger('change')
                     break;
                 case 'doubleattr':
@@ -2833,6 +2843,7 @@ fieldNames.push($(this).val());
 
             </div>
             <div class="input-box form-file-sizes">
+            <label class="form-label" for="files_sizes">file size<span class="text-red">*</span></label>
                 <input type="number" name="files_sizes" class="google-input" placeholder="Max size(kb), e.g.: 1024" required>
             </div>
             <input type="hidden" name="mimes" class="form-mimes">
@@ -2854,6 +2865,7 @@ fieldNames.push($(this).val());
 
             </div>
             <div class="input-box form-file-sizes">
+            <label class="form-label" for="files_sizes">file size<span class="text-red">*</span></label>
                 <input type="number" name="files_sizes" class="google-input" placeholder="Max size(kb), e.g.: 1024" required>
             </div>
             <input type="hidden" name="mimes" class="form-mimes">
@@ -2927,6 +2939,7 @@ fieldNames.push($(this).val());
             } else if ($(this).val() == 'range') {
                 $(`.input-options`).append(`
                 <div class="input-box form-step mt-4">
+                    <label class="form-label" for="steps" > Step </label>
                     <input type="number" name="steps" class="google-input" placeholder="Step (optional)">
                 </div>
                 <input type="hidden" name="file_types" class="form-file-types">
