@@ -339,6 +339,8 @@ class AttributeController extends Controller
                 $m->second_column =  NULL;
                 $m->operation =  NULL;
 
+                $m->unique =  0;
+
                 $m->save();
             }
         }
@@ -371,6 +373,8 @@ class AttributeController extends Controller
                 $m->first_column = isset($value['first_column']) ? $value['first_column'] : NULL;
                 $m->second_column = isset($value['second_column']) ? $value['second_column'] : NULL;
                 $m->operation = isset($value['operation']) ? $value['operation'] : NULL;
+
+                $m->unique = isset($value['unique']) ? 1 : 0;
                 $m->save();
             }
         }
@@ -433,6 +437,7 @@ class AttributeController extends Controller
                         $calcAttr->second_column = null;
                         $calcAttr->first_multi_column =  $value['first_column'];
                         $calcAttr->second_multi_column = null;
+                        $calcAttr->unique =  0;
 
                         $calcAttr->save();
 
@@ -749,6 +754,11 @@ class AttributeController extends Controller
                 if (isset($value['operation'])) {
                     $m->operation = isset($value['operation']) ? $value['operation'] : NULL;
                 }
+
+                if (isset($value['unique'])) {
+                    $m->unique = isset($value['unique']) ? 1 : 0;;
+                }
+
                 $m->save();
             }
 

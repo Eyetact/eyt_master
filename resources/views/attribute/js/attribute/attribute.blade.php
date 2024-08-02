@@ -11,7 +11,7 @@
 
       $(document).ready(function() {
           /**
-           * THIS ACTION HANDLER IS TO HANDLE THE SUBMIT BUTTON OF STORE-FRONT FORM 
+           * THIS ACTION HANDLER IS TO HANDLE THE SUBMIT BUTTON OF STORE-FRONT FORM
            */
           $('#attributeCreate').submit(function(e) {
               e.preventDefault(); // Prevent default form submission
@@ -54,7 +54,7 @@
                           displayValidationErrorsFields(
                               errors);
                       } else {
-                          alert("hhh");
+                        //   alert("hhh");
                           manageMessageResponse("role_form_modal", response.message, "danger",
                               3000);
                       }

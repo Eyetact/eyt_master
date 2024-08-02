@@ -1089,6 +1089,9 @@ if (typeof aggregatesData === 'object') {
                                                 })
                                                 applyCalcOperations();
                                                 dynamicCalculation();
+                                                    $('#role_form_modal .table-field').each(function() {
+                                                    updateUniqueOptions($(this));
+                                                })
 
 
                 }
@@ -1173,10 +1176,71 @@ if (typeof aggregatesData === 'object') {
 
         {{trHtml}}
 
-        $(document).on('click', '.btn-delete', function() {
-            $(this).parent().parent().parent().remove()
-            generateNo()
-        })
+
+$(document).on('click', ' .btn-delete', function() {
+
+    let table =  $(this).closest('table');
+    let row = $(this).closest('tr');
+
+    row.remove();
+    reindexTable(table);
+});
+
+function reindexTable(table) {
+    table.find('tr').each(function(index) {
+        let newIndex = index + 1;
+
+        $(this).find('[name]').each(function() {
+            let nameAttr = $(this).attr('name');
+            let newNameAttr = nameAttr.replace(/\[\d+\]/, `[${newIndex}]`);
+            $(this).attr('name', newNameAttr);
+        });
+    });
+}
+
+
+
+         function updateUniqueOptions(table) {
+    let selectedOptions = [];
+    table.find('select.unique').each(function() {
+        let value = $(this).val();
+        if (value) {
+            selectedOptions.push(value);
+        }
+    });
+
+    table.find('select.unique').each(function() {
+        let select = $(this);
+        select.find('option').each(function() {
+            let option = $(this);
+            if (selectedOptions.includes(option.val()) && option.val() !== select.val()) {
+                option.prop('disabled', true);
+            } else {
+                option.prop('disabled', false);
+            }
+        });
+    });
+
+    table.find('.btn-delete').off('click').on('click', function() {
+        let row = $(this).closest('tr');
+        let value = row.find('select.unique').val();
+        row.remove();
+        reEnableOption(table, value);
+        updateUniqueOptions(table);
+
+    });
+}
+
+function reEnableOption(table, value) {
+    table.find('select.unique').each(function() {
+        $(this).find(`option[value="${value}"]`).prop('disabled', false);
+    });
+}
+
+    $(document).on('change', 'select.unique', function() {
+        let table = $(this).closest('table');
+        updateUniqueOptions(table);
+    });
 
         $(document).on('change', '.select-sub', function() {
 
