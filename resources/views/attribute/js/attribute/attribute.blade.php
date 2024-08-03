@@ -57,6 +57,7 @@
                               errors);
                           $("#attributeCreate")[0].reset();
                       } else {
+                          //   alert("hhh");
                           manageMessageResponse("role_form_modal", response.message, "danger",
                               3000);
                           $("#attributeCreate")[0].reset();
