@@ -170,10 +170,12 @@
 
                         manageMessageResponse("FrontForm", "storfront", response,
                             "success", 3000);
+                        $(".storefront-form")[0].reset();
                     } else {
                         manageMessageResponse("FrontForm", "storfront", response,
                             "danger",
                             3000);
+                        $(".storefront-form")[0].reset();
                     }
                 },
                 error: function(xhr, status, error) {
@@ -182,10 +184,12 @@
                         var errors = xhr.responseJSON.errors;
                         displayValidationErrorsFields(
                             errors, 'storefront');
+                        $(".storefront-form")[0].reset();
                     } else {
 
                         manageMessageResponse("FrontForm", response.message, "danger",
                             3000);
+                        $(".storefront-form")[0].reset();
                     }
                 }
             });
@@ -224,10 +228,13 @@
                         manageMessageResponse("addMenuLabel", "admin", response,
                             "success",
                             3000);
+                        $(".admin-form")[0].reset();
+
                     } else {
                         manageMessageResponse("addMenuLabel", "admin", response,
                             "danger",
                             3000);
+                        $(".admin-form")[0].reset();
                     }
 
                 },
@@ -238,15 +245,74 @@
                         var errors = xhr.responseJSON.errors;
                         displayValidationErrorsFields(
                             errors, 'admin');
+                        $(".admin-form")[0].reset();
                     } else {
 
                         manageMessageResponse("addMenuLabel", response.message,
                             "danger",
                             3000);
+                        $(".admin-form")[0].reset();
                     }
                 }
             });
         });
+
+
+        /**
+         * THIS ACTION HANDLER IS TO HANDLE THE SUBMIT BUTTON OF CREATE LABEL FORM
+         */
+        $('.add-label-form').submit(function(e) {
+            e.preventDefault(); // Prevent default form submission
+            formData = new FormData(this);
+            // Setup CSRF token header
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'Accept': 'application/json'
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('module_manager.storelabel') }}', // Replace with your actual route
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === true) {
+                        manageLabelCreationResponse(response.message);
+                        addLabelElementToList(response.data);
+                        toastr.success(response.message, "Success");
+                        $(".add-label-form")[0].reset();
+                    } else {
+                        manageLabelCreationResponse(response.data);
+                        addLabelElementToList(response.data);
+                        toastr.error(response, "Error");
+                        $(".add-label-form")[0].reset();
+                    }
+
+
+                },
+                error: function(xhr, status, error) {
+                    var response = JSON.parse(xhr.responseText);
+                    // Handle the error response
+                    if (xhr.status === 422) {
+                        var errors = xhr.responseJSON.errors;
+                        displayValidationErrorsFields(
+                            errors, 'label');
+                        $(".add-label-form")[0].reset();
+                    } else {
+
+                        manageMessageResponse("addMenuLabel", response.message,
+                            "danger",
+                            3000);
+                        $(".add-label-form")[0].reset();
+                    }
+                }
+            });
+        });
+
+
 
         // Function to display the error messages corresponding to each input field in the form
         function displayValidationErrorsFields(errors, formType) {
@@ -303,6 +369,24 @@
             $("#" + formType + "_menu_list").append(newListItemHtml);
         }
 
+
+        /**
+         * THIS FUNCTION IS TO INSERT NEW LABEL ELEMENT INTO THE LIST
+         * @argument data: object containing the module data
+         **/
+        function addLabelElementToList(data) {
+            // Construct HTML for the new list item using template literals
+            var newListItemHtml = `
+            <li class="dd-item no-pad" data-name="${data.name}">
+                <div class="dd-handle">${data.name}
+                <span class="badge badge-danger">Label</span>
+                </div>
+            </li>
+            `
+            // Append the new item to the #storfront_menu_list
+            $("#admin_menu_list").append(newListItemHtml);
+        }
+
         /**@argument formType: #formModel | admin..
          * @argument response : the acutal returned data
          * @argument resultType: success | danger..
@@ -328,5 +412,24 @@
             } else
                 toastr.error(response, "Error");
         }
+
+
+        /**
+         * @argument data
+         * THIS FUNCTION IS TO MANAGE THE RESPONSE REALTED TO CREATE NEW LABEL IN THE ADMIN FORM
+         */
+        function manageLabelCreationResponse(data) {
+            $('.checkbox-label-form').prop('checked', false);
+            $('.label-form').hide();
+            $('.sub-form').hide();
+            $('.main-form').show();
+            $('.sub-con').show();
+            $('#addMenuLabel').modal('hide');
+            addLabelElementToList(data);
+        }
+
+
+
+
     });
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CantCreateLabelFormException;
 use App\Exceptions\MenuManagerNotFoundException;
 use App\Http\Requests\ModulePostRequest;
 use App\Models\Attribute;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use App\Generators\GeneratorUtils;
+use App\Http\Requests\postLabelRequest;
 use Exception;
 
 class ModuleManagerController extends Controller
@@ -248,7 +250,7 @@ class ModuleManagerController extends Controller
         }
     }
 
-    public function storeLabel(Request $request)
+    public function storeLabel(postLabelRequest $request)
     {
         // dd($request->all());
 
@@ -291,10 +293,13 @@ class ModuleManagerController extends Controller
 
         if (!$menuManager) {
             $this->flashRepository->setFlashSession('alert-danger', 'Something went wrong!.');
-            return redirect()->route('module_manager.index');
+            throw new CantCreateLabelFormException();
+            // return redirect()->route('module_manager.index');
         }
         $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
-        return redirect()->route('module_manager.index');
+        return response()->json(['status' => true, 'message' => 'Menu Item created successfully.', 'data' => $menuManager]);
+
+        // return redirect()->route('module_manager.index');
 
         //     DB::commit();
         // } catch (Exception $ex) {

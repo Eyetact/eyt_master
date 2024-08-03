@@ -41,10 +41,12 @@
 
                           manageMessageResponse("role_form_modal", response,
                               "success", 3000);
+                          $("#attributeCreate")[0].reset();
                       } else {
                           manageMessageResponse("role_form_modal", response,
                               "danger",
                               3000);
+                          $("#attributeCreate")[0].reset();
                       }
                   },
                   error: function(xhr, status, error) {
@@ -53,10 +55,11 @@
                           var errors = xhr.responseJSON.errors;
                           displayValidationErrorsFields(
                               errors);
+                          $("#attributeCreate")[0].reset();
                       } else {
-                          alert("hhh");
                           manageMessageResponse("role_form_modal", response.message, "danger",
                               3000);
+                          $("#attributeCreate")[0].reset();
                       }
                   }
               });

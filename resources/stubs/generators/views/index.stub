@@ -774,11 +774,12 @@ output {
             });
         }
 
+        var numberOfAttributes = @json($callAggr);
         $(document).on('click', '#add_new', function() {
-            // window.addEventListener('load', function() {
-
-            // }, false);
-            $.ajax({
+           if (numberOfAttributes == 0)
+                toastr.warning("please create new attribute before insert data!", "Warning");
+                else{
+                     $.ajax({
                 url: "{{ route('{{modelNamePluralKebabCase}}.create') }}",
                 success: function(response) {
                     //  console.log(response);
@@ -799,6 +800,8 @@ output {
 
                 }
             });
+                }
+           
         });
 
         var table = $('#data_table').DataTable({
