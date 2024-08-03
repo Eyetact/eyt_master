@@ -218,7 +218,7 @@ class IndexViewGenerator
         $agg = '';
         $totalFields = count($module->fields()->where('is_enable', 1)->get());
 
-        foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
+        foreach ($module->fields()->where('is_enable', 1)->orderBy('sequence', 'asc')->get() as $i => $field) {
             $field->name = GeneratorUtils::singularSnakeCase($field->name);
             $field->code = !empty($field->code) ? GeneratorUtils::singularSnakeCase($field->code) : GeneratorUtils::singularSnakeCase($field->name);
             // dd($field->type);
@@ -856,7 +856,18 @@ class IndexViewGenerator
 
                                 $totalOptions = count($arrOption);
                                 $trhtml .= '<td><div class="input-box">';
-                                $trhtml .= ' <select name="' . $field->code . '[${no}][' . $value->code . ']" class="form-select  google-input multi-type" required="">';
+
+                                    if($value->unique == 1)
+                                    {
+                                        $trhtml .= ' <select name="' . $field->code . '[${no}][' . $value->code . ']" class="form-select unique  google-input multi-type" required="">';
+
+                                    }
+                                    else{
+
+                                        $trhtml .= ' <select name="' . $field->code . '[${no}][' . $value->code . ']" class="form-select  google-input multi-type" required="">';
+
+                                    }
+
                                 $trhtml .= '<option selected disabled > -- select --</option>';
                                 foreach ($arrOption as $arrOptionIndex => $value) {
                                     $trhtml .= '<option value="' . $value . '" >' . $value . '</option>';
@@ -908,8 +919,10 @@ class IndexViewGenerator
                             table.append(tr)
 
                             table.find('.content:last').richText();
+                            reindexTable(table);
                              applyCalcOperations();
                              dynamicCalculation();
+                             updateUniqueOptions(table);
 
                         });\n";
                 }

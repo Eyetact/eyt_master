@@ -718,7 +718,7 @@ class FormViewGenerator
         $template .= "@endif\n";
 ;
 
-        foreach ($module->fields()->where('is_enable', 1)->get() as $i => $field) {
+        foreach ($module->fields()->where('is_enable', 1)->orderBy('sequence', 'asc')->get() as $i => $field) {
             $field->name = GeneratorUtils::singularSnakeCase($field->name);
             $field->code = !empty($field->code) ? GeneratorUtils::singularSnakeCase($field->code) : GeneratorUtils::singularSnakeCase($field->name);
 
@@ -2535,7 +2535,18 @@ class FormViewGenerator
 
                                     $totalOptions = count($arrOption);
                                     $template .= '<td><div class="input-box">';
-                                    $template .= ' <select name="' . $field->code . '[{{ $index }}][' . $value->code . ']" class="form-select  google-input multi-type" required="">';
+
+                                    if($value->unique == 1)
+                                    {
+
+                                        $template .= ' <select name="' . $field->code . '[{{ $index }}][' . $value->code . ']" class="form-select unique  google-input multi-type" required="">';
+
+                                    }
+                                    else{
+
+                                        $template .= ' <select name="' . $field->code . '[{{ $index }}][' . $value->code . ']" class="form-select  google-input multi-type" required="">';
+
+                                    }
 
                                     foreach ($arrOption as $arrOptionIndex => $value2) {
                                         $template .= '<option @selected( isset($item->' . $value->code . ') ? $item->' . $value->code . ' == "' . $value2 . '" : 0 ) value="' . $value2 . '" >' . $value2 . '</option>';

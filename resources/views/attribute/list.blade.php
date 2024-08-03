@@ -1083,7 +1083,19 @@ ${response}
             if ($(this).val() == 'select') {
                 $(this).parent().parent().find('.select_options').append(`<div class="input-box s-option mt-2">
                 <input type="text" name="multi[${index}][select_options]" class="google-input" placeholder="Seperate with '|', e.g.: water|fire">
-            </div>`);
+            </div>
+
+
+                    <div class="form-group col-sm-4">
+                    <label class="custom-switch form-label">
+                        <input type="checkbox" name="multi[${index}][unique]" class="custom-switch-input" id="unique">
+                        <span class="custom-switch-indicator"></span>
+                        <span class="custom-switch-description">Unique</span>
+                    </label>
+                </div>
+
+
+            `);
             } else if ($(this).val() == 'doubleMulti') {
 
 

@@ -76,6 +76,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/attribute-by-module2/{module}', 'getAttrByModel2')->name('attribute.get');
         Route::get('/fields-of-multi/{attr_id}', 'getFieldsOfMulti')->name('fields.get');
         Route::get('/data-by-module/{model_id}/{attr_condition}', 'getDataByModel')->name('data.get');
+
+        Route::get('/sort-attributes', 'sortAttributes')->name('attribute.sort');
+
+        Route::get('/sattributes/{module_id}', 'getSortAttrsByModule');
+      Route::post('/attributes/update-sequence', 'updateAttributeSequence');
     });
 
     Route::controller(MenuManagerController::class)->group(function () {
@@ -591,8 +596,12 @@ Route::get('/get-type-by-component/{id}', function ($id) {
 //     return response()->json($components);
 // })->name('get-compos');
 
+Route::get('/regenerate-views/{id}', function ($id) {
+    $generatorService = app()->make(\App\Services\GeneratorService::class);
+    $generatorService->reGenerateViews($id);
 
-
+    return response()->json(['status' => 'success']);
+})->name('regenerate.views');
 
 Route::get(
     'searchtargetfromsource/{main_model}/{main_model_id}/{for_key_attr_name}/{target_result_attr}',
