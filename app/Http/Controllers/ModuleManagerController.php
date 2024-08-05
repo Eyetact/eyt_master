@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use App\Generators\GeneratorUtils;
 use App\Http\Requests\postLabelRequest;
+use App\Http\Requests\storeSubPostRequest;
 use Exception;
 
 class ModuleManagerController extends Controller
@@ -581,7 +582,7 @@ class ModuleManagerController extends Controller
 
     }
 
-    public function storeSubPost(Request $request)
+    public function storeSubPost(storeSubPostRequest $request)
     {
         // dd(!isset($request->shared));
         // dd($request->all());
