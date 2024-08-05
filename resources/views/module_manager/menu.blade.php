@@ -512,11 +512,10 @@
                                 </form>
                             </div>
 
-                            <div class="sub-form" style="display: none">
-                                <form action="{{ route('module_manager.storSubPost') }}" id="moduleCreateSub"
-                                    method="POST" autocomplete="off">
+                            <div class="sub-form" style="display: none" id="create-sub-form">
+                                <form class="add-sub-form" action="{{ route('module_manager.storSubPost') }}"
+                                    id="moduleCreateSub" method="POST" autocomplete="off">
                                     @csrf
-
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12">
                                             <div class="">
@@ -581,6 +580,9 @@
                                                                                     </option>
                                                                                 @endforeach
                                                                             </select>
+                                                                            <span id="parent_id-sub-error"
+                                                                                class="error text-danger d-none error-message"></span>
+
                                                                             <label id="module-error"
                                                                                 class="error text-red hide"
                                                                                 for="module"></label>
@@ -599,14 +601,13 @@
                                                                                     Attribute</option>
 
                                                                             </select>
+                                                                            <span id="attr_id-sub-error"
+                                                                                class="error text-danger d-none error-message"></span>
                                                                             <label id="module-error"
                                                                                 class="error text-red hide"
                                                                                 for="module"></label>
 
                                                                         </div>
-
-
-
 
                                                                         <div class="col-12 row form-subb"
                                                                             style="display: none">
@@ -618,6 +619,9 @@
                                                                                 <input type="text" name="name"
                                                                                     id="aname" class="form-control"
                                                                                     value="">
+
+                                                                                <span id="name-sub-error"
+                                                                                    class="error text-danger d-none error-message"></span>
                                                                                 <input type="hidden" name="id"
                                                                                     id="aid" value="">
                                                                             </div>
@@ -629,6 +633,8 @@
                                                                                 <input type="text" name="code"
                                                                                     id="code" class="form-control"
                                                                                     value="">
+                                                                                <span id="code-sub-error"
+                                                                                    class="error text-danger d-none error-message"></span>
 
                                                                             </div>
 
@@ -639,6 +645,8 @@
                                                                                 <input type="text" name="path"
                                                                                     id="apath" class="form-control"
                                                                                     value="">
+                                                                                <span id="path-sub-error"
+                                                                                    class="error text-danger d-none error-message"></span>
                                                                             </div>
 
                                                                             <div class="col-sm-12 form-group">
@@ -648,6 +656,8 @@
                                                                                 <input type="text" name="sidebar_name"
                                                                                     id="sidebar_name" class="form-control"
                                                                                     value="">
+                                                                                <span id="sidebar_name-sub-error"
+                                                                                    class="error text-danger d-none error-message"></span>
                                                                             </div>
 
                                                                             <div class="form-group col-sm-4">
@@ -657,6 +667,7 @@
                                                                                         id="ainclude_in_menu"
                                                                                         class="custom-switch-input"
                                                                                         id="is_enable">
+
                                                                                     <span
                                                                                         class="custom-switch-indicator"></span>
                                                                                     <span
@@ -703,7 +714,7 @@
                                                                                     id="mtype">
                                                                                     <option disabled value=""
                                                                                         selected>Select</option>
-                                                                                    <option value="stander">Stander
+                                                                                    <option value="stander">Standerd
                                                                                     </option>
                                                                                     <option value="sortable">Sortable
                                                                                     </option>
@@ -1392,23 +1403,23 @@
                 }
             });
 
-            $("#moduleCreateSub").on("submit", function(event) {
-                if ($('#attr_id').val() <= 0) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "The parent module dos not have attribute ...",
-                        text: "Something went wrong!",
-                        footer: '<a href="{{ url('attribute') }}">Create ?</a>'
-                    });
+            // $("#moduleCreateSub").on("submit", function(event) {
+            //     if ($('#attr_id').val() <= 0) {
+            //         Swal.fire({
+            //             icon: "error",
+            //             title: "The parent module dos not have attribute ...",
+            //             text: "Something went wrong!",
+            //             footer: '<a href="{{ url('attribute') }}">Create ?</a>'
+            //         });
 
-                    event.preventDefault();
+            //         event.preventDefault();
 
-                    return;
-                } else {
-                    $("#moduleCreateSub").submit()
-                }
-                event.preventDefault();
-            });
+            //         return;
+            //     } else {
+            //         $("#moduleCreateSub").submit()
+            //     }
+            //     event.preventDefault();
+            // });
 
             // $('#moduleCreateSub').validate({
             //     rules: {
@@ -1642,4 +1653,5 @@
     @include('module_manager.js.functions')
     @include('module_manager.js.actions')
     @include('module_manager.js.menu.menu')
+    @include('module_manager.js.menu.sub_menu')
 @endsection

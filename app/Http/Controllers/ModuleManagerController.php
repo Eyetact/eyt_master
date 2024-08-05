@@ -705,7 +705,9 @@ class ModuleManagerController extends Controller
 
 
         $this->flashRepository->setFlashSession('alert-success', 'Menu Item created successfully.');
-        return redirect()->route('module_manager.index');
+        return response()->json(['status' => true, 'message' => 'Menu Item created successfully.!', 'data' => $menuManager]);
+
+        //return redirect()->route('module_manager.index');
 
         //     DB::commit();
         // } catch (Exception $ex) {
