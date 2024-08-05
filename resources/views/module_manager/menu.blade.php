@@ -330,7 +330,7 @@
                     <div class="row">
                         <div class="form-group col-sm-4 label-con">
                             <label class="custom-switch form-label">
-                                <input type="checkbox" class="custom-switch-input" id="label">
+                                <input type="checkbox" class="custom-switch-input checkbox-label-form" id="label">
                                 <span class="custom-switch-indicator"></span>
                                 <span class="custom-switch-description">Label</span>
                             </label>
@@ -473,7 +473,7 @@
 
                             <div class="label-form" style="display: none">
                                 <form action="{{ route('module_manager.storelabel') }}" id="moduleCreate" method="POST"
-                                    autocomplete="off">
+                                    autocomplete="off" class="add-label-form">
                                     @csrf
                                     <input type="hidden" name="menu_type" value="admin">
                                     <div class="row">
@@ -486,7 +486,9 @@
                                                             <label class="form-label" for="name">Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="name" id="aname"
-                                                                class="form-control" value="" required>
+                                                                class="form-control" value="">
+                                                            <span id="name-label-error"
+                                                                class="error text-danger d-none error-message"></span>
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
                                                         </div>
