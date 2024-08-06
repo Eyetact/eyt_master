@@ -37,7 +37,7 @@
                         <div class="col-sm-12 input-box">
                             <label class="form-label" for="code">Code<span class="text-red">*</span></label>
                             <input disabled type="text" name="code"
-                                class="google-input @error('code') is-invalid @enderror"
+                                class="input-code google-input @error('code') is-invalid @enderror"
                                 value="{{ old('code', $attribute->code) }}">
                             <small class="text-secondary">
                                 <ul class="my-1 mx-2 p-0">
