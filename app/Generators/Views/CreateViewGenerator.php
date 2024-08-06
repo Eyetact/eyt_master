@@ -19,7 +19,7 @@ class CreateViewGenerator
         $path = GeneratorUtils::getModelLocation($request['name']);
         $request['code'] = str()->snake(str_replace(['.', '/', '\\', '-', ' ', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '<', '>', ',', '{', '}', '[', ']', ':', ';', '"', '\''], '', str($request['code'])->lower()));
 
-        
+
         $code = GeneratorUtils::setModelName($request['code'], 'default');
 
 
@@ -98,6 +98,7 @@ class CreateViewGenerator
                 '{{modelNamePluralUcWords}}',
                 '{{modelNameSingularLowerCase}}',
                 '{{modelNamePluralKebabCase}}',
+                '{{code}}',
                 '{{enctype}}',
                 '{{viewPath}}',
             ],
@@ -105,6 +106,7 @@ class CreateViewGenerator
                 $modelNamePluralUcWords,
                 $modelNameSingularLowerCase,
                 $modelNamePluralKebabCase,
+                $code,
 
                 ' enctype="multipart/form-data"',
                 $path != '' ? str_replace('\\', '.', $path) . "." : ''

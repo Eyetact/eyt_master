@@ -3,8 +3,17 @@
                         @method('POST')
 
                         @php
-                    
-                    $model = App\Models\Module::where('migration','Like', '%'.'{{modelNamePluralKebabCase}}'.'%')->first();
+
+                $model_id = \App\Models\Module::where(
+                                    'code',
+                                    App\Generators\GeneratorUtils::singularSnakeCase('{{code}}'),
+                                )
+                                    ->orWhere('code', App\Generators\GeneratorUtils::pluralSnakeCase('{{code}}'))
+                                    ->orWhere('code', '{{code}}')
+                                    ?->first()->id;
+
+                    $model = App\Models\Module::find($model_id);
+
 
                     $parent = App\Models\Module::find($model?->parent_id);
                     if($parent){
