@@ -593,7 +593,7 @@
 
                 $(`.options`).append(`
     <div class="input-box form-constrain fkey2 mt-2">
-        
+
         <div class="input-box form-on-update mt-2 form-on-update-foreign">
             <select class="google-input lookup-drop2"  name="constrains2" required>
                ${list}
@@ -815,7 +815,7 @@ ${response}
                         $('.input-code').val(modifiedValue);
                         $('.input-code').prop('readonly', true);
 
-                        ('.options').append(` <div class="input-box cond-wrapper form-constrain mt-2">
+                        parent.append(` <div class="input-box cond-wrapper form-constrain mt-2">
 <div class="input-box form-on-update mt-2 form-on-update-foreign">
 <select class="google-input condition-drop" name="condition_attr" required>
    ${response}
@@ -2517,7 +2517,7 @@ ${response}
                     // $('.options').remove();
 
 
-                    //$('.form-column-types').val('fk').trigger('change');
+                    $('.form-column-types').val('fk').trigger('change');
 
                     $('.fktypes:last-child').remove();
 

@@ -28,7 +28,16 @@ class AttributePostRequest extends FormRequest
             'name' => ['required', Rule::unique('attributes')->where(function ($query) {
                 return $query->where('module', $this->module);
             })],
-            'code' => 'required|unique:attributes,code',
+
+            'code' => [
+                'required',
+                Rule::unique('attributes')->where(function ($query) {
+                    return $query->where('module', $this->module);
+                })
+            ],
+
+            // 'code' => 'required|unique:attributes,code',
+
             'module' => 'required',
             'input_types' => 'required'
         ];

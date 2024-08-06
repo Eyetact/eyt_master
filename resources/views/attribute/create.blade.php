@@ -37,9 +37,9 @@
                         </div>
 
                         <div class="col-sm-12 input-box">
-                            <label class="form-label" for="code2">Code<span class="text-red">*</span></label>
+                            <label class="form-label" for="code">Code<span class="text-red">*</span></label>
                             <input type="text" name="code" id="code"
-                                class="google-input @error('code') is-invalid @enderror"
+                                class="input-code google-input @error('code') is-invalid @enderror"
                                 value="{{ old('code', $attribute->code) }}">
 
                             <span id="code-error" class="error text-danger d-none error-message"></span>
