@@ -502,8 +502,9 @@
                                                         id="remove-admin-menu" type="button" value="Delete">
                                                     <input title="Reset form" class="btn btn-success d-none"
                                                         id="restore-admin-menu" type="button" value="Restore">
-                                                    <input title="Save module" class="btn btn-primary"
-                                                        id="submit-admin-menu" type="submit" value="Save">
+                                                    <input title="Save module"
+                                                        class="btn btn-primary admin-label-form-submit"
+                                                        id="submit-admin-menu" type="submit" value="Save" disabled>
 
                                                 </div>
                                             </div>
@@ -736,9 +737,9 @@
                                                                         class="btn btn-success d-none"
                                                                         id="restore-admin-menu" type="button"
                                                                         value="Restore">
-                                                                    <input title="Save module" class="btn btn-primary"
+                                                                    <input title="Save module" class="btn btn-primary add-sub-module"
                                                                         id="submit-admin-menu" type="submit"
-                                                                        value="Save">
+                                                                        value="Save" disabled>
                                                                     {{-- <input title="Reset form" class="btn btn-warning" type="reset" value="Reset"> --}}
                                                                 </div>
                                                             </div>
@@ -1000,6 +1001,7 @@
 
 
                 $("#label").on('change', function() {
+
                     if ($(this).is(':checked')) {
                         $('.sub-form').hide();
                         $('.main-form').hide();

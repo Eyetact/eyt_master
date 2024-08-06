@@ -30,6 +30,19 @@
 
         });
 
+
+        $("#label").on('change', function() {
+            // Run validation on keyup and change events
+            $('input[required]').on('keyup change', function() {
+                validateForm('.add-label-form', '.admin-label-form-submit');
+            });
+
+            // Initial validation check
+            validateForm('.add-label-form', '.admin-label-form-submit');
+
+        });
+
+
         $("#FrontForm").on('shown.bs.modal', function() {
             // Run validation on keyup and change events
             $('input[required]').on('keyup change', function() {
@@ -135,6 +148,44 @@
             });
         });
 
+        //validation listener in add label module
+        $(document).on('change', '.add-label-form', function() {
+            $(".add-label-form").validate({
+                onkeyup: function(el, e) {
+                    console.log("yes");
+                    $(el).valid();
+                },
+                errorClass: "invalid-feedback is-invalid",
+                validClass: 'valid-feedback is-valid',
+                ignore: ":hidden",
+                rules: {
+
+                    code: {
+                        required: true,
+                        maxlength: 255,
+                        notEqual: 'id',
+                        notEqual2: 'ID',
+                        notEqual3: 'iD',
+                        notEqual4: 'Id',
+                    },
+
+                },
+                messages: {},
+                /*the following lines are for inserting the error message under the code input field*/
+                errorPlacement: function(error, element) {
+                    error.addClass('d-block');
+                    error.insertAfter(element);
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                },
+            });
+        });
+
 
 
 
@@ -148,6 +199,7 @@
             var menuId = menuId; // This comes from the Blade template
             var url = menuId == null ? frontStoreRoute : frontUpdateRoute;
             var formData = new FormData(this);
+
             // Setup CSRF token header
             $.ajaxSetup({
                 headers: {
@@ -169,10 +221,11 @@
                     if (response.status === true) {
 
                         manageMessageResponse("FrontForm", response,
-                            "success", 3000, '.storefront-form');
+                            "success", 3000, '.storefront-form', '');
                         addNewStoreFrontModuleElementToList(response.data, "storfront");
 
                     } else {
+
                         manageMessageResponse("FrontForm", "storfront", response,
                             "danger",
                             3000), '.storefront-form';
@@ -181,6 +234,7 @@
                 },
                 error: function(xhr, status, error) {
                     var response = JSON.parse(xhr.responseText);
+
                     if (xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
                         displayValidationErrorsFields(
@@ -401,7 +455,7 @@
          * 3. INCREASE THE COUNTER OF MODULE NUMBER
          */
         function manageMessageResponse(formType, response, resultType, timeout,
-            formFields) {
+            formFields, errorFields) {
             // 1. Hide the pop-up form
             $('#' + formType).modal('hide');
 
@@ -413,6 +467,7 @@
                 increaseCounter(formType);
                 // empty the input fields
                 $(formFields)[0].reset();
+                $(errorFields)[0].reset();
             } else {
                 toastr.error(response, "Error");
             }
@@ -430,9 +485,20 @@
             $('.sub-con').show();
             $('.main-form').show();
             $('#addMenuLabel').modal('hide');
+            // clearErrors();
             addLabelElementToList(data);
         }
 
+        /**
+         * CLEAR THE ERROR MESSAGES WHEN SUBMIT
+         * @argument
+         * */
+        function clearErrors() {
+            $('span.error-message').each(function() {
+                $(this).text(''); // Clear the error text
+                $(this).addClass('d-none');
+            });
+        }
 
 
 

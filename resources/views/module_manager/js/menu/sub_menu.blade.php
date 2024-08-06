@@ -5,6 +5,18 @@
        * IT INCLUDE: (SUB, SHARED AND ADDABLE MODULES)
        */
       $(document).ready(function() {
+
+          $("#sub").on('change', function() {
+              // Run validation on keyup and change events
+              $('input[required]').on('keyup change', function() {
+                  validateForm('#moduleCreateSub', '.add-sub-module');
+              });
+
+              // Initial validation check
+              validateForm('#moduleCreateSub', '.add-sub-module');
+
+          });
+
           $('#moduleCreateSub').submit(function(e) {
               e.preventDefault(); // Prevent default form submission
               // check for some additiona validation
