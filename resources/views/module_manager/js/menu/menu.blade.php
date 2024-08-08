@@ -30,6 +30,19 @@
 
         });
 
+
+        $("#label").on('change', function() {
+            // Run validation on keyup and change events
+            $('input[required]').on('keyup change', function() {
+                validateForm('.add-label-form', '.admin-label-form-submit');
+            });
+
+            // Initial validation check
+            validateForm('.add-label-form', '.admin-label-form-submit');
+
+        });
+
+
         $("#FrontForm").on('shown.bs.modal', function() {
             // Run validation on keyup and change events
             $('input[required]').on('keyup change', function() {
@@ -135,6 +148,44 @@
             });
         });
 
+        //validation listener in add label module
+        $(document).on('change', '.add-label-form', function() {
+            $(".add-label-form").validate({
+                onkeyup: function(el, e) {
+                    console.log("yes");
+                    $(el).valid();
+                },
+                errorClass: "invalid-feedback is-invalid",
+                validClass: 'valid-feedback is-valid',
+                ignore: ":hidden",
+                rules: {
+
+                    code: {
+                        required: true,
+                        maxlength: 255,
+                        notEqual: 'id',
+                        notEqual2: 'ID',
+                        notEqual3: 'iD',
+                        notEqual4: 'Id',
+                    },
+
+                },
+                messages: {},
+                /*the following lines are for inserting the error message under the code input field*/
+                errorPlacement: function(error, element) {
+                    error.addClass('d-block');
+                    error.insertAfter(element);
+                },
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                    $(element).addClass('is-valid');
+                },
+            });
+        });
+
 
 
 
@@ -148,6 +199,7 @@
             var menuId = menuId; // This comes from the Blade template
             var url = menuId == null ? frontStoreRoute : frontUpdateRoute;
             var formData = new FormData(this);
+
             // Setup CSRF token header
             $.ajaxSetup({
                 headers: {
@@ -168,18 +220,21 @@
                 success: function(response) {
                     if (response.status === true) {
 
-                        manageMessageResponse("FrontForm", "storfront", response,
-                            "success", 3000);
-                        $(".storefront-form")[0].reset();
+                        manageMessageResponse("FrontForm", response,
+                            "success", 3000, '.storefront-form', '');
+                        addNewStoreFrontModuleElementToList(response.data, "storfront");
+
                     } else {
+
                         manageMessageResponse("FrontForm", "storfront", response,
                             "danger",
-                            3000);
-                        $(".storefront-form")[0].reset();
+                            3000), '.storefront-form';
+                        addNewStoreFrontModuleElementToList(response.data, "storfront");
                     }
                 },
                 error: function(xhr, status, error) {
                     var response = JSON.parse(xhr.responseText);
+
                     if (xhr.status === 422) {
                         var errors = xhr.responseJSON.errors;
                         displayValidationErrorsFields(
@@ -188,8 +243,7 @@
                     } else {
 
                         manageMessageResponse("FrontForm", response.message, "danger",
-                            3000);
-                        $(".storefront-form")[0].reset();
+                            3000, '.storefront-form');
                     }
                 }
             });
@@ -225,16 +279,16 @@
                 success: function(response) {
                     if (response.status === true) {
 
-                        manageMessageResponse("addMenuLabel", "admin", response,
+                        manageMessageResponse("addMenuLabel", response,
                             "success",
-                            3000);
-                        $(".admin-form")[0].reset();
+                            3000, '.admin-form');
+                        addNewStoreFrontModuleElementToList(response.data, "admin");
 
                     } else {
-                        manageMessageResponse("addMenuLabel", "admin", response,
+                        manageMessageResponse("addMenuLabel", response,
                             "danger",
-                            3000);
-                        $(".admin-form")[0].reset();
+                            3000, '.admin-form');
+                        addNewStoreFrontModuleElementToList(response.data, "admin");
                     }
 
                 },
@@ -250,8 +304,7 @@
 
                         manageMessageResponse("addMenuLabel", response.message,
                             "danger",
-                            3000);
-                        $(".admin-form")[0].reset();
+                            3000, '.admin-form');
                     }
                 }
             });
@@ -280,15 +333,18 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.status === true) {
+
+                        manageMessageResponse("addMenuLabel", response,
+                            "success",
+                            3000, '.add-label-form');
                         manageLabelCreationResponse(response.message);
                         addLabelElementToList(response.data);
-                        toastr.success(response.message, "Success");
-                        $(".add-label-form")[0].reset();
                     } else {
+                        manageMessageResponse("addMenuLabel", response,
+                            "danger",
+                            3000, '.add-label-form');
                         manageLabelCreationResponse(response.data);
                         addLabelElementToList(response.data);
-                        toastr.error(response, "Error");
-                        $(".add-label-form")[0].reset();
                     }
 
 
@@ -302,11 +358,12 @@
                             errors, 'label');
                         $(".add-label-form")[0].reset();
                     } else {
-
-                        manageMessageResponse("addMenuLabel", response.message,
+                        manageMessageResponse("addMenuLabel", response,
                             "danger",
-                            3000);
-                        $(".add-label-form")[0].reset();
+                            3000, '.add-label-form');
+                        manageLabelCreationResponse(response.data);
+                        addLabelElementToList(response.data);
+
                     }
                 }
             });
@@ -397,20 +454,24 @@
          * 2. MANAGES THE MESSAGE (SUCCESS & DANGER) WITHIN A SPECIFIC TIME OF APPEARANCE
          * 3. INCREASE THE COUNTER OF MODULE NUMBER
          */
-        function manageMessageResponse(formType, listType = "storefront", response, resultType, timeout) {
+        function manageMessageResponse(formType, response, resultType, timeout,
+            formFields, errorFields) {
             // 1. Hide the pop-up form
             $('#' + formType).modal('hide');
 
             // 2. If the message is success
             if (resultType === 'success') {
-                // Add the new inserted row in the field
-                addNewStoreFrontModuleElementToList(response.data, listType);
                 // Display the success or danger message
                 toastr.success(response.message, "Success");
                 // increase the counter
                 increaseCounter(formType);
-            } else
+                // empty the input fields
+                $(formFields)[0].reset();
+                $(errorFields)[0].reset();
+            } else {
                 toastr.error(response, "Error");
+            }
+
         }
 
 
@@ -420,14 +481,24 @@
          */
         function manageLabelCreationResponse(data) {
             $('.checkbox-label-form').prop('checked', false);
-            $('.label-form').hide();
-            $('.sub-form').hide();
-            $('.main-form').show();
+            $('.label-con').show();
             $('.sub-con').show();
+            $('.main-form').show();
             $('#addMenuLabel').modal('hide');
+            // clearErrors();
             addLabelElementToList(data);
         }
 
+        /**
+         * CLEAR THE ERROR MESSAGES WHEN SUBMIT
+         * @argument
+         * */
+        function clearErrors() {
+            $('span.error-message').each(function() {
+                $(this).text(''); // Clear the error text
+                $(this).addClass('d-none');
+            });
+        }
 
 
 
