@@ -478,23 +478,19 @@
                                     <input type="hidden" name="menu_type" value="admin">
                                     <div class="row">
                                         <div class="col-lg-12 col-md-12">
-                                            <div class="">
-
-                                                <div class="">
+                                            <div>
+                                                <div>
                                                     <div class="row">
                                                         <div class="col-sm-12 form-group">
                                                             <label class="form-label" for="name">Name <span
                                                                     class="text-red">*</span></label>
                                                             <input type="text" name="name" id="aname"
-                                                                class="form-control" value="">
+                                                                class="form-control" value="" required>
                                                             <span id="name-label-error"
                                                                 class="error text-danger d-none error-message"></span>
                                                             <input type="hidden" name="id" id="aid"
                                                                 value="">
                                                         </div>
-
-
-
                                                     </div>
                                                 </div>
                                                 <div class="card-footer text-right">
@@ -502,15 +498,15 @@
                                                         id="remove-admin-menu" type="button" value="Delete">
                                                     <input title="Reset form" class="btn btn-success d-none"
                                                         id="restore-admin-menu" type="button" value="Restore">
-                                                    <input title="Save module"
+                                                    <input title="Save module" disabled
                                                         class="btn btn-primary admin-label-form-submit"
-                                                        id="submit-admin-menu" type="submit" value="Save" disabled>
-
+                                                        id="submit-admin-menu" type="submit" value="Save">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
+
                             </div>
 
                             <div class="sub-form" style="display: none" id="create-sub-form">
@@ -597,7 +593,7 @@
 
 
                                                                             <select name="attr_id" class="google-input "
-                                                                                id="attr_id">
+                                                                                id="attr_id" required>
                                                                                 <option value="" selected>Select
                                                                                     Attribute</option>
 
@@ -619,7 +615,7 @@
                                                                                         class="text-red">*</span></label>
                                                                                 <input type="text" name="name"
                                                                                     id="aname" class="form-control"
-                                                                                    value="">
+                                                                                    value="" required>
 
                                                                                 <span id="name-sub-error"
                                                                                     class="error text-danger d-none error-message"></span>
@@ -633,7 +629,7 @@
                                                                                         class="text-red">*</span></label>
                                                                                 <input type="text" name="code"
                                                                                     id="code" class="form-control"
-                                                                                    value="">
+                                                                                    value="" required>
                                                                                 <span id="code-sub-error"
                                                                                     class="error text-danger d-none error-message"></span>
 
@@ -645,7 +641,7 @@
                                                                                         class="text-red">*</span></label>
                                                                                 <input type="text" name="path"
                                                                                     id="apath" class="form-control"
-                                                                                    value="">
+                                                                                    value="" required>
                                                                                 <span id="path-sub-error"
                                                                                     class="error text-danger d-none error-message"></span>
                                                                             </div>
@@ -656,7 +652,7 @@
                                                                                         class="text-red">*</span></label>
                                                                                 <input type="text" name="sidebar_name"
                                                                                     id="sidebar_name" class="form-control"
-                                                                                    value="">
+                                                                                    value="" required>
                                                                                 <span id="sidebar_name-sub-error"
                                                                                     class="error text-danger d-none error-message"></span>
                                                                             </div>
@@ -667,12 +663,12 @@
                                                                                         name="include_in_menu"
                                                                                         id="ainclude_in_menu"
                                                                                         class="custom-switch-input"
-                                                                                        id="is_enable">
+                                                                                        id="is_enable" checked>
 
                                                                                     <span
                                                                                         class="custom-switch-indicator"></span>
-                                                                                    <span
-                                                                                        class="custom-switch-description">Include
+                                                                                    <span class="custom-switch-description"
+                                                                                        che>Include
                                                                                         in
                                                                                         menu</span>
                                                                                 </label>
@@ -704,23 +700,29 @@
                                                                                 </label>
                                                                             </div>
 
-                                                                            <div class="col-sm-12 input-box">
+                                                                            <div class="col-sm-12">
                                                                                 <label class="form-label"
                                                                                     for="module">Type<span
                                                                                         class="text-red">*</span></label>
+                                                                                <br>
 
-
-                                                                                <select name="mtype"
-                                                                                    class="google-input module"
+                                                                                <div class="google-input module"
                                                                                     id="mtype">
-                                                                                    <option disabled value=""
-                                                                                        selected>Select</option>
-                                                                                    <option value="stander">Standerd
-                                                                                    </option>
-                                                                                    <option value="sortable">Sortable
-                                                                                    </option>
-
-                                                                                </select>
+                                                                                    <label class="radio-spacing">
+                                                                                        <input type="radio"
+                                                                                            name="mtype" value="stander"
+                                                                                            checked required>
+                                                                                        Standerd
+                                                                                    </label>
+                                                                                    <label>
+                                                                                        <input type="radio"
+                                                                                            name="mtype"
+                                                                                            value="sortable">
+                                                                                        Sortable
+                                                                                    </label>
+                                                                                </div>
+                                                                                <span id="mtype-admin-error"
+                                                                                    class="error text-danger d-none error-message"></span>
 
 
                                                                             </div>
@@ -737,9 +739,10 @@
                                                                         class="btn btn-success d-none"
                                                                         id="restore-admin-menu" type="button"
                                                                         value="Restore">
-                                                                    <input title="Save module" class="btn btn-primary add-sub-module"
+                                                                    <input title="Save module"
+                                                                        class="btn btn-primary add-sub-module"
                                                                         id="submit-admin-menu" type="submit"
-                                                                        value="Save" disabled>
+                                                                        value="Save">
                                                                     {{-- <input title="Reset form" class="btn btn-warning" type="reset" value="Reset"> --}}
                                                                 </div>
                                                             </div>
