@@ -24,8 +24,8 @@ class storeSubPostRequest extends FormRequest
         return [
             'parent_id' => 'required',
             'attr_id' => 'required',
-            'name' => 'required',
-            'code' => 'required',
+            'name' => 'required|unique:modules,name, NULL,id,user_id,' . $this->user()->id . '|min:3|regex:/^[^0-9]*$/',
+            'code' => 'required| unique:modules,code' . '|regex:/^[^0-9]*$/',
             'path' => 'required',
             'sidebar_name' => 'required'
         ];

@@ -31,14 +31,14 @@
         });
 
 
-        $("#label").on('change', function() {
+        $("#label").on('shown.bs.modal change', function() {
             // Run validation on keyup and change events
             $('input[required]').on('keyup change', function() {
                 validateForm('.add-label-form', '.admin-label-form-submit');
             });
 
-            // Initial validation check
-            validateForm('.add-label-form', '.admin-label-form-submit');
+            // // Initial validation check
+            // validateForm('.add-label-form', '.admin-label-form-submit');
 
         });
 
@@ -467,9 +467,9 @@
                 increaseCounter(formType);
                 // empty the input fields
                 $(formFields)[0].reset();
-                $(errorFields)[0].reset();
             } else {
                 toastr.error(response, "Error");
+                $(formFields)[0].reset();
             }
 
         }
